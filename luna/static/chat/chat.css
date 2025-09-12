@@ -1,0 +1,55 @@
+body {
+    font-family: Arial, sans-serif;
+    background: #f0f0f0;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 100vh;
+}
+
+.chat-container {
+    width: 400px;
+    background: white;
+    border-radius: 10px;
+    box-shadow: 0 0 10px #ccc;
+    display: flex;
+    flex-direction: column;
+}
+
+.chat-box {
+    flex: 1;
+    padding: 10px;
+    overflow-y: auto;
+    height: 400px;
+}
+
+.user-msg {
+    text-align: right;
+    margin: 5px 0;
+}
+
+.luna-msg {
+    text-align: left;
+    margin: 5px 0;
+}
+
+#chat-form {
+    display: flex;
+    border-top: 1px solid #ccc;
+}
+
+#message {
+    flex: 1;
+    padding: 10px;
+    border: none;
+    border-radius: 0 0 0 10px;
+}
+
+button {
+    padding: 10px;
+    border: none;
+    background: #4b6cb7;
+    color: white;
+    border-radius: 0 0 10px 0;
+    cursor: pointer;
+}

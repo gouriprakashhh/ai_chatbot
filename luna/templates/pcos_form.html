@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>PCOS Form</title>
+</head>
+<body>
+    <h2>PCOS Info Form</h2>
+    <form method="POST">
+        {% csrf_token %}
+
+        <label>Name / Nickname:</label><br>
+        <input type="text" name="name" value="" ><br><br>
+
+        <label>Cycle Length / Regularity:</label><br>
+        <input type="text" name="cycle_length" value="{{ pcos_entry.cycle_length|default_if_none:'' }}"><br><br>
+
+        <label>Date of Last Period:</label><br>
+        <input type="date" name="last_period_date" value="{{ pcos_entry.last_period_date|default_if_none:'' }}"><br><br>
+
+        <label>PCOS Status:</label><br>
+<select name="pcos_status">
+    <option value="Diagnosed" {% if pcos_entry and pcos_entry.pcos_status|default_if_none:'' == "Diagnosed" %}selected{% endif %}>Diagnosed</option>
+    <option value="Suspected" {% if pcos_entry and pcos_entry.pcos_status|default_if_none:'' == "Suspected" %}selected{% endif %}>Suspected</option>
+    <option value="Not Diagnosed" {% if pcos_entry and pcos_entry.pcos_status|default_if_none:'' == "Not Diagnosed" %}selected{% endif %}>Not Diagnosed</option>
+</select><br><br>
+
+<label>Mood / Stress Level:</label><br>
+<select name="mood_stress">
+    <option value="Low" {% if pcos_entry and pcos_entry.mood_stress|default_if_none:'' == "Low" %}selected{% endif %}>Low</option>
+    <option value="Medium" {% if pcos_entry and pcos_entry.mood_stress|default_if_none:'' == "Medium" %}selected{% endif %}>Medium</option>
+    <option value="High" {% if pcos_entry and pcos_entry.mood_stress|default_if_none:'' == "High" %}selected{% endif %}>High</option>
+</select><br><br>
+
+<label>Goal:</label><br>
+<select name="goal">
+    <option value="Regulate cycle" {% if pcos_entry and pcos_entry.goal|default_if_none:'' == "Regulate cycle" %}selected{% endif %}>Regulate cycle</option>
+    <option value="Weight management" {% if pcos_entry and pcos_entry.goal|default_if_none:'' == "Weight management" %}selected{% endif %}>Weight management</option>
+    <option value="Reduce stress / improve mental health" {% if pcos_entry and pcos_entry.goal|default_if_none:'' == "Reduce stress / improve mental health" %}selected{% endif %}>Reduce stress / improve mental health</option>
+</select><br><br>
+
+
+        <button type="submit">Submit</button>
+    </form>
+</body>
+</html>

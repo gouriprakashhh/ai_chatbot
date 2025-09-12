@@ -1,0 +1,550 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Verify OTP</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://unpkg.com/alpinejs@3.x.x/dist/cdn.min.js" defer></script>
+    <link
+        href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&family=Merriweather+Sans:wght@400;600;700&display=swap"
+        rel="stylesheet">
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        primary: '#9B8DE5',
+                        secondary: '#4DB6AC',
+                        background: '#F7F7F7',
+                        charcoal: '#333333'
+                    },
+                    fontFamily: {
+                        'poppins': ['Poppins', 'sans-serif'],
+                        'merriweather': ['Merriweather Sans', 'sans-serif']
+                    },
+                    animation: {
+                        'float': 'float 6s ease-in-out infinite',
+                        'slide-in': 'slideIn 0.8s ease-out forwards',
+                        'fade-in': 'fadeIn 1s ease-out forwards',
+                        'bounce-gentle': 'bounceGentle 2s ease-in-out infinite',
+                        'pulse-soft': 'pulseSoft 2s ease-in-out infinite',
+                        'shake': 'shake 0.5s ease-in-out'
+                    },
+                    keyframes: {
+                        float: {
+                            '0%, 100%': { transform: 'translateY(0px)' },
+                            '50%': { transform: 'translateY(-10px)' }
+                        },
+                        slideIn: {
+                            '0%': { transform: 'translateY(30px)', opacity: '0' },
+                            '100%': { transform: 'translateY(0)', opacity: '1' }
+                        },
+                        fadeIn: {
+                            '0%': { opacity: '0' },
+                            '100%': { opacity: '1' }
+                        },
+                        bounceGentle: {
+                            '0%, 100%': { transform: 'translateY(0)' },
+                            '50%': { transform: 'translateY(-5px)' }
+                        },
+                        pulseSoft: {
+                            '0%, 100%': { opacity: '1' },
+                            '50%': { opacity: '0.7' }
+                        },
+                        shake: {
+                            '0%, 100%': { transform: 'translateX(0)' },
+                            '10%, 30%, 50%, 70%, 90%': { transform: 'translateX(-5px)' },
+                            '20%, 40%, 60%, 80%': { transform: 'translateX(5px)' }
+                        }
+                    }
+                }
+            }
+        }
+    </script>
+    <style>
+        /* Custom styles to disable default browser validation */
+        input:invalid,
+        input:required {
+            box-shadow: none !important;
+            -moz-box-shadow: none !important;
+            -webkit-box-shadow: none !important;
+            outline: none !important;
+        }
+
+        /* Hide the default validation message bubble */
+        ::-webkit-validation-bubble-message {
+            display: none;
+        }
+
+        /* OTP input styling */
+        .otp-input {
+            width: 3.5rem;
+            height: 3.5rem;
+            text-align: center;
+            font-size: 1.5rem;
+            font-weight: 600;
+            margin: 0 0.5rem;
+        }
+
+        @media (max-width: 480px) {
+            .otp-input {
+                width: 2.8rem;
+                height: 2.8rem;
+                margin: 0 0.3rem;
+            }
+        }
+
+        @keyframes shake {
+
+            0%,
+            100% {
+                transform: translateX(0);
+            }
+
+            20%,
+            60% {
+                transform: translateX(-8px);
+            }
+
+            40%,
+            80% {
+                transform: translateX(8px);
+            }
+        }
+
+        .shake {
+            animation: shake 0.5s ease;
+        }
+    </style>
+</head>
+
+<body class="bg-gradient-to-br from-background via-white to-purple-50 min-h-screen font-poppins">
+    <!-- Background Decorations -->
+    <div class="fixed inset-0 overflow-hidden pointer-events-none">
+        <div class="absolute top-20 left-10 w-32 h-32 bg-primary opacity-10 rounded-full animate-float"></div>
+        <div class="absolute top-40 right-20 w-24 h-24 bg-secondary opacity-15 rounded-full animate-bounce-gentle"
+            style="animation-delay: 1s;"></div>
+        <div class="absolute bottom-20 left-20 w-40 h-40 bg-gradient-to-r from-primary to-secondary opacity-5 rounded-full animate-pulse-soft"
+            style="animation-delay: 2s;"></div>
+        <div class="absolute bottom-40 right-10 w-20 h-20 bg-primary opacity-10 rounded-full animate-float"
+            style="animation-delay: 3s;"></div>
+    </div>
+
+    <div class="container mx-auto px-4 py-8 min-h-screen flex items-center justify-center" x-data="otpVerification()">
+        <!-- Main OTP Verification Card -->
+        <div class="w-full max-w-md">
+            <!-- Header -->
+            <div class="text-center mb-8 animate-fade-in">
+                <div
+                    class="inline-block p-4 bg-gradient-to-r from-primary to-secondary rounded-full mb-4 animate-bounce-gentle">
+                    <svg class="w-8 h-8 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                            d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z">
+                        </path>
+                    </svg>
+                </div>
+                <h1 class="text-3xl font-merriweather font-bold text-charcoal mb-2">Email Verification</h1>
+                <p class="text-gray-600 font-light">Enter the OTP sent to your email</p>
+
+                <!-- ✅ Use Django context -->
+                <p class="text-sm text-primary font-medium mt-2">
+                    {{ email }}
+                </p>
+
+            </div>
+
+            <!-- OTP Verification Card -->
+            <div class="bg-white rounded-2xl shadow-xl p-8 animate-slide-in transform transition-all duration-500 hover:shadow-2xl"
+                :class="{ 'animate-shake': hasValidationErrors }">
+
+                <!-- Django Error Message -->
+                <div x-show="djangoErrorExists" x-transition>
+                    <div
+                        class="mb-6 p-4 bg-gradient-to-r from-red-50 to-pink-50 border-l-4 border-red-400 rounded-r-lg">
+                        <div class="flex items-center">
+                            <svg class="w-5 h-5 text-red-400 mr-2" fill="currentColor" viewBox="0 0 20 20">
+                                <path fill-rule="evenodd"
+                                    d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7 4a1 1 0 11-2 0 1 1 0 012 0zm-1-9a1 1 0 00-1 1v4a1 1 0 102 0V6a1 1 0 00-1-1z"
+                                    clip-rule="evenodd"></path>
+                            </svg>
+                            <p class="text-red-700 font-medium" x-text="djangoErrorMessage"></p>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Client-side Error Message -->
+                <div x-show="errorMessage && !djangoErrorExists" x-transition:enter="transition ease-out duration-300"
+                    x-transition:enter-start="opacity-0 transform -translate-y-2"
+                    x-transition:enter-end="opacity-100 transform translate-y-0"
+                    x-transition:leave="transition ease-in duration-200"
+                    x-transition:leave-start="opacity-100 transform translate-y-0"
+                    x-transition:leave-end="opacity-0 transform -translate-y-2"
+                    class="mb-6 p-4 bg-gradient-to-r from-red-50 to-pink-50 border-l-4 border-red-400 rounded-r-lg">
+                    <div class="flex items-center">
+                        <svg class="w-5 h-5 text-red-400 mr-2" fill="currentColor" viewBox="0 0 20 20">
+                            <path fill-rule="evenodd"
+                                d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7 4a1 1 0 11-2 0 1 1 0 012 0zm-1-9a1 1 0 00-1 1v4a1 1 0 102 0V6a1 1 0 00-1-1z"
+                                clip-rule="evenodd"></path>
+                        </svg>
+                        <p class="text-red-700 font-medium" x-text="errorMessage"></p>
+                    </div>
+                </div>
+
+                <!-- Success Message -->
+                <div x-show="successMessage" x-transition:enter="transition ease-out duration-300"
+                    x-transition:enter-start="opacity-0 transform -translate-y-2"
+                    x-transition:enter-end="opacity-100 transform translate-y-0"
+                    class="mb-6 p-4 bg-gradient-to-r from-green-50 to-teal-50 border-l-4 border-green-400 rounded-r-lg">
+                    <div class="flex items-center">
+                        <svg class="w-5 h-5 text-green-400 mr-2" fill="currentColor" viewBox="0 0 20 20">
+                            <path fill-rule="evenodd"
+                                d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z"
+                                clip-rule="evenodd"></path>
+                        </svg>
+                        <p class="text-green-700 font-medium" x-text="successMessage"></p>
+                    </div>
+                </div>
+
+                <!-- Django Form -->
+                <form method="post" action="/verify-otp/" @submit="handleSubmit" class="space-y-6" novalidate>
+                    <!-- CSRF token would go here in a real Django app -->
+                    {% csrf_token %}
+
+                    <!-- OTP Input Fields -->
+                    <div class="group">
+                        <label class="block text-sm font-semibold text-charcoal mb-4 text-center">
+                            Enter the 6-digit verification code
+                        </label>
+                        <div class="flex justify-center" :class="{ 'animate-shake': shake }">
+
+                            <template x-for="i in 6" :key="i">
+                                <input :id="'otp-' + (i-1)" type="text" inputmode="numeric" pattern="[0-9]*"
+                                    maxlength="1" autocomplete="one-time-code"
+                                    class="otp-input border border-gray-300 rounded-xl focus:outline-none focus:ring-3 focus:ring-primary/30 focus:border-primary transition-all duration-300 transform group-hover:scale-[1.02]"
+                                    @input="handleOtpInput(i-1, $event)" @keydown="handleOtpKeydown(i-1, $event)"
+                                    @paste="handleOtpPaste($event)"
+                                    :class="{ 'border-red-400 ring-red-200': errors.otp }">
+                            </template>
+                        </div>
+                        <p x-show="errors.otp" x-transition:enter="transition ease-out duration-200"
+                            x-transition:enter-start="opacity-0 transform -translate-y-1"
+                            x-transition:enter-end="opacity-100 transform translate-y-0"
+                            class="text-red-500 text-xs mt-2 text-center font-medium" x-text="errors.otp"></p>
+                    </div>
+
+                    <!-- Countdown Timer -->
+                    <div class="text-center">
+                        <p class="text-gray-600 text-sm" x-show="timeLeft > 0">
+                            Resend OTP in <span class="font-semibold text-primary" x-text="formatTime(timeLeft)"></span>
+                        </p>
+                        <p class="text-gray-600 text-sm" x-show="timeLeft === 0">
+                            Didn't receive the code?
+                        </p>
+                    </div>
+
+                    <!-- Verify OTP Button -->
+                    <button type="submit" :disabled="isLoadingVerify"
+                        class="w-full py-4 bg-gradient-to-r from-primary to-secondary text-white font-semibold rounded-xl shadow-lg transform transition-all duration-300 hover:scale-105 hover:shadow-xl focus:outline-none focus:ring-4 focus:ring-primary/30 disabled:opacity-50 disabled:cursor-not-allowed disabled:transform-none">
+                        <span x-show="!isLoadingVerify" class="flex items-center justify-center">
+                            <svg class="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                    d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"></path>
+                            </svg>
+                            Verify
+                        </span>
+                        <span x-show="isLoadingVerify" class="flex items-center justify-center">
+                            <svg class="animate-spin -ml-1 mr-3 h-5 w-5 text-white" xmlns="http://www.w3.org/2000/svg"
+                                fill="none" viewBox="0 0 24 24">
+                                <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor"
+                                    stroke-width="4"></circle>
+                                <path class="opacity-75" fill="currentColor"
+                                    d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z">
+                                </path>
+                            </svg>
+                            Verifying...
+                        </span>
+                    </button>
+
+                    <!-- Resend OTP Button -->
+                    <button type="button" @click="resendOtp" :disabled="timeLeft > 0 || isLoadingResend"
+                        class="text-primary hover:text-secondary font-semibold transition-colors duration-300 disabled:opacity-50 disabled:cursor-not-allowed"
+                        :class="{ 'animate-pulse-soft': timeLeft === 0 }">
+                        <span x-show="!isLoadingResend">
+                            <span x-show="timeLeft === 0">Resend OTP</span>
+                            <span x-show="timeLeft > 0">Resend OTP in <span x-text="formatTime(timeLeft)"></span></span>
+                        </span>
+                        <span x-show="isLoadingResend" class="flex items-center justify-center">
+                            <svg class="animate-spin -ml-1 mr-2 h-5 w-5 text-primary" xmlns="http://www.w3.org/2000/svg"
+                                fill="none" viewBox="0 0 24 24">
+                                <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor"
+                                    stroke-width="4"></circle>
+                                <path class="opacity-75" fill="currentColor"
+                                    d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z">
+                                </path>
+                            </svg>
+                            Resending...
+                        </span>
+                    </button>
+
+
+                </form>
+                 <!-- Back to Signup Button -->
+                <div class="mt-6 animate-fade-in" style="animation-delay: 0.3s;">
+                    <a href="/signup/" 
+                       class="w-full flex items-center justify-center py-3 border border-gray-300 text-charcoal font-semibold rounded-xl shadow-sm transform transition-all duration-300 hover:scale-[1.02] hover:shadow-md hover:border-primary/50 hover:text-primary focus:outline-none focus:ring-2 focus:ring-primary/20">
+                        <svg class="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 19l-7-7m0 0l7-7m-7 7h18"></path>
+                        </svg>
+                        Back to Signup
+                    </a>
+                </div>
+
+
+
+
+                <!-- Footer -->
+                <div class="text-center mt-8 animate-fade-in" style="animation-delay: 0.5s;">
+                    <p class="text-gray-600 text-sm">
+                        Need help?
+                        <a href="/support/"
+                            class="text-primary hover:text-secondary font-semibold transition-colors duration-300 hover:underline">
+                            Contact support
+                        </a>
+                    </p>
+                </div>
+            </div>
+        </div>
+
+        <script>
+            function otpVerification() {
+                return {
+                    otp: ['', '', '', '', '', ''],
+                    isLoadingVerify: false,  // ✅ loading state for verify button
+                    isLoadingResend: false,  // ✅ loading state for resend button
+                    errorMessage: '',
+                    successMessage: '',
+                    hasValidationErrors: false,
+                    djangoErrorExists: false,
+                    djangoErrorMessage: "{{ error|default:'' }}",
+                    timeLeft: 60,
+                    countdownInterval: null,
+                    email: "{{ temp_user.email|default:'your email' }}",
+                    errors: {},
+                    shake: false, // animation toggle
+
+                    init() {
+                        if (this.djangoErrorMessage) {
+                            this.djangoErrorExists = true;
+                        }
+                        this.startCountdown();
+                        this.$nextTick(() => {
+                            document.getElementById('otp-0')?.focus();
+                        });
+                    },
+
+                    // Countdown
+                    startCountdown() {
+                        this.countdownInterval = setInterval(() => {
+                            if (this.timeLeft > 0) {
+                                this.timeLeft--;
+                            } else {
+                                clearInterval(this.countdownInterval);
+                            }
+                        }, 1000);
+                    },
+
+                    formatTime(seconds) {
+                        return `${Math.floor(seconds / 60)}:${(seconds % 60).toString().padStart(2, '0')}`;
+                    },
+
+                    // Handle typing
+                    handleOtpInput(index, event) {
+                        const value = event.target.value;
+                        if (!/^\d*$/.test(value)) {
+                            event.target.value = '';
+                            return;
+                        }
+                        if (value) {
+                            this.otp[index] = value;
+                            if (index < 5) {
+                                document.getElementById(`otp-${index + 1}`)?.focus();
+                            }
+                        }
+                        // Auto verify when 6 digits entered
+                        if (this.otp.join('').length === 6) {
+                            this.handleSubmit(new Event("submit"));
+                        }
+                    },
+
+                    // Handle backspace
+                    handleOtpKeydown(index, event) {
+                        if (event.key === 'Backspace') {
+                            if (this.otp[index]) {
+                                this.otp[index] = '';
+                                const input = document.getElementById(`otp-${index}`);
+                                if (input) input.value = '';
+                            } else if (index > 0) {
+                                document.getElementById(`otp-${index - 1}`)?.focus();
+                            }
+                        }
+                    },
+
+                    // Handle paste
+                    handleOtpPaste(event) {
+                        event.preventDefault();
+                        const pasteData = event.clipboardData.getData('text/plain').slice(0, 6);
+                        if (/^\d+$/.test(pasteData)) {
+                            for (let i = 0; i < pasteData.length; i++) {
+                                if (i < 6) {
+                                    this.otp[i] = pasteData[i];
+                                    const input = document.getElementById(`otp-${i}`);
+                                    if (input) input.value = pasteData[i];
+                                }
+                            }
+                            if (pasteData.length === 6) {
+                                this.handleSubmit(new Event("submit"));
+                            }
+                        }
+                    },
+
+                    clearError() {
+                        this.errorMessage = '';
+                        this.errors.otp = '';
+                        this.hasValidationErrors = false;
+                    },
+
+                    // Validate form
+                    validateForm() {
+                        this.errors = {};
+                        this.hasValidationErrors = false;
+
+                        const otpValue = this.otp.join('');
+
+                        if (!otpValue) {
+                            this.errors.otp = 'OTP is required';
+                            this.hasValidationErrors = true;
+                        } else if (otpValue.length !== 6) {
+                            this.errors.otp = 'OTP must be 6 digits';
+                            this.hasValidationErrors = true;
+                        } else if (!/^\d+$/.test(otpValue)) {
+                            this.errors.otp = 'OTP must contain only numbers';
+                            this.hasValidationErrors = true;
+                        }
+
+                        return !this.hasValidationErrors;
+                    },
+
+                    // Submit handler
+                    async handleSubmit(e) {
+                        e.preventDefault();
+                        e.stopPropagation();
+
+                        this.djangoErrorExists = false;
+                        this.djangoErrorMessage = '';
+                        this.errorMessage = '';
+                        this.isLoadingVerify = true;
+
+                        if (!this.validateForm()) {
+                            this.isLoadingVerify = false;
+                            return false;
+                        }
+
+                        try {
+                            const csrfToken = document.querySelector('[name=csrfmiddlewaretoken]').value;
+                            const formData = new FormData();
+                            formData.append('otp', this.otp.join(''));
+                            formData.append('csrfmiddlewaretoken', csrfToken);
+
+                            const response = await fetch('/verify-otp/', {
+                                method: 'POST',
+                                body: formData,
+                                headers: { 'X-Requested-With': 'XMLHttpRequest' },
+                                credentials: 'same-origin'
+                            });
+
+                            const data = await response.json();
+
+                            if (data.success) {
+                                this.successMessage = data.message || "Email verified successfully!";
+                                setTimeout(() => {
+                                    window.location.href = data.redirect || "/home/";
+                                }, 1500);
+                            } else {
+                                this.errorMessage = data.error || "Verification failed. Please try again.";
+                                this.triggerShake();
+                            }
+                        } catch (error) {
+                            console.error('Verification error:', error);
+                            this.errorMessage = 'Network error. Please try again.';
+                            this.triggerShake();
+                        } finally {
+                            this.isLoadingVerify = false;
+                        }
+
+                        return false;
+                    },
+
+                    // Resend OTP
+                    async resendOtp() {
+                        if (this.timeLeft > 0) return;
+
+                        this.isLoadingResend = true;
+                        this.errorMessage = '';
+                        this.successMessage = '';
+
+                        try {
+                            const csrfToken = document.querySelector('[name=csrfmiddlewaretoken]').value;
+
+                            const response = await fetch('/resend-otp/', {
+                                method: 'POST',
+                                headers: {
+                                    'X-Requested-With': 'XMLHttpRequest',
+                                    'X-CSRFToken': csrfToken,
+                                },
+                                credentials: 'same-origin'
+                            });
+
+                            const data = await response.json();
+
+                            if (data.success) {
+                                this.successMessage = data.message || "New OTP sent to your email!";
+                                this.timeLeft = 60;
+                                this.startCountdown();
+                                setTimeout(() => { this.successMessage = ''; }, 3000);
+                            } else {
+                                this.errorMessage = data.error || "Failed to resend OTP. Please try again.";
+                            }
+                        } catch (error) {
+                            console.error('Resend OTP error:', error);
+                            this.errorMessage = 'Network error. Please try again.';
+                        } finally {
+                            this.isLoadingResend = false;
+                        }
+                    },
+
+                    // Shake + clear inputs
+                    triggerShake() {
+                        this.shake = true;
+                        setTimeout(() => {
+                            this.shake = false;
+                            this.otp = ['', '', '', '', '', ''];
+                            for (let i = 0; i < 6; i++) {
+                                const input = document.getElementById(`otp-${i}`);
+                                if (input) input.value = '';
+                            }
+                            this.$nextTick(() => {
+                                document.getElementById('otp-0')?.focus();
+                            });
+                        }, 500);
+                    }
+                }
+            }
+        </script>
+
+
+
+</body>
+
+</html>

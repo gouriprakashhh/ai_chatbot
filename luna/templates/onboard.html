@@ -1,0 +1,906 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Welcome to Luna - PCOS Support</title>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600&family=Nunito:wght@400;600;700&display=swap" rel="stylesheet">
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        :root {
+            --lavender: #9B8DE5;
+            --teal: #4DB6AC;
+            --charcoal: #333333;
+            --lightgray: #F7F7F7;
+            --button-bg: #7C73D9;
+        }
+        
+        body {
+            font-family: 'Poppins', sans-serif;
+            background: linear-gradient(135deg, #F7F7F7 0%, #FFFFFF 100%);
+            min-height: 100vh;
+            overflow-x: hidden;
+            margin: 0;
+            padding: 0;
+        }
+        
+        @keyframes float {
+            0%, 100% { transform: translateY(0) rotate(0deg); }
+            50% { transform: translateY(-20px) rotate(5deg); }
+        }
+        
+        @keyframes pulse {
+            0%, 100% { transform: scale(1); opacity: 0.7; }
+            50% { transform: scale(1.05); opacity: 0.9; }
+        }
+        
+        @keyframes rotate {
+            from { transform: rotate(0deg); }
+            to { transform: rotate(360deg); }
+        }
+        
+        @keyframes shimmer {
+            0% { background-position: -1000px 0; }
+            100% { background-position: 1000px 0; }
+        }
+        
+        @keyframes wave {
+            0%, 100% { transform: translateX(0) translateY(0); }
+            25% { transform: translateX(5px) translateY(-5px); }
+            50% { transform: translateX(0) translateY(-10px); }
+            75% { transform: translateX(-5px) translateY(-5px); }
+        }
+        
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        
+        @keyframes fadeOut {
+            from { opacity: 1; transform: translateY(0); }
+            to { opacity: 0; transform: translateY(-20px); }
+        }
+        
+        .animate-float {
+            animation: float 8s ease-in-out infinite;
+        }
+        
+        .animate-pulse-slow {
+            animation: pulse 6s ease-in-out infinite;
+        }
+        
+        .animate-rotate-slow {
+            animation: rotate 40s linear infinite;
+        }
+        
+        .animate-shimmer {
+            animation: shimmer 12s linear infinite;
+            background: linear-gradient(90deg, rgba(255,255,255,0) 0%, rgba(255,255,255,0.4) 50%, rgba(255,255,255,0) 100%);
+            background-size: 1000px 100%;
+        }
+        
+        .animate-wave {
+            animation: wave 10s ease-in-out infinite;
+        }
+        
+        .animate-fade-in {
+            animation: fadeIn 1s ease-out forwards;
+        }
+        
+        .animate-fade-out {
+            animation: fadeOut 1s ease-out forwards;
+        }
+        
+        .moon-glow {
+            box-shadow: 0 0 80px 30px rgba(155, 141, 229, 0.2);
+        }
+        
+        .welcome-card {
+            backdrop-filter: blur(10px);
+            background: rgba(255, 255, 255, 0.85);
+            border: 1px solid rgba(255, 255, 255, 0.5);
+        }
+        
+        .gradient-text {
+            background: linear-gradient(135deg, var(--lavender) 0%, var(--teal) 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+        
+        .circle-1 {
+            position: absolute;
+            width: 200px;
+            height: 200px;
+            border-radius: 50%;
+            background: linear-gradient(135deg, rgba(155, 141, 229, 0.1) 0%, rgba(77, 182, 172, 0.1) 100%);
+            top: -50px;
+            left: -50px;
+            z-index: 0;
+        }
+        
+        .circle-2 {
+            position: absolute;
+            width: 150px;
+            height: 150px;
+            border-radius: 50%;
+            background: linear-gradient(135deg, rgba(77, 182, 172, 0.1) 0%, rgba(155, 141, 229, 0.1) 100%);
+            bottom: -40px;
+            right: -40px;
+            z-index: 0;
+        }
+        
+        .floating-particle {
+            position: absolute;
+            border-radius: 50%;
+            background: linear-gradient(135deg, var(--lavender) 0%, var(--teal) 100%);
+            opacity: 0.15;
+            filter: blur(1px);
+        }
+        
+        .continuous-flow {
+            position: absolute;
+            width: 200%;
+            height: 30px;
+            background: linear-gradient(90deg, rgba(155, 141, 229, 0.1) 0%, rgba(77, 182, 172, 0.2) 50%, rgba(155, 141, 229, 0.1) 100%);
+            transform: rotate(-5deg);
+        }
+        
+        .questionnaire-container {
+            display: none;
+            opacity: 0;
+        }
+        
+        .btn-journey {
+            background: linear-gradient(135deg, var(--button-bg) 0%, var(--teal) 100%);
+            color: white;
+            transition: all 0.3s ease;
+        }
+        
+        .btn-journey:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 10px 20px rgba(124, 115, 217, 0.3);
+        }
+        
+        .btn-skip {
+            background: transparent;
+            color: var(--charcoal);
+            border: 1px solid #ddd;
+            transition: all 0.3s ease;
+        }
+        
+        .btn-skip:hover {
+            background: rgba(0, 0, 0, 0.05);
+        }
+        
+        .progress-bar {
+            height: 6px;
+            background: linear-gradient(90deg, var(--lavender) 0%, var(--teal) 100%);
+            width: 0%;
+            transition: width 0.5s ease;
+            border-radius: 3px;
+        }
+        
+        .question-card {
+            background: rgba(255, 255, 255, 0.95);
+            border-radius: 20px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.08);
+            padding: 1.5rem;
+            margin-bottom: 1.5rem;
+        }
+        
+        .option-btn {
+            background: rgba(247, 247, 247, 0.8);
+            border: 2px solid transparent;
+            border-radius: 12px;
+            padding: 1rem;
+            margin: 0.5rem 0;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            word-break: break-word;
+        }
+        
+        .option-btn:hover {
+            background: rgba(155, 141, 229, 0.1);
+            transform: translateY(-2px);
+        }
+        
+        .option-btn.selected {
+            background: rgba(155, 141, 229, 0.15);
+            border-color: var(--lavender);
+        }
+        
+        .input-field {
+            border: 1px solid #ddd;
+            border-radius: 12px;
+            padding: 1rem;
+            width: 100%;
+            transition: all 0.3s ease;
+            font-size: 16px; /* Prevents zoom on iOS */
+        }
+        
+        .input-field:focus {
+            border-color: var(--lavender);
+            box-shadow: 0 0 0 2px rgba(155, 141, 229, 0.2);
+            outline: none;
+        }
+        
+        .skip-message {
+            background: rgba(77, 182, 172, 0.1);
+            border-radius: 12px;
+            padding: 1rem;
+            margin: 1rem 0;
+            text-align: center;
+        }
+        
+        /* Mobile-specific improvements */
+        @media (max-width: 768px) {
+            .circle-1, .circle-2 {
+                display: none;
+            }
+            
+            .floating-particle {
+                display: none;
+            }
+            
+            .welcome-card {
+                padding: 1.5rem;
+            }
+            
+            .question-card {
+                padding: 1.25rem;
+                margin-bottom: 1rem;
+            }
+            
+            /* Button container improvements */
+            .button-container {
+                display: flex;
+                flex-direction: column-reverse;
+                gap: 0.75rem;
+                margin-top: 1.5rem;
+            }
+            
+            .button-container > div {
+                display: flex;
+                flex-direction: column;
+                gap: 0.75rem;
+                width: 100%;
+            }
+            
+            .btn-journey, .btn-skip {
+                width: 100%;
+                text-align: center;
+                padding: 0.875rem 1rem;
+            }
+            
+            #prev-btn {
+                width: 100%;
+                padding: 0.875rem 1rem;
+            }
+            
+            /* Text sizing adjustments */
+            #question-text {
+                font-size: 1.125rem;
+                line-height: 1.4;
+            }
+            
+            .option-btn {
+                padding: 0.875rem;
+                font-size: 0.95rem;
+            }
+            
+            /* Progress bar adjustments */
+            .progress-container {
+                margin: 1rem 0;
+            }
+            
+            /* Moon graphic adjustments */
+            .moon-container {
+                width: 120px;
+                height: 120px;
+            }
+            
+            .moon-container .moon-glow {
+                width: 100%;
+                height: 100%;
+            }
+        }
+        
+        @media (max-width: 480px) {
+            .welcome-card {
+                padding: 1.25rem;
+                border-radius: 1rem;
+            }
+            
+            .question-card {
+                padding: 1rem;
+                border-radius: 1rem;
+            }
+            
+            #question-text {
+                font-size: 1rem;
+            }
+            
+            .option-btn {
+                padding: 0.75rem;
+                font-size: 0.9rem;
+            }
+            
+            .input-field {
+                padding: 0.75rem;
+            }
+        }
+    </style>
+</head>
+<body class="min-h-screen flex items-center justify-center p-4">
+    <!-- Background elements with continuous animations -->
+    <div class="fixed top-0 left-0 w-full h-full overflow-hidden z-0">
+        <!-- Continuous flow lines -->
+        <div class="continuous-flow top-1/4 animate-shimmer"></div>
+        <div class="continuous-flow top-1/2 animate-shimmer" style="animation-delay: -4s;"></div>
+        <div class="continuous-flow top-3/4 animate-shimmer" style="animation-delay: -8s;"></div>
+        
+        <!-- Floating particles -->
+        <div class="floating-particle w-16 h-16 top-1/4 left-1/4 animate-float"></div>
+        <div class="floating-particle w-12 h-12 top-1/3 right-1/4 animate-float" style="animation-delay: -2s;"></div>
+        <div class="floating-particle w-20 h-20 bottom-1/4 left-1/3 animate-float" style="animation-delay: -4s;"></div>
+        <div class="floating-particle w-10 h-10 bottom-1/3 right-1/3 animate-float" style="animation-delay: -6s;"></div>
+        <div class="floating-particle w-14 h-14 top-1/5 right-1/5 animate-float" style="animation-delay: -1s;"></div>
+        <div class="floating-particle w-18 h-18 bottom-1/5 left-1/5 animate-float" style="animation-delay: -5s;"></div>
+        
+        <!-- Rotating gradient circles -->
+        <div class="absolute top-0 left-0 w-full h-full flex items-center justify-center">
+            <div class="absolute w-96 h-96 rounded-full border border-lavender border-opacity-10 animate-rotate-slow"></div>
+            <div class="absolute w-[500px] h-[500px] rounded-full border border-teal border-opacity-10 animate-rotate-slow" style="animation-duration: 50s; animation-delay: -10s;"></div>
+        </div>
+    </div>
+
+    <!-- Welcome Section -->
+    <main id="welcome-section" class="relative z-10 w-full max-w-4xl animate-fade-in">
+        <div class="welcome-card rounded-3xl p-8 md:p-12 shadow-lg overflow-hidden">
+            <!-- Decorative circles -->
+            <div class="circle-1 animate-pulse-slow"></div>
+            <div class="circle-2 animate-pulse-slow" style="animation-delay: -2s;"></div>
+            
+            <div class="flex flex-col md:flex-row items-center">
+                <div class="w-full md:w-2/5 mb-8 md:mb-0 flex justify-center">
+                    <div class="relative moon-container">
+                        <!-- Moon graphic -->
+                        <div class="w-48 h-48 rounded-full moon-glow bg-white flex items-center justify-center relative animate-wave">
+                            <div class="w-40 h-40 rounded-full bg-gradient-to-br from-lavender/20 to-teal/20 flex items-center justify-center animate-pulse-slow">
+                                <div class="w-32 h-32 rounded-full bg-gradient-to-br from-lavender/30 to-teal/30 flex items-center justify-center animate-pulse-slow" style="animation-delay: -1.5s;">
+                                    <svg class="w-20 h-20 text-lavender animate-wave" viewBox="0 0 24 24" fill="currentColor">
+                                        <path d="M9.37,5.51C9.19,6.15,9.1,6.82,9.1,7.5c0,3.58,2.92,6.5,6.5,6.5c0.68,0,1.35-0.09,1.99-0.27C17.45,17.76,14.97,20,12,20 c-4.41,0-8-3.59-8-8C4,9.03,6.24,6.55,9.37,5.51z" />
+                                    </svg>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <!-- Floating elements around moon -->
+                        <div class="absolute -top-4 -left-4 w-10 h-10 rounded-full bg-lavender/20 animate-float"></div>
+                        <div class="absolute -bottom-4 -right-4 w-8 h-8 rounded-full bg-teal/20 animate-float" style="animation-delay: -2s"></div>
+                        <div class="absolute -top-6 -right-6 w-12 h-12 rounded-full bg-teal/10 animate-float" style="animation-delay: -3s"></div>
+                        <div class="absolute -bottom-6 -left-6 w-9 h-9 rounded-full bg-lavender/15 animate-float" style="animation-delay: -1.5s"></div>
+                    </div>
+                </div>
+                
+                <div class="w-full md:w-3/5 md:pl-10 text-center md:text-left">
+                    <h1 class="text-4xl md:text-5xl font-bold mb-2 font-nunito">
+                        <span class="gradient-text">Welcome</span>
+                        <span class="text-charcoal">{{user_name}}</span>!
+                    </h1>
+                    
+                    <div class="mb-6">
+                        <p class="text-xl text-charcoal/80 mb-4">
+                            We're so glad you're joining the Luna community
+                        </p>
+                        
+                        <div class="bg-lightgray rounded-2xl p-4 mb-6">
+                            <p class="text-charcoal italic">
+                                "Your journey with PCOS is unique, and so are your strengths. 
+                                Every small step forward is a victory worth celebrating."
+                            </p>
+                        </div>
+                        
+                        <p class="text-charcoal/70 mb-6">
+                            Luna is here to support you with personalized insights, 
+                            community wisdom, and gentle reminders that you're not alone 
+                            on this path.
+                        </p>
+                    </div>
+                    
+                    <button id="begin-journey-btn" class="btn-journey rounded-2xl py-3 px-8 font-semibold shadow-lg">
+                        Begin Your Journey
+                    </button>
+                </div>
+            </div>
+        </div>
+        
+        <div class="text-center mt-8 text-charcoal/60 text-sm">
+            <p>A safe space for your PCOS journey</p>
+        </div>
+    </main>
+
+    <!-- Questionnaire Section -->
+    <section id="questionnaire-section" class="questionnaire-container relative z-10 w-full max-w-3xl">
+        <div class="welcome-card rounded-3xl p-8 md:p-12 shadow-lg overflow-hidden">
+            <div class="text-center mb-8">
+                <h2 class="text-3xl font-bold mb-2 font-nunito gradient-text">Let's Get to Know You</h2>
+                <p class="text-charcoal/70">We'll ask a few questions to personalize your experience</p>
+                
+                <!-- Progress bar and counter -->
+                <div class="flex items-center justify-between mt-6 mb-2 progress-container">
+                    <span class="text-sm text-charcoal/60" id="question-counter">Question 1 of 10</span>
+                    <span class="text-sm text-charcoal/60" id="progress-percentage">0%</span>
+                </div>
+                <div class="bg-gray-200 rounded-full h-2">
+                    <div id="progress-bar" class="progress-bar"></div>
+                </div>
+            </div>
+            
+            <!-- Question container -->
+            <div id="question-container" class="question-card animate-fade-in">
+                <h3 class="text-xl font-semibold mb-4 text-charcoal" id="question-text">To better understand your needs, could you share a bit about your PCOS journey?</h3>
+                
+                <div id="options-container" class="mt-6">
+                    <!-- Options will be dynamically inserted here -->
+                </div>
+                
+                <div id="skip-message" class="skip-message hidden">
+                    <p class="text-charcoal/80">You've chosen to skip this question. You can always update this information later in your profile settings.</p>
+                </div>
+                
+                <div class="button-container flex justify-between mt-8">
+                    <button id="prev-btn" class="py-2 px-6 rounded-lg text-charcoal/70 border border-gray-300 hover:bg-gray-50" disabled>
+                        Previous
+                    </button>
+                    <div class="flex flex-col md:flex-row gap-2">
+                        <button id="skip-btn" class="py-2 px-6 rounded-lg btn-skip">
+                            Skip
+                        </button>
+                        <button id="next-btn" class="py-2 px-6 rounded-lg btn-journey">
+                            Next
+                        </button>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="text-center mt-8 text-charcoal/60 text-sm">
+                <p>Your information is always kept private and secure</p>
+            </div>
+        </div>
+    </section>
+
+    <script>
+        // Questions data - including the requested fields
+        const questions = [
+            {
+                key: "diagnosis_length",
+                question: "How long have you been diagnosed with PCOS?",
+                type: "options",
+                options: [
+                    "Recently diagnosed (less than 6 months)",
+                    "1-2 years",
+                    "3-5 years",
+                    "More than 5 years",
+                    "I suspect I have PCOS but not diagnosed"
+                ]
+            },
+            {
+                key: "cycle_length",
+                question: "What is your typical cycle length?",
+                type: "input",
+                placeholder: "Enter number of days (e.g., 28)",
+                inputType: "number"
+            },
+            {
+                key: "last_period_date",
+                question: "When was the first day of your last period?",
+                type: "input",
+                placeholder: "Select date",
+                inputType: "date"
+            },
+            {
+                key: "pcos_status",
+                question: "How would you describe your PCOS status?",
+                type: "options",
+                options: [
+                    "Just learning about it",
+                    "Managing well",
+                    "Struggling with symptoms",
+                    "In remission",
+                    "Not sure"
+                ]
+            },
+            {
+                key: "stress_level",
+                question: "How would you describe your current stress levels?",
+                type: "options",
+                options: [
+                    "Very low",
+                    "Manageable",
+                    "Moderate",
+                    "High",
+                    "Overwhelming"
+                ]
+            },
+            {
+                key: "mood",
+                question: "How would you describe your current mood?",
+                type: "options",
+                options: [
+                    "Mostly positive",
+                    "Generally balanced",
+                    "Some ups and downs",
+                    "Frequently low",
+                    "Struggling"
+                ]
+            },
+            {
+                key: "primary_concerns",
+                question: "What are your primary concerns related to PCOS?",
+                type: "options",
+                options: [
+                    "Irregular periods",
+                    "Weight management",
+                    "Fertility issues",
+                    "Skin and hair concerns",
+                    "Emotional wellbeing"
+                ]
+            },
+            {
+                key: "diet_description",
+                question: "How would you describe your current diet?",
+                type: "options",
+                options: [
+                    "Balanced and healthy",
+                    "Mostly healthy with some indulgences",
+                    "Struggling with food choices",
+                    "Following a specific diet (keto, gluten-free, etc.)",
+                    "Not paying much attention to diet"
+                ]
+            },
+            {
+                key: "activity_frequency",
+                question: "How often do you engage in physical activity?",
+                type: "options",
+                options: [
+                    "Daily or almost daily",
+                    "3-4 times a week",
+                    "1-2 times a week",
+                    "Rarely",
+                    "I want to start but find it challenging"
+                ]
+            },
+            {
+                key: "support_needed",
+                question: "What kind of support are you looking for?",
+                type: "options",
+                options: [
+                    "Medical information and guidance",
+                    "Community and emotional support",
+                    "Diet and exercise plans",
+                    "Tracking symptoms and progress",
+                    "All of the above"
+                ]
+            }
+        ];
+
+        let currentQuestion = 0;
+        let answers = {};
+        let skippedQuestions = [];
+
+        document.addEventListener('DOMContentLoaded', function() {
+            const welcomeSection = document.getElementById('welcome-section');
+            const questionnaireSection = document.getElementById('questionnaire-section');
+            const beginJourneyBtn = document.getElementById('begin-journey-btn');
+            const nextBtn = document.getElementById('next-btn');
+            const prevBtn = document.getElementById('prev-btn');
+            const skipBtn = document.getElementById('skip-btn');
+            const questionText = document.getElementById('question-text');
+            const optionsContainer = document.getElementById('options-container');
+            const progressBar = document.getElementById('progress-bar');
+            const questionCounter = document.getElementById('question-counter');
+            const progressPercentage = document.getElementById('progress-percentage');
+            const skipMessage = document.getElementById('skip-message');
+            
+            // Initialize the first question
+            updateQuestion();
+            
+            // Begin journey button click
+            beginJourneyBtn.addEventListener('click', function() {
+                welcomeSection.classList.remove('animate-fade-in');
+                welcomeSection.classList.add('animate-fade-out');
+                
+                setTimeout(() => {
+                    welcomeSection.style.display = 'none';
+                    questionnaireSection.style.display = 'block';
+                    setTimeout(() => {
+                        questionnaireSection.classList.add('animate-fade-in');
+                    }, 50);
+                }, 800);
+            });
+            
+            // Next button click
+            nextBtn.addEventListener('click', function() {
+                const currentQ = questions[currentQuestion];
+                
+                // For input questions, get the value
+                if (currentQ.type === "input") {
+                    const input = document.querySelector('.input-field');
+                    if (input && input.value.trim() !== "") {
+                        answers[currentQ.key] = input.value;
+                        // Remove from skipped if previously skipped
+                        const index = skippedQuestions.indexOf(currentQ.key);
+                        if (index > -1) {
+                            skippedQuestions.splice(index, 1);
+                        }
+                    } else if (!skippedQuestions.includes(currentQ.key)) {
+                        // If empty and not already skipped, show message
+                        input.classList.add('animate-pulse-slow');
+                        setTimeout(() => {
+                            input.classList.remove('animate-pulse-slow');
+                        }, 1000);
+                        return;
+                    }
+                } 
+                // For option questions, get selected option
+                else if (currentQ.type === "options") {
+                    const selectedOption = document.querySelector('.option-btn.selected');
+                    if (selectedOption && !skippedQuestions.includes(currentQ.key)) {
+                        answers[currentQ.key] = selectedOption.textContent;
+                    } else if (!skippedQuestions.includes(currentQ.key)) {
+                        // Show gentle prompt to select an option or skip
+                        optionsContainer.classList.add('animate-pulse-slow');
+                        setTimeout(() => {
+                            optionsContainer.classList.remove('animate-pulse-slow');
+                        }, 1000);
+                        return;
+                    }
+                }
+                
+                // Hide skip message when moving to next question
+                skipMessage.classList.add('hidden');
+                
+                // Move to next question or finish
+                if (currentQuestion < questions.length - 1) {
+                    currentQuestion++;
+                    updateQuestion();
+                } else {
+                    // All questions answered or skipped - save data
+                    saveOnboardingData();
+                }
+            });
+            
+            // Previous button click
+            prevBtn.addEventListener('click', function() {
+                if (currentQuestion > 0) {
+                    // Hide skip message when moving to previous question
+                    skipMessage.classList.add('hidden');
+                    
+                    currentQuestion--;
+                    updateQuestion();
+                }
+            });
+            
+            // Skip button click
+            skipBtn.addEventListener('click', function() {
+                const currentQ = questions[currentQuestion];
+                
+                // Mark question as skipped
+                if (!skippedQuestions.includes(currentQ.key)) {
+                    skippedQuestions.push(currentQ.key);
+                    
+                    // Send skip request to server
+                    skipQuestion(currentQ.key);
+                }
+                
+                // Show skip message
+                skipMessage.classList.remove('hidden');
+                
+                // Remove any selected options for this question
+                document.querySelectorAll('.option-btn').forEach(btn => {
+                    btn.classList.remove('selected');
+                });
+                
+                // Clear any input fields
+                const input = document.querySelector('.input-field');
+                if (input) {
+                    input.value = "";
+                }
+            });
+            
+            function updateQuestion() {
+                const currentQ = questions[currentQuestion];
+                
+                // Update progress bar and counter
+                const progress = ((currentQuestion + 1) / questions.length) * 100;
+                progressBar.style.width = `${progress}%`;
+                progressPercentage.textContent = `${Math.round(progress)}%`;
+                questionCounter.textContent = `Question ${currentQuestion + 1} of ${questions.length}`;
+                
+                // Update question text
+                questionText.textContent = currentQ.question;
+                
+                // Clear options container
+                optionsContainer.innerHTML = '';
+                
+                // Hide skip message by default
+                skipMessage.classList.add('hidden');
+                
+                // Check if this question was skipped
+                const isSkipped = skippedQuestions.includes(currentQ.key);
+                if (isSkipped) {
+                    skipMessage.classList.remove('hidden');
+                }
+                
+                // Render appropriate input based on question type
+                if (currentQ.type === "options") {
+                    currentQ.options.forEach((option, index) => {
+                        const optionBtn = document.createElement('div');
+                        optionBtn.className = 'option-btn animate-fade-in';
+                        optionBtn.style.animationDelay = `${index * 0.1}s`;
+                        optionBtn.textContent = option;
+                        
+                        // Check if this option was previously selected
+                        if (answers[currentQ.key] === option) {
+                            optionBtn.classList.add('selected');
+                        }
+                        
+                        optionBtn.addEventListener('click', function() {
+                            document.querySelectorAll('.option-btn').forEach(btn => {
+                                btn.classList.remove('selected');
+                            });
+                            this.classList.add('selected');
+                            
+                            // Remove from skipped if previously skipped
+                            const index = skippedQuestions.indexOf(currentQ.key);
+                            if (index > -1) {
+                                skippedQuestions.splice(index, 1);
+                                skipMessage.classList.add('hidden');
+                            }
+                        });
+                        
+                        optionsContainer.appendChild(optionBtn);
+                    });
+                } else if (currentQ.type === "input") {
+                    const input = document.createElement('input');
+                    input.type = currentQ.inputType;
+                    input.className = 'input-field animate-fade-in';
+                    input.placeholder = currentQ.placeholder;
+                    
+                    // Set previous value if exists
+                    if (answers[currentQ.key]) {
+                        input.value = answers[currentQ.key];
+                    }
+                    
+                    input.addEventListener('input', function() {
+                        // Remove from skipped if previously skipped
+                        const index = skippedQuestions.indexOf(currentQ.key);
+                        if (index > -1 && this.value.trim() !== "") {
+                            skippedQuestions.splice(index, 1);
+                            skipMessage.classList.add('hidden');
+                        }
+                    });
+                    
+                    optionsContainer.appendChild(input);
+                }
+                
+                // Update buttons
+                prevBtn.disabled = currentQuestion === 0;
+                nextBtn.textContent = currentQuestion === questions.length - 1 ? 'Finish' : 'Next';
+                
+                // Show different skip text for last question
+                skipBtn.textContent = currentQuestion === questions.length - 1 ? 'Skip and Finish' : 'Skip';
+                
+                // Adjust button layout for mobile
+                if (window.innerWidth <= 768) {
+                    const buttonContainer = document.querySelector('.button-container');
+                    if (currentQuestion === 0) {
+                        buttonContainer.classList.add('flex-col-reverse');
+                        buttonContainer.classList.remove('justify-between');
+                    } else {
+                        buttonContainer.classList.remove('flex-col-reverse');
+                        buttonContainer.classList.add('justify-between');
+                    }
+                }
+            }
+            
+            function saveOnboardingData() {
+                // Show loading state
+                nextBtn.textContent = 'Saving...';
+                nextBtn.disabled = true;
+                
+                // Send data to server
+                fetch('/onboarding/save/', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'X-CSRFToken': getCookie('csrftoken'),
+                    },
+                    body: JSON.stringify(answers)
+                })
+                .then(response => response.json())
+                .then(data => {
+                    if (data.status === 'success') {
+                        showCompletionMessage();
+                        // Redirect after a delay
+                        setTimeout(() => {
+                            window.location.href = data.redirect_url;
+                        }, 2000);
+                    } else {
+                        alert('Error saving data: ' + data.message);
+                        nextBtn.textContent = 'Finish';
+                        nextBtn.disabled = false;
+                    }
+                })
+                .catch(error => {
+                    console.error('Error:', error);
+                    alert('An error occurred while saving your data.');
+                    nextBtn.textContent = 'Finish';
+                    nextBtn.disabled = false;
+                });
+            }
+            
+            function skipQuestion(questionKey) {
+                // Send skip to server
+                fetch('/onboarding/skip/', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'X-CSRFToken': getCookie('csrftoken'),
+                    },
+                    body: JSON.stringify({question_key: questionKey})
+                })
+                .then(response => response.json())
+                .then(data => {
+                    if (data.status !== 'success') {
+                        console.error('Error skipping question:', data.message);
+                    }
+                })
+                .catch(error => {
+                    console.error('Error:', error);
+                });
+            }
+            
+            function showCompletionMessage() {
+                questionText.textContent = "Thank you for sharing!";
+                optionsContainer.innerHTML = `
+                    <div class="text-center py-6 animate-fade-in">
+                        <svg class="w-16 h-16 text-teal mx-auto mb-4" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"></path>
+                        </svg>
+                        <p class="text-charcoal/80">We're creating your personalized Luna experience based on your answers.</p>
+                        <p class="text-charcoal/60 mt-2">You can always update these preferences in your profile settings.</p>
+                    </div>
+                `;
+                
+                prevBtn.style.display = 'none';
+                skipBtn.style.display = 'none';
+                nextBtn.style.display = 'none';
+            }
+            
+            // Helper function to get CSRF token
+            function getCookie(name) {
+                let cookieValue = null;
+                if (document.cookie && document.cookie !== '') {
+                    const cookies = document.cookie.split(';');
+                    for (let i = 0; i < cookies.length; i++) {
+                        const cookie = cookies[i].trim();
+                        if (cookie.substring(0, name.length + 1) === (name + '=')) {
+                            cookieValue = decodeURIComponent(cookie.substring(name.length + 1));
+                            break;
+                        }
+                    }
+                }
+                return cookieValue;
+            }
+            
+            // Handle window resize for responsive adjustments
+            window.addEventListener('resize', function() {
+                updateQuestion();
+            });
+        });
+    </script>
+</body>
+</html>

@@ -1,0 +1,13 @@
+=== PERSONAL INFORMATION ABOUT {username} ===
+
+{user_context}
+
+INSTRUCTIONS FOR USING PERSONAL DATA:
+- Use this information to personalize your responses
+- Reference relevant details naturally in conversation
+- Remember and build upon this information
+- Ask follow-up questions when appropriate
+- Respect privacy and be sensitive with personal information
+- If information seems outdated, gently confirm current status
+
+=== END PERSONAL INFORMATION ===    

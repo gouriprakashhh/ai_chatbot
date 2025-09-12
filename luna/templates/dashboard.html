@@ -1,0 +1,843 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Luna - PCOS Dashboard</title>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600&family=Nunito:wght@400;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <style>
+        :root {
+            --lavender: #9B8DE5;
+            --teal: #4DB6AC;
+            --charcoal: #333333;
+            --lightgray: #F7F7F7;
+            --button-bg: #7C73D9;
+            --light-lavender: #F0EEFF;
+            --light-teal: #E6F5F3;
+        }
+        
+        body {
+            font-family: 'Poppins', sans-serif;
+            background: linear-gradient(135deg, #F7F7F7 0%, #FFFFFF 100%);
+            min-height: 100vh;
+            overflow-x: hidden;
+            margin: 0;
+            padding: 0;
+        }
+        
+        .dashboard-container {
+            display: grid;
+            grid-template-columns: 280px 1fr;
+            min-height: 100vh;
+        }
+        
+        .sidebar {
+            background: linear-gradient(180deg, var(--lavender) 0%, #7C73D9 100%);
+            color: white;
+            padding: 2rem 1.5rem;
+            box-shadow: 0 0 20px rgba(0, 0, 0, 0.1);
+            position: fixed;
+            width: 280px;
+            height: 100vh;
+            z-index: 100;
+            transition: transform 0.3s ease;
+        }
+        
+        .main-content {
+            padding: 2rem;
+            overflow-y: auto;
+            grid-column: 2;
+            transition: all 0.3s ease;
+        }
+        
+        .logo {
+            display: flex;
+            align-items: center;
+            margin-bottom: 2.5rem;
+        }
+        
+        .logo-icon {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            background: rgba(255, 255, 255, 0.2);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin-right: 12px;
+            animation: pulse 2s infinite;
+        }
+        
+        .nav-item {
+            display: flex;
+            align-items: center;
+            padding: 0.9rem 1.2rem;
+            border-radius: 12px;
+            margin-bottom: 0.5rem;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .nav-item::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.2), transparent);
+            transition: all 0.5s ease;
+        }
+        
+        .nav-item:hover::before {
+            left: 100%;
+        }
+        
+        .nav-item:hover, .nav-item.active {
+            background: rgba(255, 255, 255, 0.15);
+            transform: translateX(5px);
+        }
+        
+        .nav-item i {
+            margin-right: 12px;
+            width: 20px;
+            text-align: center;
+        }
+        
+        .welcome-card {
+            background: linear-gradient(120deg, var(--light-lavender) 0%, var(--light-teal) 100%);
+            border-radius: 20px;
+            padding: 2rem;
+            margin-bottom: 2rem;
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .welcome-card::before {
+            content: '';
+            position: absolute;
+            top: -50px;
+            right: -50px;
+            width: 200px;
+            height: 200px;
+            border-radius: 50%;
+            background: rgba(255, 255, 255, 0.3);
+            animation: float 6s ease-in-out infinite;
+        }
+        
+        .welcome-card::after {
+            content: '';
+            position: absolute;
+            bottom: -30px;
+            left: -30px;
+            width: 150px;
+            height: 150px;
+            border-radius: 50%;
+            background: rgba(255, 255, 255, 0.2);
+            animation: float 7s ease-in-out infinite;
+        }
+        
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+            gap: 1.5rem;
+            margin-bottom: 2rem;
+        }
+        
+        .stat-card {
+            background: white;
+            border-radius: 16px;
+            padding: 1.5rem;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.05);
+            display: flex;
+            flex-direction: column;
+            transition: all 0.3s ease;
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .stat-card::after {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            width: 100%;
+            height: 4px;
+            background: linear-gradient(90deg, var(--lavender), var(--teal));
+            transform: scaleX(0);
+            transform-origin: left;
+            transition: transform 0.3s ease;
+        }
+        
+        .stat-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.1);
+        }
+        
+        .stat-card:hover::after {
+            transform: scaleX(1);
+        }
+        
+        .stat-icon {
+            width: 50px;
+            height: 50px;
+            border-radius: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin-bottom: 1rem;
+            font-size: 1.2rem;
+            animation: bounce 3s infinite;
+        }
+        
+        .chart-container {
+            background: white;
+            border-radius: 16px;
+            padding: 1.5rem;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.05);
+            margin-bottom: 2rem;
+            transition: all 0.3s ease;
+        }
+        
+        .chart-container:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 8px 20px rgba(0, 0, 0, 0.08);
+        }
+        
+        .insights-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+            gap: 1.5rem;
+        }
+        
+        .insight-card {
+            background: white;
+            border-radius: 16px;
+            padding: 1.5rem;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.05);
+            transition: all 0.3s ease;
+        }
+        
+        .insight-card:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 8px 20px rgba(0, 0, 0, 0.08);
+        }
+        
+        .cycle-tracker {
+            background: linear-gradient(120deg, var(--lavender) 0%, var(--teal) 100%);
+            color: white;
+            border-radius: 16px;
+            padding: 1.5rem;
+            margin-bottom: 2rem;
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .cycle-tracker::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: url("data:image/svg+xml,%3Csvg width='100' height='100' viewBox='0 0 100 100' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath d='M11 18c3.866 0 7-3.134 7-7s-3.134-7-7-7-7 3.134-7 7 3.134 7 7 7zm48 25c3.866 0 7-3.134 7-7s-3.134-7-7-7-7 3.134-7 7 3.134 7 7 7zm-43-7c1.657 0 3-1.343 3-3s-1.343-3-3-3-3 1.343-3 3 1.343 3 3 3zm63 31c1.657 0 3-1.343 3-3s-1.343-3-3-3-3 1.343-3 3 1.343 3 3 3zM34 90c1.657 0 3-1.343 3-3s-1.343-3-3-3-3 1.343-3 3 1.343 3 3 3zm56-76c1.657 0 3-1.343 3-3s-1.343-3-3-3-3 1.343-3 3 1.343 3 3 3zM12 86c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm28-65c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm23-11c2.76 0 5-2.24 5-5s-2.24-5-5-5-5 2.24-5 5 2.24 5 5 5zm-6 60c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm29 22c2.76 0 5-2.24 5-5s-2.24-5-5-5-5 2.24-5 5 2.24 5 5 5zM32 63c2.76 0 5-2.24 5-5s-2.24-5-5-5-5 2.24-5 5 2.24 5 5 5zm57-13c2.76 0 5-2.24 5-5s-2.24-5-5-5-5 2.24-5 5 2.24 5 5 5zm-9-21c1.105 0 2-.895 2-2s-.895-2-2-2-2 .895-2 2 .895 2 2 2zM60 91c1.105 0 2-.895 2-2s-.895-2-2-2-2 .895-2 2 .895 2 2 2zM35 41c1.105 0 2-.895 2-2s-.895-2-2-2-2 .895-2 2 .895 2 2 2zM12 60c1.105 0 2-.895 2-2s-.895-2-2-2-2 .895-2 2 .895 2 2 2z' fill='%23ffffff' fill-opacity='0.1' fill-rule='evenodd'/%3E%3C/svg%3E");
+            animation: movingBackground 30s linear infinite;
+        }
+        
+        .progress-bar {
+            height: 8px;
+            background: rgba(255, 255, 255, 0.3);
+            border-radius: 4px;
+            overflow: hidden;
+            margin: 1rem 0;
+            position: relative;
+        }
+        
+        .progress-fill {
+            height: 100%;
+            background: white;
+            border-radius: 4px;
+            width: 65%;
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .progress-fill::after {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.4), transparent);
+            animation: shimmer 2s infinite;
+        }
+        
+        .community-card {
+            background: white;
+            border-radius: 16px;
+            padding: 1.5rem;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.05);
+            transition: all 0.3s ease;
+        }
+        
+        .community-card:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 8px 20px rgba(0, 0, 0, 0.08);
+        }
+        
+        .user-avatar {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            background: var(--light-lavender);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: bold;
+            color: var(--lavender);
+            transition: all 0.3s ease;
+        }
+        
+        .user-avatar:hover {
+            transform: scale(1.1);
+            box-shadow: 0 4px 10px rgba(155, 141, 229, 0.3);
+        }
+        
+        .mobile-menu-btn {
+            display: none;
+            position: fixed;
+            top: 1rem;
+            left: 1rem;
+            z-index: 1000;
+            background: var(--lavender);
+            color: white;
+            border: none;
+            border-radius: 50%;
+            width: 50px;
+            height: 50px;
+            justify-content: center;
+            align-items: center;
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+        }
+        
+        @media (max-width: 1024px) {
+            .dashboard-container {
+                grid-template-columns: 1fr;
+            }
+            
+            .sidebar {
+                transform: translateX(-100%);
+            }
+            
+            .sidebar.active {
+                transform: translateX(0);
+            }
+            
+            .main-content {
+                grid-column: 1;
+                padding: 1rem;
+                margin-left: 0;
+                width: 100%;
+            }
+            
+            .mobile-menu-btn {
+                display: flex;
+            }
+            
+            .stats-grid {
+                grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+            }
+            
+            .insights-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+        
+        @media (max-width: 640px) {
+            .stats-grid {
+                grid-template-columns: 1fr;
+            }
+            
+            .welcome-card {
+                padding: 1.5rem;
+            }
+            
+            .chart-container {
+                padding: 1rem;
+            }
+        }
+        
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        
+        @keyframes pulse {
+            0% { transform: scale(1); }
+            50% { transform: scale(1.05); }
+            100% { transform: scale(1); }
+        }
+        
+        @keyframes bounce {
+            0%, 20%, 50%, 80%, 100% {transform: translateY(0);}
+            40% {transform: translateY(-10px);}
+            60% {transform: translateY(-5px);}
+        }
+        
+        @keyframes float {
+            0% { transform: translateY(0px) rotate(0deg); }
+            50% { transform: translateY(-10px) rotate(5deg); }
+            100% { transform: translateY(0px) rotate(0deg); }
+        }
+        
+        @keyframes movingBackground {
+            0% { background-position: 0 0; }
+            100% { background-position: 100% 100%; }
+        }
+        
+        @keyframes shimmer {
+            0% { left: -100%; }
+            100% { left: 100%; }
+        }
+        
+        .animate-fade-in {
+            animation: fadeIn 0.6s ease-out forwards;
+        }
+        
+        .gradient-text {
+            background: linear-gradient(135deg, var(--lavender) 0%, var(--teal) 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+        
+        .typing-demo {
+            width: 22ch;
+            animation: typing 2s steps(22), blink .5s step-end infinite alternate;
+            white-space: nowrap;
+            overflow: hidden;
+            border-right: 3px solid;
+            font-family: monospace;
+        }
+        
+        @keyframes typing {
+            from { width: 0 }
+        }
+        
+        @keyframes blink {
+            50% { border-color: transparent }
+        }
+        
+        .breathing-animation {
+            animation: breathe 4s infinite ease-in-out;
+        }
+        
+        @keyframes breathe {
+            0%, 100% { transform: scale(1); }
+            50% { transform: scale(1.05); }
+        }
+    </style>
+</head>
+<body>
+    <button class="mobile-menu-btn" id="menuToggle">
+        <i class="fas fa-bars"></i>
+    </button>
+
+    <div class="dashboard-container">
+        <!-- Sidebar -->
+        <div class="sidebar" id="sidebar">
+            <div class="logo">
+                <div class="logo-icon">
+                    <i class="fas fa-moon"></i>
+                </div>
+                <h1 class="text-xl font-bold">Luna</h1>
+            </div>
+            
+            <div class="nav-item active">
+                <i class="fas fa-home"></i>
+                <span>Dashboard</span>
+            </div>
+            <div class="nav-item">
+                <i class="fas fa-calendar-alt"></i>
+                <span>Cycle Tracker</span>
+            </div>
+            <div class="nav-item">
+                <i class="fas fa-chart-line"></i>
+                <span>Symptoms</span>
+            </div>
+            <div class="nav-item">
+                <i class="fas fa-utensils"></i>
+                <span>Nutrition</span>
+            </div>
+            <div class="nav-item">
+                <i class="fas fa-heart"></i>
+                <span>Wellness</span>
+            </div>
+            <div class="nav-item">
+                <i class="fas fa-users"></i>
+                <span>Community</span>
+            </div>
+            
+            <div class="mt-8 pt-8 border-t border-white border-opacity-20">
+                <div class="nav-item">
+                    <i class="fas fa-cog"></i>
+                    <span>Settings</span>
+                </div>
+                <div class="nav-item">
+                    <i class="fas fa-question-circle"></i>
+                    <span>Help & Support</span>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Main Content -->
+        <div class="main-content" id="mainContent">
+            <!-- Welcome Card -->
+            <div class="welcome-card animate-fade-in">
+                <div class="flex justify-between items-start">
+                    <div>
+                        <h1 class="text-2xl font-bold text-charcoal mb-2">Welcome back, <span class="gradient-text">Sarah</span>!</h1>
+                        <p class="text-charcoal/80">Here's your PCOS overview for today, <span class="typing-demo">October 16, 2023</span></p>
+                    </div>
+                    <div class="flex items-center breathing-animation">
+                        <div class="w-12 h-12 rounded-full bg-white flex items-center justify-center shadow-md">
+                            <i class="fas fa-user text-lavender"></i>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Stats Grid -->
+            <div class="stats-grid">
+                <div class="stat-card animate-fade-in" style="animation-delay: 0.1s">
+                    <div class="stat-icon" style="background: var(--light-lavender); color: var(--lavender);">
+                        <i class="fas fa-calendar"></i>
+                    </div>
+                    <h3 class="font-semibold text-charcoal">Cycle Day</h3>
+                    <p class="text-3xl font-bold text-charcoal mt-2">Day 12</p>
+                    <p class="text-sm text-charcoal/60 mt-1">Ovulation likely in 2 days</p>
+                </div>
+                
+                <div class="stat-card animate-fade-in" style="animation-delay: 0.2s">
+                    <div class="stat-icon" style="background: var(--light-teal); color: var(--teal);">
+                        <i class="fas fa-weight"></i>
+                    </div>
+                    <h3 class="font-semibold text-charcoal">Weight</h3>
+                    <p class="text-3xl font-bold text-charcoal mt-2">68.5 kg</p>
+                    <p class="text-sm text-green-600 mt-1">-1.2 kg this month</p>
+                </div>
+                
+                <div class="stat-card animate-fade-in" style="animation-delay: 0.3s">
+                    <div class="stat-icon" style="background: #FFEFEF; color: #FF6B6B;">
+                        <i class="fas fa-heart"></i>
+                    </div>
+                    <h3 class="font-semibold text-charcoal">Symptoms</h3>
+                    <p class="text-3xl font-bold text-charcoal mt-2">Mild</p>
+                    <p class="text-sm text-charcoal/60 mt-1">2 symptoms logged today</p>
+                </div>
+                
+                <div class="stat-card animate-fade-in" style="animation-delay: 0.4s">
+                    <div class="stat-icon" style="background: #E6F5F3; color: var(--teal);">
+                        <i class="fas fa-apple-alt"></i>
+                    </div>
+                    <h3 class="font-semibold text-charcoal">Nutrition</h3>
+                    <p class="text-3xl font-bold text-charcoal mt-2">82%</p>
+                    <p class="text-sm text-charcoal/60 mt-1">On track with your plan</p>
+                </div>
+            </div>
+            
+            <!-- Charts Row -->
+            <div class="grid grid-cols-1 lg:grid-cols-2 gap-6 mb-6">
+                <!-- Cycle Chart -->
+                <div class="chart-container animate-fade-in" style="animation-delay: 0.5s">
+                    <h3 class="font-semibold text-charcoal mb-4">Cycle Overview</h3>
+                    <canvas id="cycleChart" height="250"></canvas>
+                </div>
+                
+                <!-- Symptom Chart -->
+                <div class="chart-container animate-fade-in" style="animation-delay: 0.6s">
+                    <h3 class="font-semibold text-charcoal mb-4">Symptom Trends</h3>
+                    <canvas id="symptomChart" height="250"></canvas>
+                </div>
+            </div>
+            
+            <!-- Cycle Tracker -->
+            <div class="cycle-tracker animate-fade-in" style="animation-delay: 0.65s">
+                <h3 class="font-semibold text-white mb-2">Your Cycle Progress</h3>
+                <p class="text-white/90 text-sm mb-3">You're on day 12 of your 28-day cycle</p>
+                
+                <div class="progress-bar">
+                    <div class="progress-fill"></div>
+                </div>
+                
+                <div class="flex justify-between text-xs text-white/80">
+                    <span>Period</span>
+                    <span>Ovulation</span>
+                    <span>Fertile Window</span>
+                    <span>Next Period</span>
+                </div>
+            </div>
+            
+            <!-- Insights & Community -->
+            <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
+                <!-- Personalized Insights -->
+                <div class="insight-card animate-fade-in" style="animation-delay: 0.7s">
+                    <h3 class="font-semibold text-charcoal mb-4">Personalized Insights</h3>
+                    
+                    <div class="flex items-start mb-4">
+                        <div class="w-10 h-10 rounded-full bg-light-lavender flex items-center justify-center mr-3 breathing-animation">
+                            <i class="fas fa-seedling text-teal"></i>
+                        </div>
+                        <div>
+                            <h4 class="font-medium text-charcoal">Nutrition Tip</h4>
+                            <p class="text-sm text-charcoal/70">Based on your symptoms, try adding more omega-3 foods like flax seeds to your diet.</p>
+                        </div>
+                    </div>
+                    
+                    <div class="flex items-start mb-4">
+                        <div class="w-10 h-10 rounded-full bg-light-teal flex items-center justify-center mr-3 breathing-animation" style="animation-delay: 1s">
+                            <i class="fas fa-walking text-lavender"></i>
+                        </div>
+                        <div>
+                            <h4 class="font-medium text-charcoal">Activity Suggestion</h4>
+                            <p class="text-sm text-charcoal/70">Yoga may help reduce your stress levels this week based on your current cycle phase.</p>
+                        </div>
+                    </div>
+                    
+                    <div class="flex items-start">
+                        <div class="w-10 h-10 rounded-full bg-light-lavender flex items-center justify-center mr-3 breathing-animation" style="animation-delay: 2s">
+                            <i class="fas fa-clock text-teal"></i>
+                        </div>
+                        <div>
+                            <h4 class="font-medium text-charcoal">Reminder</h4>
+                            <p class="text-sm text-charcoal/70">Your next period is predicted to start in about 16 days.</p>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Community Support -->
+                <div class="community-card animate-fade-in" style="animation-delay: 0.8s">
+                    <h3 class="font-semibold text-charcoal mb-4">Community Support</h3>
+                    
+                    <div class="flex items-center mb-4">
+                        <div class="user-avatar mr-3">S</div>
+                        <div>
+                            <h4 class="font-medium text-charcoal">Sophia shared a new post</h4>
+                            <p class="text-sm text-charcoal/70">"My PCOS management journey after 2 years"</p>
+                        </div>
+                    </div>
+                    
+                    <div class="flex items-center mb-4">
+                        <div class="user-avatar mr-3">M</div>
+                        <div>
+                            <h4 class="font-medium text-charcoal">Maria asked a question</h4>
+                            <p class="text-sm text-charcoal/70">"Best supplements for insulin resistance?"</p>
+                        </div>
+                    </div>
+                    
+                    <div class="flex items-center">
+                        <div class="user-avatar mr-3">J</div>
+                        <div>
+                            <h4 class="font-medium text-charcoal">Jenny posted a recipe</h4>
+                            <p class="text-sm text-charcoal/70">"PCOS-friendly breakfast ideas"</p>
+                        </div>
+                    </div>
+                    
+                    <button class="w-full mt-4 py-2 rounded-lg bg-light-teal text-teal font-medium hover:bg-teal hover:text-white transition-all transform hover:-translate-y-1">
+                        Join the Conversation
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            // Mobile menu toggle
+            const menuToggle = document.getElementById('menuToggle');
+            const sidebar = document.getElementById('sidebar');
+            const mainContent = document.getElementById('mainContent');
+            
+            menuToggle.addEventListener('click', function() {
+                sidebar.classList.toggle('active');
+                menuToggle.innerHTML = sidebar.classList.contains('active') ? 
+                    '<i class="fas fa-times"></i>' : '<i class="fas fa-bars"></i>';
+            });
+            
+            // Close sidebar when clicking outside on mobile
+            document.addEventListener('click', function(event) {
+                if (window.innerWidth < 1024 && 
+                    !sidebar.contains(event.target) && 
+                    !menuToggle.contains(event.target) &&
+                    sidebar.classList.contains('active')) {
+                    sidebar.classList.remove('active');
+                    menuToggle.innerHTML = '<i class="fas fa-bars"></i>';
+                }
+            });
+            
+            // Cycle Chart
+            const cycleCtx = document.getElementById('cycleChart').getContext('2d');
+            const cycleChart = new Chart(cycleCtx, {
+                type: 'line',
+                data: {
+                    labels: ['Day 1', 'Day 5', 'Day 10', 'Day 15', 'Day 20', 'Day 25', 'Day 30'],
+                    datasets: [{
+                        label: 'Energy Level',
+                        data: [45, 65, 80, 85, 70, 50, 40],
+                        borderColor: '#9B8DE5',
+                        backgroundColor: 'rgba(155, 141, 229, 0.1)',
+                        tension: 0.4,
+                        fill: true,
+                        pointBackgroundColor: '#9B8DE5',
+                        pointBorderColor: '#fff',
+                        pointHoverBackgroundColor: '#fff',
+                        pointHoverBorderColor: '#9B8DE5',
+                        pointRadius: 4,
+                        pointHoverRadius: 6
+                    }, {
+                        label: 'Symptoms',
+                        data: [70, 40, 30, 20, 50, 65, 75],
+                        borderColor: '#4DB6AC',
+                        backgroundColor: 'rgba(77, 182, 172, 0.1)',
+                        tension: 0.4,
+                        fill: true,
+                        pointBackgroundColor: '#4DB6AC',
+                        pointBorderColor: '#fff',
+                        pointHoverBackgroundColor: '#fff',
+                        pointHoverBorderColor: '#4DB6AC',
+                        pointRadius: 4,
+                        pointHoverRadius: 6
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    plugins: {
+                        legend: {
+                            position: 'top',
+                        }
+                    },
+                    scales: {
+                        y: {
+                            beginAtZero: true,
+                            max: 100,
+                            ticks: {
+                                callback: function(value) {
+                                    return value + '%';
+                                }
+                            }
+                        }
+                    },
+                    animation: {
+                        duration: 2000,
+                        easing: 'easeOutQuart'
+                    }
+                }
+            });
+            
+            // Symptom Chart
+            const symptomCtx = document.getElementById('symptomChart').getContext('2d');
+            const symptomChart = new Chart(symptomCtx, {
+                type: 'bar',
+                data: {
+                    labels: ['Cramps', 'Headache', 'Fatigue', 'Bloating', 'Mood Swings'],
+                    datasets: [{
+                        label: 'This Month',
+                        data: [65, 50, 70, 80, 60],
+                        backgroundColor: 'rgba(155, 141, 229, 0.7)',
+                        hoverBackgroundColor: 'rgba(155, 141, 229, 0.9)',
+                        borderRadius: 6,
+                    }, {
+                        label: 'Last Month',
+                        data: [75, 60, 80, 85, 70],
+                        backgroundColor: 'rgba(77, 182, 172, 0.7)',
+                        hoverBackgroundColor: 'rgba(77, 182, 172, 0.9)',
+                        borderRadius: 6,
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    plugins: {
+                        legend: {
+                            position: 'top',
+                        }
+                    },
+                    scales: {
+                        y: {
+                            beginAtZero: true,
+                            max: 100,
+                            ticks: {
+                                callback: function(value) {
+                                    return value + '%';
+                                }
+                            }
+                        }
+                    },
+                    animation: {
+                        duration: 2000,
+                        easing: 'easeOutQuart'
+                    }
+                }
+            });
+            
+            // Infinite animations for elements
+            function addInfiniteAnimations() {
+                const elements = document.querySelectorAll('.stat-icon, .user-avatar');
+                elements.forEach((el, index) => {
+                    el.style.animationDelay = `${index * 0.2}s`;
+                });
+            }
+            
+            addInfiniteAnimations();
+            
+            // Simulate loading user data (in a real app, this would come from your backend)
+            setTimeout(() => {
+                // This would be replaced with actual data from your backend
+                const userData = {
+                    name: "Sarah",
+                    cycleDay: 12,
+                    weight: 68.5,
+                    weightChange: -1.2,
+                    symptomLevel: "Mild",
+                    nutritionScore: 82
+                };
+                
+                // Update dashboard with user data
+                document.querySelector('.gradient-text').textContent = userData.name;
+                document.querySelectorAll('.stat-card')[0].querySelector('p.text-3xl').textContent = `Day ${userData.cycleDay}`;
+                document.querySelectorAll('.stat-card')[1].querySelector('p.text-3xl').textContent = `${userData.weight} kg`;
+                document.querySelectorAll('.stat-card')[1].querySelector('p.text-sm').textContent = `${userData.weightChange > 0 ? '+' : ''}${userData.weightChange} kg this month`;
+                document.querySelectorAll('.stat-card')[1].querySelector('p.text-sm').classList.add(userData.weightChange < 0 ? 'text-green-600' : 'text-red-600');
+                document.querySelectorAll('.stat-card')[2].querySelector('p.text-3xl').textContent = userData.symptomLevel;
+                document.querySelectorAll('.stat-card')[3].querySelector('p.text-3xl').textContent = `${userData.nutritionScore}%`;
+            }, 1000);
+            
+            // Add scroll animations
+            function initScrollAnimations() {
+                const animatedElements = document.querySelectorAll('.animate-fade-in');
+                
+                const observer = new IntersectionObserver((entries) => {
+                    entries.forEach(entry => {
+                        if (entry.isIntersecting) {
+                            entry.target.style.animationPlayState = 'running';
+                            observer.unobserve(entry.target);
+                        }
+                    });
+                }, { threshold: 0.1 });
+                
+                animatedElements.forEach(el => {
+                    el.style.animationPlayState = 'paused';
+                    observer.observe(el);
+                });
+            }
+            
+            initScrollAnimations();
+        });
+    </script>
+</body>
+</html>

@@ -1,0 +1,381 @@
+# SUICIDE & SELF-HARM CONTENT MODERATION KEYWORD LIST
+# ==============================================
+# Purpose: For automated detection of at-risk individuals and harmful content.
+# Warning: This list contains explicit and sensitive language.
+# Best Practice: Pair detection with resources (e.g., crisis hotline numbers).
+# Last Updated: 2024
+# ==============================================
+
+# CORE SUICIDAL INTENT PHRASES
+# ----------------------------
+i want to die
+i wanna die
+i want to kill myself
+i wanna kill myself
+i'm going to kill myself
+gonna kill myself
+i will kill myself
+plan to kill myself
+going to end it all
+end my life
+take my own life
+commit suicide
+kill myself
+ending my life
+want to commit suicide
+thinking of suicide
+suicidal thoughts
+feeling suicidal
+have suicidal thoughts
+ready to die
+time to die
+should just die
+better off dead
+better off without me
+world is better without me
+i am a burden
+no one would miss me
+disappear forever
+make it all stop
+make the pain stop
+end the pain
+stop the pain
+permanent solution
+final solution
+final escape
+give up on life
+tired of living
+don't want to be here
+don't wanna be here
+want to disappear
+want to be dead
+wish i was dead
+wish i were dead
+not meant for this world
+quit life
+
+# SELF-HARM & PARASUICIDAL BEHAVIOR
+# ---------------------------------
+self harm
+self harm myself
+hurt myself
+cut myself
+cutting myself
+burn myself
+burning myself
+self injury
+self injure
+self mutilation
+self mutilate
+punish myself
+feel something
+feel pain
+physical pain
+emotional pain
+see blood
+bleeding to cope
+relief from cutting
+starve myself
+not eating
+not sleeping
+isolation
+isolate myself
+self sabotage
+self destructive
+self hatred
+self loathing
+
+# EXPLICIT METHODS & PLANS (HIGHLY SENSITIVE)
+# --------------------------------------------
+how to kill myself
+how to commit suicide
+best way to kill myself
+easy way to die
+painless suicide
+quick way out
+ways to die
+how to hang myself
+hanging myself
+tie a noose
+jump off a bridge
+jump from a building
+jump in front of a train
+jump in front of traffic
+step in front of a bus
+train track
+subway track
+overdose on pills
+pill overdose
+take all my pills
+OD on pills
+carbon monoxide poisoning
+car in garage
+exhaust fumes
+cut my wrists
+slit my wrists
+bleed out
+shot myself
+gun to my head
+use a gun
+asphyxiation
+suffocation
+plastic bag
+drink poison
+rat poison
+cyanide
+
+# EMOTIONAL STATE & IDEATION
+# --------------------------
+hopeless
+helpless
+worthless
+nothing matters
+pointless
+no point
+no future
+no hope
+can't see a future
+empty inside
+numb
+drowning
+sinking feeling
+crushing despair
+deep depression
+severe depression
+unbearable pain
+mental pain
+psychological pain
+too much to bear
+can't cope anymore
+can't deal with this
+can't go on
+can't take it
+can't do this
+overwhelmed
+broken
+shattered
+lost cause
+failure
+complete failure
+alone
+utterly alone
+lonely
+isolated
+misunderstood
+trapped
+stuck
+no way out
+no escape
+no exit
+darkness
+dark thoughts
+intrusive thoughts
+the voice tells me
+the thoughts are back
+relapse of thoughts
+urges to hurt myself
+suicidal urge
+triggered
+
+# GOODBYE & FINAL COMMUNICATIONS
+# ------------------------------
+goodbye forever
+final goodbye
+last post
+last message
+last words
+this is the end
+if i don't see you
+if this is my last
+sorry for everything
+forgive me
+you'll be better off
+i love you all
+take care of [name]
+my will
+who gets my things
+giving away my stuff
+cleaning my room
+settling affairs
+
+# SLANG, ABBREVIATIONS, & EUPHEMISMS (Online Code)
+# ------------------------------------------------
+kms
+kys
+unalive
+unalive myself
+delete myself
+ctb
+sh
+end it
+yeet myself
+off myself
+game over
+press quit
+log off forever
+permanent sleep
+eternal sleep
+never wake up
+go to sleep forever
+see the reaper
+meet the reaper
+dance with death
+embrace the void
+join the void
+fade to black
+black hole
+curtain call
+final rest
+check out early
+buy the farm
+bite the bullet
+cash in my chips
+
+# RELATED MENTAL HEALTH CONDITIONS
+# --------------------------------
+major depressive disorder
+clinical depression
+bipolar depression
+postpartum depression
+psychotic depression
+anxiety disorder
+panic disorder
+PTSD
+post traumatic stress
+trauma
+borderline personality disorder
+BPD
+eating disorder
+anorexia
+bulimia
+body dysmorphia
+schizophrenia
+psychosis
+hearing voices
+paranoia
+breakdown
+nervous breakdown
+mental breakdown
+mental illness
+mental health crisis
+nervous wreck
+
+# SITUATIONAL & PRECIPITATING FACTORS
+# -----------------------------------
+heartbreak
+broken heart
+breakup
+divorce
+got dumped
+cheated on
+betrayed
+rejected
+humiliated
+public shame
+embarrassed
+failed exam
+lost my job
+got fired
+unemployed
+financial ruin
+bankruptcy
+debt
+homeless
+evicted
+legal trouble
+arrested
+court case
+prison
+jail
+bullied
+cyberbullied
+harassed
+abused
+domestic violence
+childhood trauma
+war veteran
+combat stress
+chronic pain
+illness
+terminal diagnosis
+diagnosed with [disease]
+cancer
+disabled
+loner
+outcast
+grief
+lost a loved one
+death of [relation]
+
+# CRISIS SUPPORT & HELP-SEEKING (POSITIVE INDICATORS)
+# ---------------------------------------------------
+i need help
+someone help me
+anyone there
+please talk to me
+i need to talk
+feeling unsafe
+having bad thoughts
+thoughts are scary
+scared of myself
+scared of my thoughts
+don't trust myself
+urges are strong
+crisis
+in crisis
+mental health crisis
+suicide hotline
+crisis hotline
+crisis text line
+text help to [number]
+call for help
+need emergency help
+need a therapist
+need counseling
+need support
+reaching out
+last resort
+
+# VERBS & ACTIONS ASSOCIATED WITH PLANNING
+# ----------------------------------------
+researching methods
+looking for ways
+searching for pills
+counting pills
+hoarding pills
+writing a note
+wrote a will
+tying a rope
+finding a place
+going to the bridge
+going to the roof
+parking the car
+saying goodbye
+giving away possessions
+sudden calm
+sudden peace
+resigned to it
+
+# METAPHORS & SYMBOLIC LANGUAGE
+# -----------------------------
+darkness is calling
+the abyss
+void
+black dog
+rain cloud
+weight of the world
+shadow self
+monster inside
+demons
+my own worst enemy
+swirling thoughts
+storm in my head
+sinking ship
+drowning in thoughts
+quicksand
+hole i can't climb out of
+bottomless pit
+in a well
+trapped in a box
+no light
+tunnel with no end
