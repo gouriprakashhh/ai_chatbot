@@ -654,18 +654,193 @@
       return msgDiv;
     }
 
-    function updateLunaMessage(msgDiv, text, isError = false) {
-      const textElement = msgDiv.querySelector('[id^="luna-text-"]');
-      if (textElement) {
-        textElement.innerHTML = text;
-        textElement.classList.remove('typing-indicator');
-        
-        if (isError) {
-          msgDiv.querySelector('.bg-white').classList.add('border-red-200', 'bg-red-50');
-        }
+   function updateLunaMessage(msgDiv, text, isError = false) {
+  const textElement = msgDiv.querySelector('[id^="luna-text-"]');
+  if (!textElement) return;
+
+  const isHTML = typeof text === "string" && /<[a-z][\s\S]*>/i.test(text);
+
+  if (typeof text === "string" && !isHTML) {
+    let s = text.trim();
+
+    // Normalize punctuation spacing: ".It" -> ". It"
+    s = s.replace(/([.!?])([A-Za-z0-9"“‘’])/g, "$1 $2");
+
+    // Force inline numbered items to break into lines: "1. A 2. B" → "\n1. A\n2. B"
+    s = s.replace(/(\d+\.\s*)(?=[^\n])/g, "\n$1");
+
+    // Split into lines, cleaning CR
+    let lines = s.split(/\n+/).map((l) => l.replace(/\r/g, ""));
+
+    // Merge cases like "1\nPrioritize..." → "1. Prioritize..."
+    let merged = [];
+    for (let i = 0; i < lines.length; i++) {
+      let line = lines[i].trim();
+      if (!line) continue;
+
+      const loneNumMatch = line.match(/^(\d+)\.?$/);
+      if (loneNumMatch && i + 1 < lines.length) {
+        const next = lines[i + 1].trim();
+        merged.push(`${loneNumMatch[1]}. ${next}`);
+        i++;
+        continue;
       }
-      msgDiv.classList.remove('animate-thinking');
+
+      if (/^\d+\)/.test(line)) {
+        line = line.replace(/^(\d+)\)/, "$1.");
+      }
+
+      merged.push(line);
     }
+
+    const htmlParts = [];
+    let isFirstContent = true;
+
+    merged.forEach((line) => {
+      // --- Greeting (first line) ---
+      if (isFirstContent && /^\s*(hi|hello|hey|hiya)\b/i.test(line)) {
+        htmlParts.push(
+          `<div class="rounded-lg p-3 mb-3 border border-gray-200 bg-gradient-to-r from-white to-indigo-50">
+             <div class="flex items-center gap-3">
+               <div class="text-2xl">👋</div>
+               <div class="text-sm font-medium text-charcoal">${escapeHtmlInline(
+                 line
+               )}</div>
+             </div>
+           </div>`
+        );
+        isFirstContent = false;
+        return;
+      }
+
+      // --- Role labels (You / Luna / 🤖 etc.) ---
+      if (
+        /^(You|Me|Luna|🤖|🧑‍⚕️|🤝)\s*$/i.test(line) ||
+        (/^\p{Emoji}/u.test(line) && line.length < 10)
+      ) {
+        htmlParts.push(
+          `<div class="text-xs text-gray-400 mb-1">${escapeHtmlInline(
+            line
+          )}</div>`
+        );
+        return;
+      }
+
+      // --- Headings ---
+      const h3 = line.match(/^###\s+(.+)/);
+      if (h3) {
+        htmlParts.push(
+          `<h3 class="text-lg font-semibold text-charcoal mt-4 mb-2 flex items-center gap-2"><span>💬</span> ${escapeHtmlInline(
+            h3[1]
+          )}</h3>`
+        );
+        isFirstContent = false;
+        return;
+      }
+      const h2 = line.match(/^##\s+(.+)/);
+      if (h2) {
+        htmlParts.push(
+          `<h2 class="text-xl font-bold text-charcoal mt-5 mb-3 flex items-center gap-2"><span>✨</span> ${escapeHtmlInline(
+            h2[1]
+          )}</h2>`
+        );
+        isFirstContent = false;
+        return;
+      }
+
+      // --- Numbered steps ---
+      const numMatch = line.match(/^(\d+)\.\s+(.+)/);
+      if (numMatch) {
+        const num = numMatch[1];
+        const rest = formatInlineMarkup(numMatch[2]);
+
+        // Split trailing remarks (💜 or emoji-based closings)
+        const splitParts = rest.split(
+          /([.!?])\s+(?=[💜🌸🌟⭐❤️💕💡🔥🎯🙏])/
+        );
+        const mainStep = splitParts[0] + (splitParts[1] || "");
+        const trailing = splitParts.slice(2).join("").trim();
+
+        // Render step
+        htmlParts.push(
+          `<div class="flex items-start gap-3 my-3">
+             <span class="flex-shrink-0 w-8 h-8 rounded-full bg-gradient-to-br from-primary to-secondary text-white text-sm font-bold flex items-center justify-center mt-0.5 shadow-sm">${escapeHtmlInline(
+               num
+             )}</span>
+             <span class="flex-1 leading-relaxed">${mainStep}</span>
+           </div>`
+        );
+
+        // Render trailing as separate paragraph
+        if (trailing) {
+          htmlParts.push(
+            `<p class="leading-relaxed my-3 mt-4">${trailing}</p>`
+          );
+        }
+
+        isFirstContent = false;
+        return;
+      }
+
+      // --- Bullets ---
+      const bulletMatch = line.match(/^[-*]\s+(.+)/);
+      if (bulletMatch) {
+        htmlParts.push(
+          `<div class="flex items-start gap-3 my-2">
+             <span class="text-secondary mt-1">•</span>
+             <span>${formatInlineMarkup(bulletMatch[1])}</span>
+           </div>`
+        );
+        isFirstContent = false;
+        return;
+      }
+
+      // --- Default paragraph ---
+      htmlParts.push(
+        `<p class="leading-relaxed my-3">${formatInlineMarkup(line)}</p>`
+      );
+      isFirstContent = false;
+    });
+
+    textElement.innerHTML = `<div class="space-y-3">${htmlParts.join("")}</div>`;
+  } else {
+    // Already HTML
+    textElement.innerHTML = text;
+  }
+
+  textElement.classList.remove("typing-indicator");
+
+  if (isError) {
+    const bgElement = msgDiv.querySelector(".bg-white");
+    if (bgElement) bgElement.classList.add("border-red-200", "bg-red-50");
+  }
+  msgDiv.classList.remove("animate-thinking");
+
+  // --- helpers ---
+  function formatInlineMarkup(str) {
+    let out = escapeHtmlInline(str);
+    out = out.replace(
+      /\*\*(.+?)\*\*/g,
+      '<strong class="font-semibold text-charcoal">$1</strong>'
+    );
+    out = out.replace(
+      /_(.+?)_/g,
+      '<em class="italic text-gray-700">$1</em>'
+    );
+    out = out.replace(/\s{2,}/g, " ");
+    return out;
+  }
+
+  function escapeHtmlInline(s) {
+    return String(s)
+      .replace(/&/g, "&amp;")
+      .replace(/</g, "&lt;")
+      .replace(/>/g, "&gt;")
+      .replace(/"/g, "&quot;")
+      .replace(/'/g, "&#39;");
+  }
+}
+
 
     // Initialize particles
     createParticles();
