@@ -1,0 +1,642 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>PCOS Visual Guide - Cycle Management, Nutrition & Mindfulness</title>
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- Alpine.js -->
+    <script defer src="https://cdn.jsdelivr.net/npm/alpinejs@3.x.x/dist/cdn.min.js"></script>
+    <!-- Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&family=Lora:wght@400;500;600;700&family=Nunito:wght@300;400;500;600&display=swap" rel="stylesheet">
+    <!-- Chart.js for visualizations -->
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <style>
+        body {
+            font-family: 'Poppins', sans-serif;
+            color: #333333;
+            background-color: #F7F7F7;
+        }
+        h1, h2, h3, h4, h5, h6 {
+            font-family: 'Lora', serif;
+        }
+        .card {
+            border-radius: 12px;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.05);
+        }
+        .gradient-bg {
+            background: linear-gradient(135deg, #9B8DE5, #4DB6AC);
+        }
+        .chat-bubble {
+            border-radius: 18px;
+        }
+        .section-icon {
+            background: linear-gradient(135deg, #9B8DE5, #4DB6AC);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+        .cycle-phase {
+            transition: all 0.3s ease;
+        }
+        .cycle-phase.active {
+            transform: scale(1.05);
+            box-shadow: 0 8px 15px rgba(0, 0, 0, 0.1);
+        }
+        .nutrition-card:hover {
+            transform: translateY(-5px);
+            transition: transform 0.3s ease;
+        }
+    </style>
+</head>
+<body class="min-h-screen">
+    <!-- Header -->
+    <header class="gradient-bg text-white py-6">
+        <div class="container mx-auto px-4">
+            <h1 class="text-3xl md:text-4xl font-bold text-center">PCOS Visual Guide</h1>
+            <p class="text-center mt-2 text-lg opacity-90">Cycle Management, Nutrition Plans & Mindfulness Techniques</p>
+        </div>
+    </header>
+
+    <!-- Navigation -->
+    <nav class="bg-white shadow-sm sticky top-0 z-10">
+        <div class="container mx-auto px-4 py-3">
+            <div class="flex flex-wrap justify-center gap-4">
+                <a href="#cycle-management" class="text-[#9B8DE5] hover:text-[#4DB6AC] font-medium transition-colors">Cycle Management</a>
+                <a href="#nutrition-plans" class="text-[#9B8DE5] hover:text-[#4DB6AC] font-medium transition-colors">Nutrition Plans</a>
+                <a href="#mindfulness" class="text-[#9B8DE5] hover:text-[#4DB6AC] font-medium transition-colors">Mindfulness Techniques</a>
+                <a href="#tracker" class="text-[#9B8DE5] hover:text-[#4DB6AC] font-medium transition-colors">Symptom Tracker</a>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Main Content -->
+    <main class="container mx-auto px-4 py-8 max-w-6xl">
+        <!-- Cycle Management Section -->
+        <section id="cycle-management" class="mb-12">
+            <div class="flex items-center mb-6">
+                <span class="section-icon text-3xl mr-3">🔄</span>
+                <h2 class="text-2xl font-bold text-[#333333]">PCOS Cycle Management</h2>
+            </div>
+            
+            <div class="bg-white card p-6 mb-6">
+                <p class="mb-4">Understanding and tracking your menstrual cycle is crucial for managing PCOS. While cycles may be irregular, recognizing patterns can help you anticipate symptoms and optimize your health strategies.</p>
+                
+                <div x-data="{ activePhase: 'menstrual' }">
+                    <div class="grid grid-cols-4 gap-4 mb-6">
+                        <button 
+                            @click="activePhase = 'menstrual'" 
+                            :class="activePhase === 'menstrual' ? 'active gradient-bg text-white' : 'bg-gray-100'"
+                            class="cycle-phase p-4 rounded-lg text-center"
+                        >
+                            <span class="block text-2xl mb-2">🩸</span>
+                            <span class="font-medium">Menstrual Phase</span>
+                        </button>
+                        <button 
+                            @click="activePhase = 'follicular'" 
+                            :class="activePhase === 'follicular' ? 'active gradient-bg text-white' : 'bg-gray-100'"
+                            class="cycle-phase p-4 rounded-lg text-center"
+                        >
+                            <span class="block text-2xl mb-2">🌱</span>
+                            <span class="font-medium">Follicular Phase</span>
+                        </button>
+                        <button 
+                            @click="activePhase = 'ovulatory'" 
+                            :class="activePhase === 'ovulatory' ? 'active gradient-bg text-white' : 'bg-gray-100'"
+                            class="cycle-phase p-4 rounded-lg text-center"
+                        >
+                            <span class="block text-2xl mb-2">🥚</span>
+                            <span class="font-medium">Ovulatory Phase</span>
+                        </button>
+                        <button 
+                            @click="activePhase = 'luteal'" 
+                            :class="activePhase === 'luteal' ? 'active gradient-bg text-white' : 'bg-gray-100'"
+                            class="cycle-phase p-4 rounded-lg text-center"
+                        >
+                            <span class="block text-2xl mb-2">🌙</span>
+                            <span class="font-medium">Luteal Phase</span>
+                        </button>
+                    </div>
+                    
+                    <div x-show="activePhase === 'menstrual'" class="p-4 bg-gray-50 rounded-lg">
+                        <h3 class="text-xl font-semibold text-[#9B8DE5] mb-2">Menstrual Phase (Days 1-5)</h3>
+                        <p class="mb-3">This phase begins on the first day of your period. With PCOS, this phase may be irregular or absent.</p>
+                        <div class="grid md:grid-cols-2 gap-4">
+                            <div>
+                                <h4 class="font-semibold text-[#4DB6AC]">PCOS Considerations</h4>
+                                <ul class="list-disc pl-5 mt-2 space-y-1">
+                                    <li>Periods may be heavy, light, or absent</li>
+                                    <li>Focus on iron-rich foods if flow is heavy</li>
+                                    <li>Gentle exercise like walking or yoga</li>
+                                    <li>Prioritize rest and self-care</li>
+                                </ul>
+                            </div>
+                            <div>
+                                <h4 class="font-semibold text-[#4DB6AC]">Nutrition Focus</h4>
+                                <ul class="list-disc pl-5 mt-2 space-y-1">
+                                    <li>Iron-rich foods: spinach, lentils, red meat</li>
+                                    <li>Anti-inflammatory foods: ginger, turmeric</li>
+                                    <li>Hydration with electrolytes</li>
+                                    <li>Warm, comforting meals</li>
+                                </ul>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div x-show="activePhase === 'follicular'" class="p-4 bg-gray-50 rounded-lg">
+                        <h3 class="text-xl font-semibold text-[#9B8DE5] mb-2">Follicular Phase (Days 1-13)</h3>
+                        <p class="mb-3">This phase overlaps with menstruation and continues until ovulation. With PCOS, this phase may be extended.</p>
+                        <div class="grid md:grid-cols-2 gap-4">
+                            <div>
+                                <h4 class="font-semibold text-[#4DB6AC]">PCOS Considerations</h4>
+                                <ul class="list-disc pl-5 mt-2 space-y-1">
+                                    <li>May be longer than typical due to delayed ovulation</li>
+                                    <li>Good time for more intense workouts</li>
+                                    <li>Focus on insulin-sensitizing foods</li>
+                                    <li>Hormone-balancing supplements may be beneficial</li>
+                                </ul>
+                            </div>
+                            <div>
+                                <h4 class="font-semibold text-[#4DB6AC]">Nutrition Focus</h4>
+                                <ul class="list-disc pl-5 mt-2 space-y-1">
+                                    <li>Fiber-rich foods: vegetables, whole grains</li>
+                                    <li>Lean proteins: chicken, fish, legumes</li>
+                                    <li>Healthy fats: avocado, nuts, olive oil</li>
+                                    <li>Foods rich in B vitamins</li>
+                                </ul>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div x-show="activePhase === 'ovulatory'" class="p-4 bg-gray-50 rounded-lg">
+                        <h3 class="text-xl font-semibold text-[#9B8DE5] mb-2">Ovulatory Phase (Days 14-16)</h3>
+                        <p class="mb-3">Ovulation may not occur regularly with PCOS. When it does, this is a short window of increased fertility.</p>
+                        <div class="grid md:grid-cols-2 gap-4">
+                            <div>
+                                <h4 class="font-semibold text-[#4DB6AC]">PCOS Considerations</h4>
+                                <ul class="list-disc pl-5 mt-2 space-y-1">
+                                    <li>Ovulation may be infrequent or absent</li>
+                                    <li>Tracking basal body temperature can help detect ovulation</li>
+                                    <li>Energy levels may be higher if ovulation occurs</li>
+                                    <li>Good time for social activities and creative projects</li>
+                                </ul>
+                            </div>
+                            <div>
+                                <h4 class="font-semibold text-[#4DB6AC]">Nutrition Focus</h4>
+                                <ul class="list-disc pl-5 mt-2 space-y-1">
+                                    <li>Antioxidant-rich foods: berries, dark leafy greens</li>
+                                    <li>Omega-3 fatty acids: salmon, chia seeds, walnuts</li>
+                                    <li>Zinc-rich foods: pumpkin seeds, chickpeas</li>
+                                    <li>Vitamin E sources: almonds, sunflower seeds</li>
+                                </ul>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div x-show="activePhase === 'luteal'" class="p-4 bg-gray-50 rounded-lg">
+                        <h3 class="text-xl font-semibold text-[#9B8DE5] mb-2">Luteal Phase (Days 15-28)</h3>
+                        <p class="mb-3">This phase occurs after ovulation and before your next period. With PCOS, progesterone levels may be lower.</p>
+                        <div class="grid md:grid-cols-2 gap-4">
+                            <div>
+                                <h4 class="font-semibold text-[#4DB6AC]">PCOS Considerations</h4>
+                                <ul class="list-disc pl-5 mt-2 space-y-1">
+                                    <li>May experience more pronounced PMS symptoms</li>
+                                    <li>Cravings for carbohydrates may increase</li>
+                                    <li>Focus on stress reduction techniques</li>
+                                    <li>Gentle to moderate exercise recommended</li>
+                                </ul>
+                            </div>
+                            <div>
+                                <h4 class="font-semibold text-[#4DB6AC]">Nutrition Focus</h4>
+                                <ul class="list-disc pl-5 mt-2 space-y-1">
+                                    <li>Complex carbohydrates: sweet potatoes, oats</li>
+                                    <li>Magnesium-rich foods: dark chocolate, bananas</li>
+                                    <li>Foods supporting serotonin production</li>
+                                    <li>Limit caffeine and alcohol</li>
+                                </ul>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="bg-white card p-6">
+                <h3 class="text-xl font-semibold text-[#4DB6AC] mb-4">Cycle Tracking Chart</h3>
+                <div class="h-64">
+                    <canvas id="cycleChart"></canvas>
+                </div>
+            </div>
+        </section>
+
+        <!-- Nutrition Plans Section -->
+        <section id="nutrition-plans" class="mb-12">
+            <div class="flex items-center mb-6">
+                <span class="section-icon text-3xl mr-3">🥗</span>
+                <h2 class="text-2xl font-bold text-[#333333]">PCOS Nutrition Plans</h2>
+            </div>
+            
+            <div class="bg-white card p-6 mb-6">
+                <p class="mb-4">Nutrition is a powerful tool for managing PCOS symptoms. These visual guides help you create balanced meals that support hormone balance and insulin sensitivity.</p>
+                
+                <div class="grid md:grid-cols-3 gap-6 mb-6">
+                    <div class="nutrition-card bg-gradient-to-br from-[#9B8DE5] to-[#4DB6AC] text-white p-5 rounded-lg">
+                        <h3 class="text-xl font-semibold mb-3">Plate Method Guide</h3>
+                        <div class="bg-white rounded-full w-40 h-40 mx-auto mb-4 relative overflow-hidden">
+                            <div class="absolute top-0 left-0 w-full h-1/2 bg-green-200"></div>
+                            <div class="absolute bottom-0 left-0 w-1/2 h-1/2 bg-blue-200"></div>
+                            <div class="absolute bottom-0 right-0 w-1/2 h-1/2 bg-red-200"></div>
+                        </div>
+                        <ul class="text-sm space-y-2">
+                            <li class="flex items-center"><div class="w-3 h-3 bg-green-400 mr-2 rounded"></div> 50% Non-starchy vegetables</li>
+                            <li class="flex items-center"><div class="w-3 h-3 bg-blue-400 mr-2 rounded"></div> 25% Lean protein</li>
+                            <li class="flex items-center"><div class="w-3 h-3 bg-red-400 mr-2 rounded"></div> 25% Complex carbohydrates</li>
+                            <li class="flex items-center"><div class="w-3 h-3 bg-yellow-400 mr-2 rounded"></div> Add healthy fats in moderation</li>
+                        </ul>
+                    </div>
+                    
+                    <div class="nutrition-card bg-white border border-[#9B8DE5] p-5 rounded-lg">
+                        <h3 class="text-xl font-semibold mb-3 text-[#4DB6AC]">PCOS Superfoods</h3>
+                        <div class="grid grid-cols-3 gap-2 mb-4">
+                            <div class="text-center p-2 bg-green-50 rounded">
+                                <span class="text-2xl">🥑</span>
+                                <p class="text-xs mt-1">Avocado</p>
+                            </div>
+                            <div class="text-center p-2 bg-blue-50 rounded">
+                                <span class="text-2xl">🐟</span>
+                                <p class="text-xs mt-1">Salmon</p>
+                            </div>
+                            <div class="text-center p-2 bg-yellow-50 rounded">
+                                <span class="text-2xl">🌰</span>
+                                <p class="text-xs mt-1">Nuts</p>
+                            </div>
+                            <div class="text-center p-2 bg-purple-50 rounded">
+                                <span class="text-2xl">🫐</span>
+                                <p class="text-xs mt-1">Berries</p>
+                            </div>
+                            <div class="text-center p-2 bg-green-50 rounded">
+                                <span class="text-2xl">🥦</span>
+                                <p class="text-xs mt-1">Broccoli</p>
+                            </div>
+                            <div class="text-center p-2 bg-red-50 rounded">
+                                <span class="text-2xl">🫘</span>
+                                <p class="text-xs mt-1">Legumes</p>
+                            </div>
+                        </div>
+                        <p class="text-sm">These foods help balance hormones, reduce inflammation, and improve insulin sensitivity.</p>
+                    </div>
+                    
+                    <div class="nutrition-card bg-white border border-[#4DB6AC] p-5 rounded-lg">
+                        <h3 class="text-xl font-semibold mb-3 text-[#9B8DE5]">Sample Day Plan</h3>
+                        <div class="space-y-3">
+                            <div class="flex items-center">
+                                <div class="bg-[#9B8DE5] text-white rounded-full w-8 h-8 flex items-center justify-center mr-3">B</div>
+                                <div>
+                                    <p class="font-medium">Breakfast</p>
+                                    <p class="text-sm">Veggie omelet with avocado</p>
+                                </div>
+                            </div>
+                            <div class="flex items-center">
+                                <div class="bg-[#4DB6AC] text-white rounded-full w-8 h-8 flex items-center justify-center mr-3">L</div>
+                                <div>
+                                    <p class="font-medium">Lunch</p>
+                                    <p class="text-sm">Grilled chicken salad with olive oil dressing</p>
+                                </div>
+                            </div>
+                            <div class="flex items-center">
+                                <div class="bg-[#9B8DE5] text-white rounded-full w-8 h-8 flex items-center justify-center mr-3">S</div>
+                                <div>
+                                    <p class="font-medium">Snack</p>
+                                    <p class="text-sm">Apple with almond butter</p>
+                                </div>
+                            </div>
+                            <div class="flex items-center">
+                                <div class="bg-[#4DB6AC] text-white rounded-full w-8 h-8 flex items-center justify-center mr-3">D</div>
+                                <div>
+                                    <p class="font-medium">Dinner</p>
+                                    <p class="text-sm">Salmon with quinoa and roasted vegetables</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="bg-white card p-6">
+                <h3 class="text-xl font-semibold text-[#4DB6AC] mb-4">PCOS Nutrition Impact Chart</h3>
+                <div class="h-64">
+                    <canvas id="nutritionChart"></canvas>
+                </div>
+            </div>
+        </section>
+
+        <!-- Mindfulness Techniques Section -->
+        <section id="mindfulness" class="mb-12">
+            <div class="flex items-center mb-6">
+                <span class="section-icon text-3xl mr-3">🧘</span>
+                <h2 class="text-2xl font-bold text-[#333333]">Mindfulness Techniques for PCOS</h2>
+            </div>
+            
+            <div class="bg-white card p-6 mb-6">
+                <p class="mb-4">Stress management is crucial for PCOS as cortisol can worsen insulin resistance and hormonal imbalances. These mindfulness techniques can help reduce stress and improve symptoms.</p>
+                
+                <div class="grid md:grid-cols-2 gap-6 mb-6">
+                    <div class="p-4 bg-gradient-to-br from-[#9B8DE5] to-[#4DB6AC] text-white rounded-lg">
+                        <h3 class="text-xl font-semibold mb-3">Breathing Exercises</h3>
+                        <div class="mb-4">
+                            <div class="flex justify-between mb-2">
+                                <span>Inhale</span>
+                                <span>Hold</span>
+                                <span>Exhale</span>
+                            </div>
+                            <div class="bg-white bg-opacity-20 rounded-full h-8 relative overflow-hidden">
+                                <div class="absolute top-0 left-0 h-full bg-white bg-opacity-40 animate-pulse" style="width: 33%"></div>
+                                <div class="absolute top-0 left-33% h-full bg-white bg-opacity-60 animate-pulse" style="width: 33%"></div>
+                                <div class="absolute top-0 left-66% h-full bg-white bg-opacity-30 animate-pulse" style="width: 34%"></div>
+                            </div>
+                            <p class="text-center mt-2">4-7-8 Breathing: Inhale 4s, Hold 7s, Exhale 8s</p>
+                        </div>
+                        <p class="text-sm">Practice this technique daily to activate the parasympathetic nervous system and reduce stress.</p>
+                    </div>
+                    
+                    <div class="p-4 bg-white border border-[#9B8DE5] rounded-lg">
+                        <h3 class="text-xl font-semibold mb-3 text-[#4DB6AC]">Body Scan Meditation</h3>
+                        <div class="flex justify-center mb-4">
+                            <div class="relative">
+                                <div class="w-32 h-32 rounded-full bg-gradient-to-br from-[#9B8DE5] to-[#4DB6AC] opacity-20"></div>
+                                <div class="absolute top-0 left-0 w-full h-full flex items-center justify-center">
+                                    <span class="text-4xl">👁️</span>
+                                </div>
+                            </div>
+                        </div>
+                        <ol class="list-decimal pl-5 text-sm space-y-2">
+                            <li>Lie down comfortably and close your eyes</li>
+                            <li>Bring awareness to your feet, noticing any sensations</li>
+                            <li>Slowly move your attention up through your body</li>
+                            <li>Notice areas of tension without judgment</li>
+                            <li>Breathe into tense areas, imagining relaxation</li>
+                        </ol>
+                    </div>
+                </div>
+                
+                <div class="bg-gradient-to-r from-[#9B8DE5] to-[#4DB6AC] text-white p-5 rounded-lg">
+                    <h3 class="text-xl font-semibold mb-3">Mindful Eating Practice</h3>
+                    <div class="grid md:grid-cols-4 gap-4 text-center">
+                        <div>
+                            <div class="bg-white bg-opacity-20 rounded-full w-16 h-16 mx-auto mb-2 flex items-center justify-center">
+                                <span class="text-2xl">👃</span>
+                            </div>
+                            <p class="text-sm">Notice aromas before eating</p>
+                        </div>
+                        <div>
+                            <div class="bg-white bg-opacity-20 rounded-full w-16 h-16 mx-auto mb-2 flex items-center justify-center">
+                                <span class="text-2xl">👀</span>
+                            </div>
+                            <p class="text-sm">Observe colors and textures</p>
+                        </div>
+                        <div>
+                            <div class="bg-white bg-opacity-20 rounded-full w-16 h-16 mx-auto mb-2 flex items-center justify-center">
+                                <span class="text-2xl">👅</span>
+                            </div>
+                            <p class="text-sm">Chew slowly, savoring flavors</p>
+                        </div>
+                        <div>
+                            <div class="bg-white bg-opacity-20 rounded-full w-16 h-16 mx-auto mb-2 flex items-center justify-center">
+                                <span class="text-2xl">💖</span>
+                            </div>
+                            <p class="text-sm">Check in with hunger/fullness</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Symptom Tracker Section -->
+        <section id="tracker" class="mb-12">
+            <div class="flex items-center mb-6">
+                <span class="section-icon text-3xl mr-3">📊</span>
+                <h2 class="text-2xl font-bold text-[#333333]">PCOS Symptom Tracker</h2>
+            </div>
+            
+            <div class="bg-white card p-6">
+                <p class="mb-4">Tracking your symptoms can help you identify patterns and triggers. Use this interactive tracker to monitor how different strategies affect your PCOS symptoms.</p>
+                
+                <div x-data="symptomTracker()" class="mb-6">
+                    <div class="grid md:grid-cols-2 gap-6">
+                        <div>
+                            <h3 class="text-lg font-semibold text-[#4DB6AC] mb-3">Log Your Symptoms</h3>
+                            <div class="space-y-4">
+                                <div>
+                                    <label class="block text-sm font-medium mb-1">Symptom</label>
+                                    <select x-model="newSymptom.type" class="w-full border rounded-lg p-2">
+                                        <option value="energy">Energy Level</option>
+                                        <option value="mood">Mood</option>
+                                        <option value="cravings">Cravings</option>
+                                        <option value="pain">Pain/Discomfort</option>
+                                        <option value="skin">Skin Issues</option>
+                                        <option value="sleep">Sleep Quality</option>
+                                    </select>
+                                </div>
+                                <div>
+                                    <label class="block text-sm font-medium mb-1">Intensity (1-10)</label>
+                                    <input x-model="newSymptom.intensity" type="range" min="1" max="10" class="w-full">
+                                    <div class="flex justify-between text-xs">
+                                        <span>1 (Low)</span>
+                                        <span x-text="newSymptom.intensity"></span>
+                                        <span>10 (High)</span>
+                                    </div>
+                                </div>
+                                <div>
+                                    <label class="block text-sm font-medium mb-1">Notes</label>
+                                    <textarea x-model="newSymptom.notes" class="w-full border rounded-lg p-2" rows="2" placeholder="Any additional details..."></textarea>
+                                </div>
+                                <button @click="addSymptom" class="w-full gradient-bg text-white py-2 rounded-lg font-medium">Add Symptom Log</button>
+                            </div>
+                        </div>
+                        
+                        <div>
+                            <h3 class="text-lg font-semibold text-[#9B8DE5] mb-3">Recent Symptoms</h3>
+                            <div class="h-64 overflow-y-auto border rounded-lg p-2">
+                                <template x-for="symptom in symptoms" :key="symptom.id">
+                                    <div class="border-b py-2 last:border-b-0">
+                                        <div class="flex justify-between">
+                                            <span x-text="symptom.type" class="font-medium capitalize"></span>
+                                            <span x-text="symptom.date" class="text-sm text-gray-500"></span>
+                                        </div>
+                                        <div class="flex items-center mt-1">
+                                            <span class="text-sm mr-2">Intensity:</span>
+                                            <div class="flex">
+                                                <template x-for="i in 10" :key="i">
+                                                    <div :class="i <= symptom.intensity ? 'bg-[#9B8DE5]' : 'bg-gray-200'" class="w-2 h-2 rounded-full mr-1"></div>
+                                                </template>
+                                            </div>
+                                        </div>
+                                        <p x-text="symptom.notes" class="text-sm mt-1" x-show="symptom.notes"></p>
+                                    </div>
+                                </template>
+                                <p x-show="symptoms.length === 0" class="text-center text-gray-500 py-4">No symptoms logged yet</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="h-64">
+                    <canvas id="symptomChart"></canvas>
+                </div>
+            </div>
+        </section>
+    </main>
+
+    <!-- Footer -->
+    <footer class="bg-[#333333] text-white py-8">
+        <div class="container mx-auto px-4 text-center">
+            <p class="mb-2">PCOS Visual Guide - Educational Resource</p>
+            <p class="text-sm opacity-75">Track patterns, but always consult with healthcare providers for personalized medical advice.</p>
+        </div>
+    </footer>
+
+    <script>
+        // Symptom Tracker Functionality
+        function symptomTracker() {
+            return {
+                symptoms: [],
+                newSymptom: {
+                    type: 'energy',
+                    intensity: 5,
+                    notes: ''
+                },
+                addSymptom() {
+                    if (this.newSymptom.intensity < 1) return;
+                    
+                    this.symptoms.unshift({
+                        id: Date.now(),
+                        type: this.newSymptom.type,
+                        intensity: parseInt(this.newSymptom.intensity),
+                        notes: this.newSymptom.notes,
+                        date: new Date().toLocaleDateString()
+                    });
+                    
+                    // Reset form
+                    this.newSymptom.notes = '';
+                    this.newSymptom.intensity = 5;
+                    
+                    // Update chart if it exists
+                    if (window.symptomChart) {
+                        updateSymptomChart();
+                    }
+                }
+            }
+        }
+        
+        // Initialize Charts
+        document.addEventListener('DOMContentLoaded', function() {
+            // Cycle Chart
+            const cycleCtx = document.getElementById('cycleChart').getContext('2d');
+            window.cycleChart = new Chart(cycleCtx, {
+                type: 'line',
+                data: {
+                    labels: ['Week 1', 'Week 2', 'Week 3', 'Week 4'],
+                    datasets: [{
+                        label: 'Energy Level',
+                        data: [3, 7, 8, 4],
+                        borderColor: '#9B8DE5',
+                        backgroundColor: 'rgba(155, 141, 229, 0.1)',
+                        tension: 0.3
+                    }, {
+                        label: 'Cravings Intensity',
+                        data: [6, 4, 3, 8],
+                        borderColor: '#4DB6AC',
+                        backgroundColor: 'rgba(77, 182, 172, 0.1)',
+                        tension: 0.3
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    scales: {
+                        y: {
+                            beginAtZero: true,
+                            max: 10
+                        }
+                    }
+                }
+            });
+            
+            // Nutrition Chart
+            const nutritionCtx = document.getElementById('nutritionChart').getContext('2d');
+            window.nutritionChart = new Chart(nutritionCtx, {
+                type: 'bar',
+                data: {
+                    labels: ['Blood Sugar', 'Inflammation', 'Hormone Balance', 'Energy Levels'],
+                    datasets: [{
+                        label: 'Impact of PCOS-Friendly Diet',
+                        data: [8, 7, 6, 9],
+                        backgroundColor: [
+                            'rgba(155, 141, 229, 0.7)',
+                            'rgba(77, 182, 172, 0.7)',
+                            'rgba(155, 141, 229, 0.5)',
+                            'rgba(77, 182, 172, 0.5)'
+                        ],
+                        borderColor: [
+                            '#9B8DE5',
+                            '#4DB6AC',
+                            '#9B8DE5',
+                            '#4DB6AC'
+                        ],
+                        borderWidth: 1
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    scales: {
+                        y: {
+                            beginAtZero: true,
+                            max: 10
+                        }
+                    }
+                }
+            });
+            
+            // Symptom Chart
+            const symptomCtx = document.getElementById('symptomChart').getContext('2d');
+            window.symptomChart = new Chart(symptomCtx, {
+                type: 'radar',
+                data: {
+                    labels: ['Energy', 'Mood', 'Cravings', 'Pain', 'Skin', 'Sleep'],
+                    datasets: [{
+                        label: 'Symptom Severity',
+                        data: [5, 6, 7, 4, 5, 6],
+                        backgroundColor: 'rgba(155, 141, 229, 0.2)',
+                        borderColor: '#9B8DE5',
+                        pointBackgroundColor: '#9B8DE5',
+                        pointBorderColor: '#fff',
+                        pointHoverBackgroundColor: '#fff',
+                        pointHoverBorderColor: '#9B8DE5'
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    scales: {
+                        r: {
+                            beginAtZero: true,
+                            max: 10
+                        }
+                    }
+                }
+            });
+            
+            // Function to update symptom chart based on logged data
+            window.updateSymptomChart = function() {
+                // This would normally process the symptom data
+                // For demo purposes, we'll use static data
+                const newData = [5, 6, 7, 4, 5, 6];
+                window.symptomChart.data.datasets[0].data = newData;
+                window.symptomChart.update();
+            };
+        });
+    </script>
+</body>
+</html>

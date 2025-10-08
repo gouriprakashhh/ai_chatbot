@@ -5,6 +5,8 @@ urlpatterns = [
     # Home
     path('', views.home_view, name='home'),
     path('home-auth/', views.home_view_test, name='home_auth'),  # Authenticated home
+    path('articles/',views.articles,name="articles"),
+    path('info/',views.info,name="info"),
 
     # Auth
     path('signup/', views.signup_view, name='signup'),

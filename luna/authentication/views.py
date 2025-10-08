@@ -334,3 +334,10 @@ from .decorators import session_login_required
 def home_view_test(request):
     user = request.custom_user  # ✅ Access logged-in user
     return render(request, "user/home_auth.html", {"user": user})
+
+
+def articles(request):
+    return render(request,"user/articles.html")
+
+def info(request):
+    return render(request,"user/info.html")

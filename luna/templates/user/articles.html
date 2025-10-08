@@ -1,0 +1,394 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>PCOS Health Guide - Understanding and Managing Polycystic Ovary Syndrome</title>
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- Alpine.js -->
+    <script defer src="https://cdn.jsdelivr.net/npm/alpinejs@3.x.x/dist/cdn.min.js"></script>
+    <!-- Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&family=Lora:wght@400;500;600;700&family=Nunito:wght@300;400;500;600&display=swap" rel="stylesheet">
+    <style>
+        body {
+            font-family: 'Poppins', sans-serif;
+            color: #333333;
+            background-color: #F7F7F7;
+        }
+        h1, h2, h3, h4, h5, h6 {
+            font-family: 'Lora', serif;
+        }
+        .card {
+            border-radius: 12px;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.05);
+        }
+        .gradient-bg {
+            background: linear-gradient(135deg, #9B8DE5, #4DB6AC);
+        }
+        .chat-bubble {
+            border-radius: 18px;
+        }
+        .section-icon {
+            background: linear-gradient(135deg, #9B8DE5, #4DB6AC);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+    </style>
+</head>
+<body class="min-h-screen">
+    <!-- Header -->
+    <header class="gradient-bg text-white py-6">
+        <div class="container mx-auto px-4">
+            <h1 class="text-3xl md:text-4xl font-bold text-center">PCOS Health Guide</h1>
+            <p class="text-center mt-2 text-lg opacity-90">Understanding and Managing Polycystic Ovary Syndrome</p>
+        </div>
+    </header>
+
+    <!-- Navigation -->
+    <nav class="bg-white shadow-sm sticky top-0 z-10">
+        <div class="container mx-auto px-4 py-3">
+            <div class="flex flex-wrap justify-center gap-4">
+                <a href="#understanding" class="text-[#9B8DE5] hover:text-[#4DB6AC] font-medium transition-colors">Understanding PCOS</a>
+                <a href="#nutrition" class="text-[#9B8DE5] hover:text-[#4DB6AC] font-medium transition-colors">Nutrition Strategies</a>
+                <a href="#mental-health" class="text-[#9B8DE5] hover:text-[#4DB6AC] font-medium transition-colors">Mental Health</a>
+                <a href="#exercise" class="text-[#9B8DE5] hover:text-[#4DB6AC] font-medium transition-colors">Exercise & PCOS</a>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Main Content -->
+    <main class="container mx-auto px-4 py-8 max-w-4xl">
+        <!-- Understanding PCOS Section -->
+        <section id="understanding" class="mb-12">
+            <div class="flex items-center mb-6">
+                <span class="section-icon text-3xl mr-3">💡</span>
+                <h2 class="text-2xl font-bold text-[#333333]">Understanding PCOS: Symptoms, Causes, and Diagnosis</h2>
+            </div>
+            
+            <div class="bg-white card p-6 mb-6">
+                <h3 class="text-xl font-semibold text-[#4DB6AC] mb-3">What is PCOS?</h3>
+                <p class="mb-4">Polycystic Ovary Syndrome (PCOS) is a common hormonal disorder affecting people with ovaries during their reproductive years. It's characterized by a combination of symptoms that can impact various aspects of health.</p>
+                
+                <div x-data="{ activeTab: 'symptoms' }" class="mb-6">
+                    <div class="flex border-b border-gray-200">
+                        <button 
+                            @click="activeTab = 'symptoms'" 
+                            :class="activeTab === 'symptoms' ? 'border-b-2 border-[#9B8DE5] text-[#9B8DE5]' : 'text-gray-500'"
+                            class="py-2 px-4 font-medium focus:outline-none"
+                        >
+                            Symptoms
+                        </button>
+                        <button 
+                            @click="activeTab = 'causes'" 
+                            :class="activeTab === 'causes' ? 'border-b-2 border-[#9B8DE5] text-[#9B8DE5]' : 'text-gray-500'"
+                            class="py-2 px-4 font-medium focus:outline-none"
+                        >
+                            Causes
+                        </button>
+                        <button 
+                            @click="activeTab = 'diagnosis'" 
+                            :class="activeTab === 'diagnosis' ? 'border-b-2 border-[#9B8DE5] text-[#9B8DE5]' : 'text-gray-500'"
+                            class="py-2 px-4 font-medium focus:outline-none"
+                        >
+                            Diagnosis
+                        </button>
+                    </div>
+                    
+                    <div x-show="activeTab === 'symptoms'" class="py-4">
+                        <ul class="list-disc pl-5 space-y-2">
+                            <li>Irregular menstrual cycles or absence of periods</li>
+                            <li>Excess androgen levels leading to hirsutism (excess hair growth) or acne</li>
+                            <li>Polycystic ovaries visible on ultrasound</li>
+                            <li>Weight gain or difficulty losing weight</li>
+                            <li>Thinning hair or hair loss from the scalp</li>
+                            <li>Skin tags or darkening of skin in body folds</li>
+                        </ul>
+                    </div>
+                    
+                    <div x-show="activeTab === 'causes'" class="py-4">
+                        <p class="mb-3">While the exact cause of PCOS is unknown, several factors are believed to play a role:</p>
+                        <ul class="list-disc pl-5 space-y-2">
+                            <li><strong>Insulin resistance:</strong> The body's cells don't respond normally to insulin, leading to higher insulin levels</li>
+                            <li><strong>Hormonal imbalance:</strong> Elevated levels of androgens (male hormones)</li>
+                            <li><strong>Genetics:</strong> PCOS often runs in families</li>
+                            <li><strong>Low-grade inflammation:</strong> People with PCOS often have increased levels of inflammation</li>
+                        </ul>
+                    </div>
+                    
+                    <div x-show="activeTab === 'diagnosis'" class="py-4">
+                        <p class="mb-3">PCOS is typically diagnosed when at least two of the following three criteria are met:</p>
+                        <ul class="list-disc pl-5 space-y-2">
+                            <li>Irregular or absent ovulation</li>
+                            <li>Clinical or biochemical signs of hyperandrogenism</li>
+                            <li>Polycystic ovaries on ultrasound</li>
+                        </ul>
+                        <p class="mt-3">Other conditions with similar symptoms must be ruled out before a PCOS diagnosis is confirmed.</p>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Nutrition Strategies Section -->
+        <section id="nutrition" class="mb-12">
+            <div class="flex items-center mb-6">
+                <span class="section-icon text-3xl mr-3">🥗</span>
+                <h2 class="text-2xl font-bold text-[#333333]">Nutrition Strategies for PCOS Management</h2>
+            </div>
+            
+            <div class="bg-white card p-6">
+                <p class="mb-4">Nutrition plays a crucial role in managing PCOS symptoms. The right dietary approach can help regulate insulin levels, support weight management, and reduce inflammation.</p>
+                
+                <div class="grid md:grid-cols-2 gap-6 mb-6">
+                    <div class="bg-[#F7F7F7] p-4 rounded-lg">
+                        <h4 class="font-semibold text-[#4DB6AC] mb-2">Foods to Include</h4>
+                        <ul class="list-disc pl-5 space-y-1">
+                            <li>High-fiber vegetables (broccoli, cauliflower, leafy greens)</li>
+                            <li>Lean proteins (chicken, fish, tofu, legumes)</li>
+                            <li>Anti-inflammatory foods (berries, fatty fish, turmeric)</li>
+                            <li>Complex carbohydrates (whole grains, sweet potatoes)</li>
+                            <li>Healthy fats (avocado, nuts, olive oil)</li>
+                        </ul>
+                    </div>
+                    
+                    <div class="bg-[#F7F7F7] p-4 rounded-lg">
+                        <h4 class="font-semibold text-[#4DB6AC] mb-2">Foods to Limit</h4>
+                        <ul class="list-disc pl-5 space-y-1">
+                            <li>Refined carbohydrates (white bread, pastries)</li>
+                            <li>Sugary beverages and snacks</li>
+                            <li>Processed and fried foods</li>
+                            <li>Excessive red meat consumption</li>
+                            <li>High-sugar fruits in large quantities</li>
+                        </ul>
+                    </div>
+                </div>
+                
+                <div class="bg-gradient-to-r from-[#9B8DE5] to-[#4DB6AC] text-white p-4 rounded-lg">
+                    <h4 class="font-semibold mb-2">PCOS-Friendly Meal Planning Tips</h4>
+                    <ul class="list-disc pl-5 space-y-1">
+                        <li>Balance each meal with protein, healthy fats, and complex carbs</li>
+                        <li>Eat smaller, more frequent meals to stabilize blood sugar</li>
+                        <li>Stay hydrated with water and herbal teas</li>
+                        <li>Consider timing meals to support circadian rhythms</li>
+                        <li>Practice mindful eating to recognize hunger and fullness cues</li>
+                    </ul>
+                </div>
+            </div>
+        </section>
+
+        <!-- Mental Health Section -->
+        <section id="mental-health" class="mb-12">
+            <div class="flex items-center mb-6">
+                <span class="section-icon text-3xl mr-3">💖</span>
+                <h2 class="text-2xl font-bold text-[#333333]">The PCOS-Mental Health Connection</h2>
+            </div>
+            
+            <div class="bg-white card p-6">
+                <p class="mb-4">Living with PCOS can significantly impact mental health. The hormonal imbalances, physical symptoms, and challenges with diagnosis and treatment can contribute to emotional distress.</p>
+                
+                <div class="mb-6">
+                    <h3 class="text-xl font-semibold text-[#4DB6AC] mb-3">Common Mental Health Challenges</h3>
+                    <div class="grid md:grid-cols-3 gap-4">
+                        <div class="bg-[#F7F7F7] p-4 rounded-lg text-center">
+                            <span class="text-4xl mb-2 block">😔</span>
+                            <h4 class="font-semibold">Depression</h4>
+                            <p class="text-sm mt-2">Women with PCOS are 3x more likely to experience depression</p>
+                        </div>
+                        <div class="bg-[#F7F7F7] p-4 rounded-lg text-center">
+                            <span class="text-4xl mb-2 block">😰</span>
+                            <h4 class="font-semibold">Anxiety</h4>
+                            <p class="text-sm mt-2">Higher rates of anxiety disorders among those with PCOS</p>
+                        </div>
+                        <div class="bg-[#F7F7F7] p-4 rounded-lg text-center">
+                            <span class="text-4xl mb-2 block">😞</span>
+                            <h4 class="font-semibold">Body Image Issues</h4>
+                            <p class="text-sm mt-2">Weight changes and other symptoms can affect self-esteem</p>
+                        </div>
+                    </div>
+                </div>
+                
+                <div>
+                    <h3 class="text-xl font-semibold text-[#4DB6AC] mb-3">Coping Strategies and Support</h3>
+                    <div class="space-y-4">
+                        <div class="flex items-start">
+                            <span class="bg-[#9B8DE5] text-white rounded-full p-2 mr-3">1</span>
+                            <div>
+                                <h4 class="font-semibold">Seek Professional Support</h4>
+                                <p class="text-sm">Therapists specializing in chronic illness can provide valuable coping strategies.</p>
+                            </div>
+                        </div>
+                        <div class="flex items-start">
+                            <span class="bg-[#9B8DE5] text-white rounded-full p-2 mr-3">2</span>
+                            <div>
+                                <h4 class="font-semibold">Connect with Others</h4>
+                                <p class="text-sm">Join PCOS support groups to share experiences and reduce feelings of isolation.</p>
+                            </div>
+                        </div>
+                        <div class="flex items-start">
+                            <span class="bg-[#9B8DE5] text-white rounded-full p-2 mr-3">3</span>
+                            <div>
+                                <h4 class="font-semibold">Practice Self-Compassion</h4>
+                                <p class="text-sm">Be kind to yourself and acknowledge that managing PCOS is challenging.</p>
+                            </div>
+                        </div>
+                        <div class="flex items-start">
+                            <span class="bg-[#9B8DE5] text-white rounded-full p-2 mr-3">4</span>
+                            <div>
+                                <h4 class="font-semibold">Mindfulness and Stress Reduction</h4>
+                                <p class="text-sm">Techniques like meditation, yoga, and deep breathing can help manage stress.</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Exercise Section -->
+        <section id="exercise" class="mb-12">
+            <div class="flex items-center mb-6">
+                <span class="section-icon text-3xl mr-3">💪</span>
+                <h2 class="text-2xl font-bold text-[#333333]">Exercise and PCOS: Finding the Right Balance</h2>
+            </div>
+            
+            <div class="bg-white card p-6">
+                <p class="mb-4">Regular physical activity is a cornerstone of PCOS management. Exercise helps improve insulin sensitivity, support weight management, reduce stress, and balance hormones.</p>
+                
+                <div class="mb-6">
+                    <h3 class="text-xl font-semibold text-[#4DB6AC] mb-3">Recommended Exercise Types</h3>
+                    <div class="grid md:grid-cols-2 gap-6">
+                        <div>
+                            <h4 class="font-semibold mb-2">Cardiovascular Exercise</h4>
+                            <ul class="list-disc pl-5 space-y-1">
+                                <li>Brisk walking, cycling, or swimming</li>
+                                <li>30-45 minutes, 3-5 times per week</li>
+                                <li>Helps with weight management and insulin sensitivity</li>
+                            </ul>
+                        </div>
+                        <div>
+                            <h4 class="font-semibold mb-2">Strength Training</h4>
+                            <ul class="list-disc pl-5 space-y-1">
+                                <li>Weight lifting or resistance bands</li>
+                                <li>2-3 times per week on non-consecutive days</li>
+                                <li>Builds muscle to improve metabolic rate</li>
+                            </ul>
+                        </div>
+                        <div>
+                            <h4 class="font-semibold mb-2">Flexibility & Mind-Body Exercises</h4>
+                            <ul class="list-disc pl-5 space-y-1">
+                                <li>Yoga, Pilates, or tai chi</li>
+                                <li>Helps reduce stress and cortisol levels</li>
+                                <li>Improves body awareness and mindfulness</li>
+                            </ul>
+                        </div>
+                        <div>
+                            <h4 class="font-semibold mb-2">High-Intensity Interval Training (HIIT)</h4>
+                            <ul class="list-disc pl-5 space-y-1">
+                                <li>Short bursts of intense activity followed by rest</li>
+                                <li>Effective for improving insulin sensitivity</li>
+                                <li>Start slowly and gradually increase intensity</li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="bg-gradient-to-r from-[#9B8DE5] to-[#4DB6AC] text-white p-4 rounded-lg">
+                    <h4 class="font-semibold mb-2">Exercise Tips for PCOS</h4>
+                    <ul class="list-disc pl-5 space-y-1">
+                        <li>Start slowly and gradually increase intensity to avoid burnout</li>
+                        <li>Find activities you enjoy to maintain consistency</li>
+                        <li>Listen to your body and rest when needed</li>
+                        <li>Combine different types of exercise for maximum benefit</li>
+                        <li>Consider working with a trainer knowledgeable about PCOS</li>
+                    </ul>
+                </div>
+            </div>
+        </section>
+
+        <!-- Interactive Chat Section -->
+        <section class="mb-12">
+            <h2 class="text-2xl font-bold text-[#333333] mb-6 text-center">PCOS Support Chat</h2>
+            
+            <div x-data="chatBot()" class="bg-white card p-4 max-w-md mx-auto">
+                <div class="h-64 overflow-y-auto mb-4 p-2 border rounded-lg bg-gray-50">
+                    <template x-for="message in messages" :key="message.id">
+                        <div :class="message.sender === 'user' ? 'text-right' : 'text-left'">
+                            <div :class="message.sender === 'user' ? 'bg-[#9B8DE5] text-white' : 'bg-gray-200 text-gray-800'" 
+                                 class="inline-block max-w-xs p-3 rounded-2xl mb-2 chat-bubble">
+                                <span x-text="message.text"></span>
+                            </div>
+                        </div>
+                    </template>
+                </div>
+                
+                <div class="flex">
+                    <input x-model="newMessage" @keydown.enter="sendMessage" type="text" 
+                           class="flex-1 border rounded-l-lg p-2 focus:outline-none focus:ring-2 focus:ring-[#9B8DE5]" 
+                           placeholder="Ask a question about PCOS...">
+                    <button @click="sendMessage" class="bg-[#4DB6AC] text-white px-4 rounded-r-lg hover:bg-[#3da89e] transition-colors">
+                        Send
+                    </button>
+                </div>
+            </div>
+        </section>
+    </main>
+
+    <!-- Footer -->
+    <footer class="bg-[#333333] text-white py-8">
+        <div class="container mx-auto px-4 text-center">
+            <p class="mb-2">PCOS Health Guide - Educational Resource</p>
+            <p class="text-sm opacity-75">This information is for educational purposes only. Consult with a healthcare provider for personalized medical advice.</p>
+        </div>
+    </footer>
+
+    <script>
+        function chatBot() {
+            return {
+                messages: [
+                    { id: 1, sender: 'bot', text: 'Hello! I can answer basic questions about PCOS. How can I help you today?' }
+                ],
+                newMessage: '',
+                sendMessage() {
+                    if (this.newMessage.trim() === '') return;
+                    
+                    // Add user message
+                    this.messages.push({
+                        id: this.messages.length + 1,
+                        sender: 'user',
+                        text: this.newMessage
+                    });
+                    
+                    // Simple bot responses based on keywords
+                    const userMessage = this.newMessage.toLowerCase();
+                    let botResponse = "I'm a simple bot and can't provide medical advice. Please consult a healthcare provider for personalized information.";
+                    
+                    if (userMessage.includes('symptom')) {
+                        botResponse = "Common PCOS symptoms include irregular periods, excess hair growth, acne, weight gain, and fertility issues. However, symptoms vary widely between individuals.";
+                    } else if (userMessage.includes('diet') || userMessage.includes('food') || userMessage.includes('eat')) {
+                        botResponse = "A PCOS-friendly diet typically focuses on whole foods, lean proteins, healthy fats, and complex carbohydrates while limiting sugar and processed foods.";
+                    } else if (userMessage.includes('exercise') || userMessage.includes('workout')) {
+                        botResponse = "Regular exercise is important for PCOS management. A combination of cardio, strength training, and mind-body exercises like yoga is often recommended.";
+                    } else if (userMessage.includes('mental health') || userMessage.includes('stress') || userMessage.includes('anxiety')) {
+                        botResponse = "PCOS can significantly impact mental health. Seeking support from therapists, joining support groups, and practicing stress-reduction techniques can be helpful.";
+                    } else if (userMessage.includes('diagnosis') || userMessage.includes('test')) {
+                        botResponse = "PCOS diagnosis typically involves assessing symptoms, blood tests to check hormone levels, and sometimes an ultrasound to examine the ovaries.";
+                    }
+                    
+                    // Add bot response after a short delay
+                    setTimeout(() => {
+                        this.messages.push({
+                            id: this.messages.length + 1,
+                            sender: 'bot',
+                            text: botResponse
+                        });
+                    }, 500);
+                    
+                    // Clear input
+                    this.newMessage = '';
+                }
+            }
+        }
+    </script>
+</body>
+</html>
