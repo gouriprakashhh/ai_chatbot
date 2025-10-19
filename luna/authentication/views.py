@@ -341,3 +341,82 @@ def articles(request):
 
 def info(request):
     return render(request,"user/info.html")
+
+# views.py (add these at the bottom)
+
+def forgot_password_view(request):
+    if request.method == "POST":
+        email = request.POST.get("email")
+        if not email:
+            return render(request, "auth/forgot_password.html", {"error": "Email is required."})
+
+        try:
+            user = UserAccount.objects.get(email=email)
+        except UserAccount.DoesNotExist:
+            # Don't reveal if email doesn't exist (security best practice)
+            return render(request, "auth/forgot_password.html", {
+                "success": "If your email is registered, you'll receive a password reset OTP shortly."
+            })
+
+        # Generate and send OTP
+        otp = generate_otp(email)
+        send_otp_email(email, otp)
+
+        # Store email in session for reset step
+        request.session["reset_email"] = email
+        return redirect("reset_password")
+
+    return render(request, "auth/forgot_password.html")
+
+
+def reset_password_view(request):
+    reset_email = request.session.get("reset_email")
+    if not reset_email:
+        return redirect("forgot_password")
+
+    if request.method == "POST":
+        otp = request.POST.get("otp")
+        new_password = request.POST.get("new_password")
+        confirm_password = request.POST.get("confirm_password")
+
+        if new_password != confirm_password:
+            return render(request, "auth/reset_password.html", {
+                "error": "Passwords do not match.",
+                "email": reset_email
+            })
+
+        # Validate OTP
+        otp_obj = EmailOTP.objects.filter(
+            email=reset_email, otp=otp, is_used=False
+        ).last()
+
+        if not otp_obj:
+            return render(request, "auth/reset_password.html", {
+                "error": "Invalid or expired OTP.",
+                "email": reset_email
+            })
+
+        # Mark OTP as used
+        otp_obj.is_used = True
+        otp_obj.save()
+
+        # Update password
+        try:
+            user = UserAccount.objects.get(email=reset_email)
+            user.set_password(new_password)
+            user.save()
+        except UserAccount.DoesNotExist:
+            return render(request, "auth/reset_password.html", {
+                "error": "User not found.",
+                "email": reset_email
+            })
+
+        # Clean up session
+        if "reset_email" in request.session:
+            del request.session["reset_email"]
+
+        return render(request, "auth/login.html", {
+            "success": "Password updated successfully! Please log in."
+        })
+
+    return render(request, "auth/reset_password.html", {"email": reset_email})

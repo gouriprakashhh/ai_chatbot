@@ -104,7 +104,8 @@
             <div class="text-center max-w-3xl mx-auto">
                 <h2 class="text-4xl md:text-5xl font-lora font-bold mb-6 text-charcoal">Understanding PCOS & Mental Health</h2>
                 <p class="text-lg md:text-xl mb-8 text-charcoal/80">Empowering you with knowledge, tools, and community support to navigate PCOS with confidence and improve your mental wellbeing.</p>
-                <button class="px-6 py-3 rounded-full bg-gradient-to-r from-lavender to-teal text-white font-semibold shadow-lg hover:shadow-xl transition-all duration-300 hover:-translate-y-1 transform">Start Your Journey</button>
+                <a href="/login"><button class="px-6 py-3 rounded-full bg-gradient-to-r from-lavender to-teal text-white font-semibold shadow-lg hover:shadow-xl transition-all duration-300 hover:-translate-y-1 transform">Start Your Journey</button>
+</a>
             </div>
         </div>
     </header>
@@ -122,7 +123,7 @@
                     </div>
                     <h3 class="text-xl font-semibold mb-3">Articles & Blogs</h3>
                     <p class="text-charcoal/70 mb-4">Explore our library of articles on PCOS management, stress reduction, and improving your mental health.</p>
-                    <a href="#" class="text-teal font-semibold flex items-center">
+                    <a href="/articles" class="text-teal font-semibold flex items-center">
                         Read Articles
                         <i class="fas fa-arrow-right ml-2"></i>
                     </a>
@@ -135,7 +136,7 @@
                     </div>
                     <h3 class="text-xl font-semibold mb-3">Infographics</h3>
                     <p class="text-charcoal/70 mb-4">Visual guides on cycle management, nutrition plans, and mindfulness techniques tailored for PCOS.</p>
-                    <a href="#" class="text-teal font-semibold flex items-center">
+                    <a href="/info" class="text-teal font-semibold flex items-center">
                         View Resources
                         <i class="fas fa-arrow-right ml-2"></i>
                     </a>
@@ -194,73 +195,120 @@
         </section>
         
         <!-- Community Teasers -->
-        <section class="mb-20">
-            <h2 class="text-3xl font-lora font-bold text-center mb-12">Join Our Supportive Community</h2>
-            
-            <div class="grid md:grid-cols-2 gap-8">
-                <!-- Blurred community posts as teasers -->
-                <div class="relative bg-white rounded-2xl p-6 shadow-lg overflow-hidden">
-                    <div class="blur-sm">
-                        <div class="flex items-center mb-4">
-                            <div class="w-10 h-10 rounded-full bg-lavender/10 flex items-center justify-center mr-3">
-                                <i class="fas fa-user text-lavender"></i>
-                            </div>
-                            <div>
-                                <h4 class="font-semibold">Sarah M.</h4>
-                                <p class="text-xs text-charcoal/50">Posted 2 days ago</p>
-                            </div>
-                        </div>
-                        <h3 class="font-semibold mb-2">How I manage my PCOS symptoms naturally</h3>
-                        <p class="text-charcoal/70 mb-4">After struggling with PCOS for years, I've found a combination of lifestyle changes that have made a significant difference in my symptoms and overall wellbeing...</p>
-                        <div class="flex text-xs text-charcoal/50">
-                            <span class="mr-4"><i class="fas fa-heart mr-1"></i> 24</span>
-                            <span><i class="fas fa-comment mr-1"></i> 8</span>
-                        </div>
+<!-- Food & Diet Trackers -->
+<section class="mb-20">
+    <h2 class="text-3xl font-lora font-bold text-center mb-12">Track Your Nutrition</h2>
+    
+    <div class="grid md:grid-cols-2 gap-8">
+        <!-- Blurred Food Tracker Card -->
+        <div class="relative bg-white rounded-2xl p-6 shadow-lg overflow-hidden">
+            <div class="blur-sm">
+                <div class="flex items-center mb-4">
+                    <div class="w-10 h-10 rounded-full bg-lavender/10 flex items-center justify-center mr-3">
+                        <i class="fas fa-utensils text-lavender"></i>
                     </div>
-                    <div class="absolute inset-0 flex items-center justify-center bg-white/80">
-                        <div class="text-center p-4">
-                            <div class="w-12 h-12 rounded-full bg-lavender/10 flex items-center justify-center mx-auto mb-3">
-                                <i class="fas fa-lock text-lavender"></i>
-                            </div>
-                            <p class="font-semibold mb-2">Join to view this discussion</p>
-                            <p class="text-sm text-charcoal/70 mb-3">Sign up to access our community forum and connect with others.</p>
-                            <button class="px-4 py-2 bg-teal text-white rounded-full text-sm font-semibold">Sign Up Now</button>
-                        </div>
+                    <div>
+                        <h4 class="font-semibold">Today's Food Log</h4>
+                        <p class="text-xs text-charcoal/50">Track meals & symptoms</p>
                     </div>
                 </div>
-                
-                <div class="relative bg-white rounded-2xl p-6 shadow-lg overflow-hidden">
-                    <div class="blur-sm">
-                        <div class="flex items-center mb-4">
-                            <div class="w-10 h-10 rounded-full bg-teal/10 flex items-center justify-center mr-3">
-                                <i class="fas fa-user text-teal"></i>
-                            </div>
-                            <div>
-                                <h4 class="font-semibold">Jessica T.</h4>
-                                <p class="text-xs text-charcoal/50">Posted 5 days ago</p>
-                            </div>
-                        </div>
-                        <h3 class="font-semibold mb-2">PCOS and anxiety - my experience and coping strategies</h3>
-                        <p class="text-charcoal/70 mb-4">Living with PCOS has been challenging not just physically but mentally as well. The hormonal fluctuations often trigger my anxiety, but I've developed some techniques that help me manage...</p>
-                        <div class="flex text-xs text-charcoal/50">
-                            <span class="mr-4"><i class="fas fa-heart mr-1"></i> 42</span>
-                            <span><i class="fas fa-comment mr-1"></i> 15</span>
-                        </div>
+                <h3 class="font-semibold mb-2">Breakfast • 8:30 AM</h3>
+                <p class="text-charcoal/70 mb-4">Oatmeal with berries, chia seeds, and almond milk</p>
+                <div class="flex justify-between items-center">
+                    <span class="text-sm text-charcoal/70">320 kcal • Low GI</span>
+                    <button class="text-teal text-sm font-semibold flex items-center">
+                        Add Meal
+                        <i class="fas fa-plus ml-1"></i>
+                    </button>
+                </div>
+                <div class="mt-6">
+                    <div class="flex justify-between text-xs text-charcoal/50 mb-1">
+                        <span>Carbs</span>
+                        <span>Fiber</span>
+                        <span>Protein</span>
                     </div>
-                    <div class="absolute inset-0 flex items-center justify-center bg-white/80">
-                        <div class="text-center p-4">
-                            <div class="w-12 h-12 rounded-full bg-lavender/10 flex items-center justify-center mx-auto mb-3">
-                                <i class="fas fa-lock text-lavender"></i>
-                            </div>
-                            <p class="font-semibold mb-2">Join to view this discussion</p>
-                            <p class="text-sm text-charcoal/70 mb-3">Sign up to access our community forum and connect with others.</p>
-                            <button class="px-4 py-2 bg-teal text-white rounded-full text-sm font-semibold">Sign Up Now</button>
+                    <div class="flex space-x-2">
+                        <div class="flex-1 h-2 bg-lavender/20 rounded-full overflow-hidden">
+                            <div class="h-full bg-lavender w-3/4"></div>
+                        </div>
+                        <div class="flex-1 h-2 bg-teal/20 rounded-full overflow-hidden">
+                            <div class="h-full bg-teal w-1/2"></div>
+                        </div>
+                        <div class="flex-1 h-2 bg-orange-200 rounded-full overflow-hidden">
+                            <div class="h-full bg-orange-500 w-2/5"></div>
                         </div>
                     </div>
                 </div>
             </div>
-        </section>
-        
+            <div class="absolute inset-0 flex items-center justify-center bg-white/80">
+                <div class="text-center p-4">
+                    <div class="w-12 h-12 rounded-full bg-lavender/10 flex items-center justify-center mx-auto mb-3">
+                        <i class="fas fa-lock text-lavender"></i>
+                    </div>
+                    <p class="font-semibold mb-2">Sign up to unlock Food Tracker</p>
+                    <p class="text-sm text-charcoal/70 mb-3">Log meals, track symptoms, and manage PCOS nutrition.</p>
+                    <a href="/signup" class="px-4 py-2 bg-teal text-white rounded-full text-sm font-semibold">Sign Up Now</a>
+                </div>
+            </div>
+        </div>
+
+        <!-- Blurred Diet Tracker Card -->
+        <div class="relative bg-white rounded-2xl p-6 shadow-lg overflow-hidden">
+            <div class="blur-sm">
+                <div class="flex items-center mb-4">
+                    <div class="w-10 h-10 rounded-full bg-teal/10 flex items-center justify-center mr-3">
+                        <i class="fas fa-apple-alt text-teal"></i>
+                    </div>
+                    <div>
+                        <h4 class="font-semibold">Weekly Diet Goals</h4>
+                        <p class="text-xs text-charcoal/50">PCOS-friendly nutrition</p>
+                    </div>
+                </div>
+                <h3 class="font-semibold mb-3">This Week's Progress</h3>
+                <div class="space-y-3 mb-4">
+                    <div class="flex items-center">
+                        <div class="w-5 h-5 rounded-full bg-teal flex items-center justify-center mr-2">
+                            <i class="fas fa-check text-white text-xs"></i>
+                        </div>
+                        <span class="text-sm">Reduce added sugar</span>
+                    </div>
+                    <div class="flex items-center">
+                        <div class="w-5 h-5 rounded-full bg-lavender/20 border border-lavender flex items-center justify-center mr-2">
+                            <i class="fas fa-check text-lavender text-xs"></i>
+                        </div>
+                        <span class="text-sm">Increase fiber intake</span>
+                    </div>
+                    <div class="flex items-center">
+                        <div class="w-5 h-5 rounded-full bg-orange-200 flex items-center justify-center mr-2">
+                            <i class="fas fa-times text-orange-500 text-xs"></i>
+                        </div>
+                        <span class="text-sm">Limit processed foods</span>
+                    </div>
+                </div>
+                <div class="mt-4">
+                    <div class="flex justify-between text-xs text-charcoal/50 mb-1">
+                        <span>Daily Goal</span>
+                        <span>Completed</span>
+                    </div>
+                    <div class="h-2 bg-gray-200 rounded-full overflow-hidden">
+                        <div class="h-full bg-gradient-to-r from-lavender to-teal w-3/5"></div>
+                    </div>
+                    <p class="text-right text-xs text-charcoal/70 mt-1">60% complete</p>
+                </div>
+            </div>
+            <div class="absolute inset-0 flex items-center justify-center bg-white/80">
+                <div class="text-center p-4">
+                    <div class="w-12 h-12 rounded-full bg-lavender/10 flex items-center justify-center mx-auto mb-3">
+                        <i class="fas fa-lock text-lavender"></i>
+                    </div>
+                    <p class="font-semibold mb-2">Sign up to unlock Diet Tracker</p>
+                    <p class="text-sm text-charcoal/70 mb-3">Set goals, monitor progress, and improve PCOS outcomes.</p>
+                    <a href="/signup" class="px-4 py-2 bg-teal text-white rounded-full text-sm font-semibold">Sign Up Now</a>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
         <!-- Self-Assessment Tools -->
         <section class="mb-20">
             <h2 class="text-3xl font-lora font-bold text-center mb-12">Self-Assessment Tools</h2>
@@ -329,8 +377,9 @@
             <p class="text-lg text-charcoal/70 mb-8 max-w-2xl mx-auto">Sign up today to access personalized content, track your progress, connect with our community, and chat with experts.</p>
             
             <div class="flex flex-col sm:flex-row justify-center space-y-4 sm:space-y-0 sm:space-x-4">
-                <button class="px-6 py-3 bg-gradient-to-r from-lavender to-teal text-white rounded-full font-semibold shadow-lg hover:shadow-xl transition-all duration-300">Create Your Account</button>
-                <button class="px-6 py-3 border border-lavender text-lavender rounded-full font-semibold hover:bg-lavender/10 transition-colors">Learn More</button>
+            <a href="/signup"><button class="px-6 py-3 bg-gradient-to-r from-lavender to-teal text-white rounded-full font-semibold shadow-lg hover:shadow-xl transition-all duration-300">Create Your Account</button>
+</a>
+                
             </div>
         </section>
     </main>
