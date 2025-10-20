@@ -77,6 +77,9 @@
         ::-webkit-validation-bubble-message {
             display: none;
         }
+        
+        /* Hide elements with x-cloak until Alpine is loaded */
+        [x-cloak] { display: none !important; }
     </style>
 </head>
 
@@ -112,37 +115,36 @@
             <div class="bg-white rounded-2xl shadow-xl p-8 animate-slide-in transform transition-all duration-500 hover:shadow-2xl"
                 :class="{ 'animate-shake': djangoError || hasValidationErrors }">
 
-               <!-- Django Error Message -->
-<div x-show="djangoErrorExists"
-     x-transition:enter="transition ease-out duration-300"
-     x-transition:leave="transition ease-in duration-700 opacity-0"
-     class="mb-6 p-4 bg-gradient-to-r from-red-50 to-pink-50 border-l-4 border-red-400 rounded-r-lg"
-     x-cloak>
-    <div class="flex items-center">
-        <svg class="w-5 h-5 text-red-400 mr-2" fill="currentColor" viewBox="0 0 20 20">
-            <path fill-rule="evenodd"
-                d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7 4a1 1 0 11-2 0 1 1 0 012 0zm-1-9a1 1 0 00-1 1v4a1 1 0 102 0V6a1 1 0 00-1-1z"
-                clip-rule="evenodd"></path>
-        </svg>
-        <p class="text-red-700 font-medium" x-text="djangoErrorMessage"></p>
-    </div>
-</div>
+                <!-- Django Error Message -->
+                <div x-show="djangoErrorExists"
+                     x-transition:enter="transition ease-out duration-300"
+                     x-transition:leave="transition ease-in duration-700 opacity-0"
+                     class="mb-6 p-4 bg-gradient-to-r from-red-50 to-pink-50 border-l-4 border-red-400 rounded-r-lg"
+                     x-cloak>
+                    <div class="flex items-center">
+                        <svg class="w-5 h-5 text-red-400 mr-2" fill="currentColor" viewBox="0 0 20 20">
+                            <path fill-rule="evenodd"
+                                d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7 4a1 1 0 11-2 0 1 1 0 012 0zm-1-9a1 1 0 00-1 1v4a1 1 0 102 0V6a1 1 0 00-1-1z"
+                                clip-rule="evenodd"></path>
+                        </svg>
+                        <p class="text-red-700 font-medium" x-text="djangoErrorMessage"></p>
+                    </div>
+                </div>
 
-<!-- Client-side / Network Error -->
-<div x-show="errorMessage && !djangoErrorExists"
-     x-transition:enter="transition ease-out duration-300"
-     x-transition:leave="transition ease-in duration-700 opacity-0"
-     class="mb-6 p-4 bg-gradient-to-r from-red-50 to-pink-50 border-l-4 border-red-400 rounded-r-lg">
-    <div class="flex items-center">
-        <svg class="w-5 h-5 text-red-400 mr-2" fill="currentColor" viewBox="0 0 20 20">
-            <path fill-rule="evenodd"
-                d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7 4a1 1 0 11-2 0 1 1 0 012 0zm-1-9a1 1 0 00-1 1v4a1 1 0 102 0V6a1 1 0 00-1-1z"
-                clip-rule="evenodd"></path>
-        </svg>
-        <p class="text-red-700 font-medium" x-text="errorMessage"></p>
-    </div>
-</div>
-
+                <!-- Client-side / Network Error -->
+                <div x-show="errorMessage && !djangoErrorExists"
+                     x-transition:enter="transition ease-out duration-300"
+                     x-transition:leave="transition ease-in duration-700 opacity-0"
+                     class="mb-6 p-4 bg-gradient-to-r from-red-50 to-pink-50 border-l-4 border-red-400 rounded-r-lg">
+                    <div class="flex items-center">
+                        <svg class="w-5 h-5 text-red-400 mr-2" fill="currentColor" viewBox="0 0 20 20">
+                            <path fill-rule="evenodd"
+                                d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7 4a1 1 0 11-2 0 1 1 0 012 0zm-1-9a1 1 0 00-1 1v4a1 1 0 102 0V6a1 1 0 00-1-1z"
+                                clip-rule="evenodd"></path>
+                        </svg>
+                        <p class="text-red-700 font-medium" x-text="errorMessage"></p>
+                    </div>
+                </div>
 
                 <!-- Django Form -->
                 <form method="post" action="/signup/" @submit="handleSubmit" class="space-y-6" novalidate>
@@ -156,22 +158,70 @@
                         </label>
                         <div class="relative">
                             <input type="text" name="username" x-model="formData.username"
-                                :class="{ 'border-red-400 ring-red-200': errors.username }"
+                                :class="{ 
+                                    'border-red-400 ring-red-200': errors.username,
+                                    'border-green-400 ring-green-200': usernameValid && formData.username.length > 0
+                                }"
                                 class="w-full px-4 py-3 border border-gray-300 rounded-xl focus:outline-none focus:ring-3 focus:ring-primary/30 focus:border-primary transition-all duration-300 transform group-hover:scale-[1.02] placeholder-gray-400"
-                                placeholder="Enter your username" required @input="clearError('username')">
+                                placeholder="Enter your username" required @input="validateUsername()">
                             <div
                                 class="absolute inset-y-0 right-0 pr-3 flex items-center pointer-events-none opacity-0 group-focus-within:opacity-100 transition-opacity duration-300">
-                                <svg class="w-5 h-5 text-primary animate-pulse-soft" fill="none" stroke="currentColor"
+                                <!-- Success icon -->
+                                <svg x-show="usernameValid && formData.username.length > 0" 
+                                     x-transition:enter="transition ease-out duration-200"
+                                     x-transition:enter-start="opacity-0 scale-75"
+                                     x-transition:enter-end="opacity-100 scale-100"
+                                     class="w-5 h-5 text-green-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path>
+                                </svg>
+                                <!-- Default icon -->
+                                <svg x-show="(!usernameValid || !formData.username.length) && !errors.username" 
+                                     class="w-5 h-5 text-primary animate-pulse-soft" fill="none" stroke="currentColor"
                                     viewBox="0 0 24 24">
                                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
                                         d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"></path>
                                 </svg>
+                                <!-- Error icon -->
+                                <svg x-show="errors.username" 
+                                     x-transition:enter="transition ease-out duration-200"
+                                     x-transition:enter-start="opacity-0 scale-75"
+                                     x-transition:enter-end="opacity-100 scale-100"
+                                     class="w-5 h-5 text-red-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path>
+                                </svg>
                             </div>
                         </div>
-                        <p x-show="errors.username" x-transition:enter="transition ease-out duration-200"
-                            x-transition:enter-start="opacity-0 transform -translate-y-1"
-                            x-transition:enter-end="opacity-100 transform translate-y-0"
-                            class="text-red-500 text-xs mt-1 font-medium" x-text="errors.username"></p>
+                        <!-- Error message -->
+                        <p x-show="errors.username" 
+                           x-transition:enter="transition ease-out duration-200"
+                           x-transition:enter-start="opacity-0 transform -translate-y-1"
+                           x-transition:enter-end="opacity-100 transform translate-y-0"
+                           class="text-red-500 text-xs mt-1 font-medium" 
+                           x-text="errors.username"></p>
+                        <!-- Username requirements -->
+                        <div class="mt-2 text-xs text-gray-500 space-y-1">
+                            <p class="flex items-center" 
+                               :class="{ 'text-green-600': formData.username.length >= 3 && formData.username.length <= 30 }">
+                                <span x-show="formData.username.length >= 3 && formData.username.length <= 30" 
+                                      class="text-green-500 mr-1"></span>
+                                <span x-show="!(formData.username.length >= 3 && formData.username.length <= 30)" 
+                                      class="text-gray-400 mr-1"></span>
+                            </p>
+                            <p class="flex items-center" 
+                               :class="{ 'text-green-600': /[a-zA-Z]/.test(formData.username) }">
+                                <span x-show="/[a-zA-Z]/.test(formData.username)" 
+                                      class="text-green-500 mr-1"></span>
+                                <span x-show="!/[a-zA-Z]/.test(formData.username)" 
+                                      class="text-gray-400 mr-1"></span>
+                            </p>
+                            <p class="flex items-center" 
+                               :class="{ 'text-green-600': /^[a-zA-Z0-9._-]+$/.test(formData.username) }">
+                                <span x-show="/^[a-zA-Z0-9._-]+$/.test(formData.username)" 
+                                      class="text-green-500 mr-1"></span>
+                                <span x-show="!/^[a-zA-Z0-9._-]+$/.test(formData.username)" 
+                                      class="text-gray-400 mr-1"></span>
+                            </p>
+                        </div>
                     </div>
 
                     <!-- Email Field -->
@@ -320,6 +370,7 @@
             },
             showPassword: false,
             isLoading: false,
+            usernameValid: false,
 
             // Error states
             errorMessage: '',
@@ -343,15 +394,65 @@
                 }
             },
 
+            validateUsername() {
+                this.clearError('username');
+                this.usernameValid = false;
+                
+                const username = this.formData.username.trim();
+                
+                // Check if username is empty
+                if (!username) {
+                    this.errors.username = 'Username is required';
+                    this.hasValidationErrors = true;
+                    return false;
+                }
+                
+                // Check length (3-30 characters)
+                if (username.length < 3 || username.length > 30) {
+                    this.errors.username = 'Username must be between 3 and 30 characters';
+                    this.hasValidationErrors = true;
+                    return false;
+                }
+                
+                // Check if it contains at least one letter
+                if (!/[a-zA-Z]/.test(username)) {
+                    this.errors.username = 'Username must contain at least one letter';
+                    this.hasValidationErrors = true;
+                    return false;
+                }
+                
+                // Check for valid characters (letters, numbers, dots, hyphens, underscores)
+                if (!/^[a-zA-Z0-9._-]+$/.test(username)) {
+                    this.errors.username = 'Username can only contain letters, numbers, dots, hyphens, and underscores';
+                    this.hasValidationErrors = true;
+                    return false;
+                }
+                
+                // Check for consecutive special characters
+                if (/[._-]{2,}/.test(username)) {
+                    this.errors.username = 'Username cannot have consecutive dots, hyphens, or underscores';
+                    this.hasValidationErrors = true;
+                    return false;
+                }
+                
+                // Check if starts or ends with special characters
+                if (/^[._-]|[._-]$/.test(username)) {
+                    this.errors.username = 'Username cannot start or end with a dot, hyphen, or underscore';
+                    this.hasValidationErrors = true;
+                    return false;
+                }
+                
+                // Username is valid
+                this.usernameValid = true;
+                return true;
+            },
+
             validateForm() {
                 this.errors = {};
                 this.hasValidationErrors = false;
 
-                // Username
-                if (!this.formData.username.trim()) {
-                    this.errors.username = 'Username is required';
-                    this.hasValidationErrors = true;
-                }
+                // Validate username
+                const usernameValid = this.validateUsername();
 
                 // Email
                 if (!this.formData.email.trim()) {
@@ -478,7 +579,6 @@
         }
     }
 </script>
-
 
 </body>
 

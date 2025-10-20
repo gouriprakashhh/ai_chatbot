@@ -213,6 +213,14 @@
                            x-text="errors.password"></p>
                     </div>
 
+                    <!-- Forgot Password Link -->
+                    <div class="flex justify-end -mt-2">
+                        <a href="/forgot-password" 
+                           class="text-sm text-primary hover:text-secondary font-medium transition-colors duration-300 hover:underline">
+                            Forgot your password?
+                        </a>
+                    </div>
+
                     <!-- Submit Button -->
                     <button type="submit" 
                             :disabled="isLoading"
@@ -417,7 +425,7 @@
             }
         }
     }
-</script>
+    </script>
 
 </body>
 </html>
