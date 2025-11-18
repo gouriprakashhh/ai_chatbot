@@ -1,0 +1,901 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Cycle Tracker - Luna</title>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        :root {
+            --lavender: #9B8DE5;
+            --teal: #4DB6AC;
+            --charcoal: #333333;
+            --lightgray: #F7F7F7;
+            --light-lavender: #F0EEFF;
+            --light-teal: #E6F5F3;
+        }
+        
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: 'Poppins', sans-serif;
+            background: linear-gradient(135deg, #F7F7F7 0%, #FFFFFF 100%);
+            min-height: 100vh;
+        }
+        
+        .container {
+            max-width: 1200px;
+            margin: 2rem auto;
+            padding: 0 1rem;
+        }
+        
+        .header {
+            background: linear-gradient(120deg, var(--lavender) 0%, var(--teal) 100%);
+            color: white;
+            padding: 2rem;
+            border-radius: 20px;
+            position: relative;
+            overflow: hidden;
+            margin-bottom: 2rem;
+        }
+        
+        .header::before {
+            content: '';
+            position: absolute;
+            top: -50%;
+            right: -10%;
+            width: 300px;
+            height: 300px;
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 50%;
+            animation: float 6s ease-in-out infinite;
+        }
+        
+        @keyframes float {
+            0%, 100% { transform: translateY(0px); }
+            50% { transform: translateY(-20px); }
+        }
+        
+        .back-button {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+            color: white;
+            text-decoration: none;
+            font-size: 0.9rem;
+            margin-bottom: 1rem;
+            padding: 0.5rem 1rem;
+            border-radius: 8px;
+            background: rgba(255, 255, 255, 0.15);
+            backdrop-filter: blur(10px);
+            transition: all 0.3s ease;
+            position: relative;
+            z-index: 1;
+        }
+        
+        .back-button:hover {
+            background: rgba(255, 255, 255, 0.25);
+            transform: translateX(-5px);
+        }
+        
+        .phase-card {
+            background: white;
+            border-radius: 16px;
+            padding: 1.5rem;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.05);
+            transition: all 0.3s ease;
+            opacity: 0;
+            animation: fadeInUp 0.5s ease forwards;
+        }
+        
+        .phase-card:nth-child(1) { animation-delay: 0.1s; }
+        .phase-card:nth-child(2) { animation-delay: 0.2s; }
+        .phase-card:nth-child(3) { animation-delay: 0.3s; }
+        
+        @keyframes fadeInUp {
+            from {
+                opacity: 0;
+                transform: translateY(20px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+        
+        .phase-card:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 8px 20px rgba(0,0,0,0.08);
+        }
+        
+        .cycle-ring {
+            width: 200px;
+            height: 200px;
+            border-radius: 50%;
+            background: conic-gradient(
+                #FF6B6B 0deg,
+                #FF6B6B calc(var(--period-percent) * 3.6deg),
+                var(--lavender) calc(var(--period-percent) * 3.6deg),
+                var(--lavender) calc(var(--ovulation-start) * 3.6deg),
+                var(--teal) calc(var(--ovulation-start) * 3.6deg),
+                var(--teal) calc(var(--ovulation-end) * 3.6deg),
+                #FFB84D calc(var(--ovulation-end) * 3.6deg),
+                #FFB84D 360deg
+            );
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            position: relative;
+            margin: 0 auto;
+        }
+        
+        .cycle-ring::before {
+            content: '';
+            width: 160px;
+            height: 160px;
+            background: white;
+            border-radius: 50%;
+            position: absolute;
+        }
+        
+        .cycle-day-display {
+            position: relative;
+            z-index: 1;
+            text-align: center;
+        }
+        
+        .calendar-grid {
+            display: grid;
+            grid-template-columns: repeat(7, 1fr);
+            gap: 0.5rem;
+            margin-top: 1rem;
+        }
+        
+        .calendar-day-header {
+            text-align: center;
+            font-weight: 600;
+            color: var(--charcoal);
+            opacity: 0.6;
+            padding: 0.5rem;
+            font-size: 0.9rem;
+        }
+        
+        .calendar-day {
+            aspect-ratio: 1;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border-radius: 12px;
+            background: white;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            position: relative;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.05);
+            font-weight: 500;
+            color: var(--charcoal);
+        }
+        
+        .calendar-day.empty {
+            background: transparent;
+            box-shadow: none;
+            cursor: default;
+        }
+        
+        .calendar-day:not(.empty):hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+        }
+        
+        .calendar-day.period {
+            background: linear-gradient(135deg, #FF6B6B, #FF8E8E);
+            color: white;
+            font-weight: 600;
+        }
+        
+        .calendar-day.fertile {
+            background: linear-gradient(135deg, var(--teal), #6FD5C7);
+            color: white;
+            font-weight: 600;
+        }
+        
+        .calendar-day.ovulation {
+            background: linear-gradient(135deg, var(--lavender), #B5A5F0);
+            color: white;
+            font-weight: 600;
+        }
+        
+        .calendar-day.today {
+            border: 3px solid var(--lavender);
+            font-weight: 700;
+        }
+        
+        .calendar-day.today::after {
+            content: '';
+            position: absolute;
+            bottom: 4px;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 6px;
+            height: 6px;
+            background: var(--lavender);
+            border-radius: 50%;
+        }
+        
+        .action-button {
+            width: 100%;
+            padding: 0.875rem 1.5rem;
+            border-radius: 12px;
+            border: none;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            font-family: 'Poppins', sans-serif;
+            font-size: 0.95rem;
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .action-button::before {
+            content: '';
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            width: 0;
+            height: 0;
+            border-radius: 50%;
+            background: rgba(255, 255, 255, 0.3);
+            transform: translate(-50%, -50%);
+            transition: width 0.6s, height 0.6s;
+        }
+        
+        .action-button:hover::before {
+            width: 300px;
+            height: 300px;
+        }
+        
+        .action-button:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 20px rgba(0,0,0,0.15);
+        }
+        
+        .btn-primary {
+            background: linear-gradient(120deg, #FF6B6B 0%, #FF8E8E 100%);
+            color: white;
+        }
+        
+        .btn-secondary {
+            background: linear-gradient(120deg, var(--lavender) 0%, var(--teal) 100%);
+            color: white;
+        }
+        
+        .btn-tertiary {
+            background: linear-gradient(120deg, var(--teal) 0%, #6FD5C7 100%);
+            color: white;
+        }
+        
+        .stat-card {
+            text-align: center;
+            padding: 1.5rem;
+        }
+        
+        .stat-value {
+            font-size: 2.5rem;
+            font-weight: 700;
+            color: var(--lavender);
+            line-height: 1;
+        }
+        
+        .stat-label {
+            font-size: 0.9rem;
+            color: var(--charcoal);
+            opacity: 0.7;
+            margin-top: 0.5rem;
+        }
+        
+        .phase-badge {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+            padding: 0.5rem 1rem;
+            border-radius: 50px;
+            font-size: 0.85rem;
+            font-weight: 600;
+            background: var(--light-lavender);
+            color: var(--lavender);
+            margin-top: 0.5rem;
+        }
+        
+        .tip-box {
+            background: linear-gradient(135deg, var(--light-lavender) 0%, var(--light-teal) 100%);
+            padding: 1.25rem;
+            border-radius: 12px;
+            border-left: 4px solid var(--lavender);
+        }
+        
+        .tip-box h4 {
+            color: var(--charcoal);
+            font-weight: 600;
+            margin-bottom: 0.5rem;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+        
+        .tip-box p {
+            color: var(--charcoal);
+            opacity: 0.8;
+            font-size: 0.9rem;
+            line-height: 1.6;
+        }
+        
+        .legend {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 1rem;
+            margin-top: 1.5rem;
+            padding-top: 1.5rem;
+            border-top: 2px solid var(--lightgray);
+        }
+        
+        .legend-item {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            font-size: 0.9rem;
+        }
+        
+        .legend-color {
+            width: 16px;
+            height: 16px;
+            border-radius: 4px;
+        }
+        
+        .alert {
+            padding: 1rem 1.5rem;
+            border-radius: 12px;
+            margin-bottom: 1.5rem;
+            animation: slideInDown 0.4s ease;
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+        }
+        
+        @keyframes slideInDown {
+            from {
+                opacity: 0;
+                transform: translateY(-20px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+        
+        .alert-success {
+            background: linear-gradient(135deg, #D1FAE5 0%, #A7F3D0 100%);
+            color: #065F46;
+            border: 2px solid #10B981;
+        }
+        
+        .alert-info {
+            background: linear-gradient(135deg, #DBEAFE 0%, #BFDBFE 100%);
+            color: #1E40AF;
+            border: 2px solid #3B82F6;
+        }
+        
+        .modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.5);
+            backdrop-filter: blur(5px);
+            z-index: 1000;
+            align-items: center;
+            justify-content: center;
+        }
+        
+        .modal.active {
+            display: flex;
+        }
+        
+        .modal-content {
+            background: white;
+            padding: 2rem;
+            border-radius: 20px;
+            max-width: 500px;
+            width: 90%;
+            box-shadow: 0 20px 60px rgba(0,0,0,0.3);
+            animation: modalSlideIn 0.3s ease;
+        }
+        
+        @keyframes modalSlideIn {
+            from {
+                opacity: 0;
+                transform: translateY(-50px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+        
+        .modal-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 1.5rem;
+        }
+        
+        .modal-header h3 {
+            color: var(--charcoal);
+            font-size: 1.5rem;
+        }
+        
+        .modal-close {
+            background: none;
+            border: none;
+            font-size: 1.5rem;
+            color: var(--charcoal);
+            cursor: pointer;
+            opacity: 0.6;
+            transition: opacity 0.3s;
+        }
+        
+        .modal-close:hover {
+            opacity: 1;
+        }
+        
+        .form-group {
+            margin-bottom: 1.5rem;
+        }
+        
+        .form-label {
+            display: block;
+            color: var(--charcoal);
+            font-weight: 500;
+            margin-bottom: 0.75rem;
+            font-size: 0.95rem;
+        }
+        
+        .form-input {
+            width: 100%;
+            padding: 0.875rem 1rem;
+            border: 2px solid #E5E7EB;
+            border-radius: 12px;
+            font-size: 1rem;
+            font-family: 'Poppins', sans-serif;
+            transition: all 0.3s ease;
+        }
+        
+        .form-input:focus {
+            outline: none;
+            border-color: var(--lavender);
+            box-shadow: 0 0 0 4px rgba(155, 141, 229, 0.1);
+        }
+        
+        @media (max-width: 768px) {
+            .container {
+                margin: 1rem auto;
+            }
+            
+            .header {
+                padding: 1.5rem;
+                border-radius: 15px;
+            }
+            
+            .cycle-ring {
+                width: 150px;
+                height: 150px;
+            }
+            
+            .cycle-ring::before {
+                width: 120px;
+                height: 120px;
+            }
+            
+            .stat-value {
+                font-size: 2rem;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <a href="/dashboard/" class="back-button">
+                <i class="fas fa-arrow-left"></i>
+                <span>Back to Dashboard</span>
+            </a>
+            <h1 class="text-2xl font-bold mb-1" style="position: relative; z-index: 1;">Cycle Tracker</h1>
+            <p class="text-white/90 text-sm" style="position: relative; z-index: 1;">Track your menstrual cycle and fertile windows</p>
+        </div>
+        
+        <div id="alertContainer"></div>
+        
+        {% if not has_period_data %}
+        <div class="alert alert-info">
+            <i class="fas fa-info-circle text-2xl"></i>
+            <div>
+                <strong>Welcome to Cycle Tracker!</strong>
+                <p class="text-sm mt-1">Add your last period date to start tracking your cycle accurately.</p>
+            </div>
+        </div>
+        {% endif %}
+        
+        <!-- Current Cycle Overview -->
+        <div class="grid md:grid-cols-3 gap-6 mb-6">
+            <div class="phase-card stat-card">
+                <div class="flex items-center justify-between mb-4">
+                    <h3 class="font-semibold text-charcoal text-left">Current Day</h3>
+                    <i class="fas fa-calendar text-lavender text-2xl"></i>
+                </div>
+                <div class="stat-value">Day {{ cycle_day }}</div>
+                <p class="stat-label">of {{ cycle_length }} day cycle</p>
+            </div>
+
+            <div class="phase-card stat-card">
+                <div class="flex items-center justify-between mb-4">
+                    <h3 class="font-semibold text-charcoal text-left">Current Phase</h3>
+                    <i class="fas {{ phase_icon }} text-teal text-2xl"></i>
+                </div>
+                <div class="phase-badge">
+                    <i class="fas {{ phase_icon }}"></i>
+                    <span>{{ current_phase }}</span>
+                </div>
+                <p class="stat-label mt-2">{{ phase_description }}</p>
+            </div>
+
+            <div class="phase-card stat-card">
+                <div class="flex items-center justify-between mb-4">
+                    <h3 class="font-semibold text-charcoal text-left">Next Period</h3>
+                    <i class="fas fa-clock text-pink-500 text-2xl"></i>
+                </div>
+                <div class="stat-value" style="color: #FF6B6B;">{{ days_until_period|default:"?" }}</div>
+                <p class="stat-label">days remaining</p>
+            </div>
+        </div>
+
+        <!-- Cycle Visualization & Quick Actions -->
+        <div class="grid md:grid-cols-2 gap-6 mb-6">
+            <div class="phase-card" style="animation-delay: 0.4s;">
+                <h3 class="font-semibold text-charcoal mb-4">Cycle Visualization</h3>
+                <div class="cycle-ring" style="--period-percent: 14; --ovulation-start: 40; --ovulation-end: 55;">
+                    <div class="cycle-day-display">
+                        <p class="text-4xl font-bold text-lavender">{{ cycle_day }}</p>
+                        <p class="text-sm text-charcoal/60">Day</p>
+                    </div>
+                </div>
+                <div class="grid grid-cols-2 gap-4 mt-6">
+                    <div class="flex items-center gap-2">
+                        <div class="w-4 h-4 rounded-full bg-red-400"></div>
+                        <span class="text-sm">Menstrual</span>
+                    </div>
+                    <div class="flex items-center gap-2">
+                        <div class="w-4 h-4 rounded-full" style="background: var(--lavender);"></div>
+                        <span class="text-sm">Follicular</span>
+                    </div>
+                    <div class="flex items-center gap-2">
+                        <div class="w-4 h-4 rounded-full" style="background: var(--teal);"></div>
+                        <span class="text-sm">Ovulation</span>
+                    </div>
+                    <div class="flex items-center gap-2">
+                        <div class="w-4 h-4 rounded-full bg-yellow-400"></div>
+                        <span class="text-sm">Luteal</span>
+                    </div>
+                </div>
+            </div>
+
+            <div class="phase-card" style="animation-delay: 0.5s;">
+                <h3 class="font-semibold text-charcoal mb-4">Quick Actions</h3>
+                <div class="space-y-3">
+                    <button class="action-button btn-primary" onclick="openPeriodModal()">
+                        <span><i class="fas fa-plus-circle mr-2"></i>Update Period Date</span>
+                        <i class="fas fa-chevron-right"></i>
+                    </button>
+                    <button class="action-button btn-secondary" onclick="openCycleLengthModal()">
+                        <span><i class="fas fa-calendar-alt mr-2"></i>Update Cycle Length</span>
+                        <i class="fas fa-chevron-right"></i>
+                    </button>
+                    <button class="action-button btn-tertiary" onclick="window.location.href='/symptoms/'">
+                        <span><i class="fas fa-heartbeat mr-2"></i>Log Symptoms</span>
+                        <i class="fas fa-chevron-right"></i>
+                    </button>
+                </div>
+
+                <div class="tip-box mt-4">
+                    <h4><i class="fas fa-lightbulb"></i>Tip for Today</h4>
+                    <p>{{ phase_tip }}</p>
+                </div>
+            </div>
+        </div>
+
+        <!-- Calendar View -->
+        <div class="phase-card" style="animation-delay: 0.6s;">
+            <div class="flex items-center justify-between mb-4">
+                <h3 class="font-semibold text-charcoal">{{ month_name }}</h3>
+                <div class="flex gap-2">
+                    <button onclick="navigateMonth('prev')" class="p-2 hover:bg-gray-100 rounded-lg transition-colors" title="Previous Month">
+                        <i class="fas fa-chevron-left"></i>
+                    </button>
+                    <button onclick="navigateMonth('next')" class="p-2 hover:bg-gray-100 rounded-lg transition-colors" title="Next Month">
+                        <i class="fas fa-chevron-right"></i>
+                    </button>
+                </div>
+            </div>
+
+            <div class="calendar-grid">
+                <div class="calendar-day-header">Sun</div>
+                <div class="calendar-day-header">Mon</div>
+                <div class="calendar-day-header">Tue</div>
+                <div class="calendar-day-header">Wed</div>
+                <div class="calendar-day-header">Thu</div>
+                <div class="calendar-day-header">Fri</div>
+                <div class="calendar-day-header">Sat</div>
+            </div>
+
+            <div class="calendar-grid">
+                {% for day in calendar_days %}
+                <div class="calendar-day {{ day.class }}">
+                    {{ day.number }}
+                </div>
+                {% endfor %}
+            </div>
+
+            <div class="legend">
+                <div class="legend-item">
+                    <div class="legend-color" style="background: linear-gradient(135deg, #FF6B6B, #FF8E8E);"></div>
+                    <span>Period</span>
+                </div>
+                <div class="legend-item">
+                    <div class="legend-color" style="background: linear-gradient(135deg, var(--teal), #6FD5C7);"></div>
+                    <span>Fertile Window</span>
+                </div>
+                <div class="legend-item">
+                    <div class="legend-color" style="background: linear-gradient(135deg, var(--lavender), #B5A5F0);"></div>
+                    <span>Ovulation</span>
+                </div>
+                <div class="legend-item">
+                    <div class="legend-color" style="background: white; border: 3px solid var(--lavender);"></div>
+                    <span>Today</span>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Period Date Modal -->
+    <div class="modal" id="periodModal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3><i class="fas fa-calendar-plus mr-2"></i>Update Period Date</h3>
+                <button class="modal-close" onclick="closePeriodModal()">
+                    <i class="fas fa-times"></i>
+                </button>
+            </div>
+            <form id="periodForm">
+                <div class="form-group">
+                    <label class="form-label">First day of your last period</label>
+                    <input type="date" class="form-input" id="lastPeriodDate" max="{{ today }}" value="{{ last_period_date }}" required>
+                    <p class="text-sm text-gray-600 mt-2">
+                        <i class="fas fa-info-circle text-teal"></i>
+                        This helps us track your cycle accurately
+                    </p>
+                </div>
+                <div class="flex gap-3">
+                    <button type="button" class="action-button" style="background: #E5E7EB; color: var(--charcoal);" onclick="closePeriodModal()">
+                        <span>Cancel</span>
+                    </button>
+                    <button type="submit" class="action-button btn-primary">
+                        <span><i class="fas fa-save mr-2"></i>Save</span>
+                    </button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- Cycle Length Modal -->
+    <div class="modal" id="cycleLengthModal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3><i class="fas fa-calendar-check mr-2"></i>Update Cycle Length</h3>
+                <button class="modal-close" onclick="closeCycleLengthModal()">
+                    <i class="fas fa-times"></i>
+                </button>
+            </div>
+            <form id="cycleLengthForm">
+                <div class="form-group">
+                    <label class="form-label">Typical cycle length (in days)</label>
+                    <input type="number" class="form-input" id="cycleLength" min="21" max="45" value="{{ cycle_length }}" placeholder="e.g., 28" required>
+                    <p class="text-sm text-gray-600 mt-2">
+                        <i class="fas fa-info-circle text-teal"></i>
+                        Average number of days between periods (21-45 days)
+                    </p>
+                </div>
+                <div class="flex gap-3">
+                    <button type="button" class="action-button" style="background: #E5E7EB; color: var(--charcoal);" onclick="closeCycleLengthModal()">
+                        <span>Cancel</span>
+                    </button>
+                    <button type="submit" class="action-button btn-secondary">
+                        <span><i class="fas fa-save mr-2"></i>Save</span>
+                    </button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <script>
+        // Month Navigation
+        function navigateMonth(direction) {
+            const urlParams = new URLSearchParams(window.location.search);
+            let month = parseInt('{{ current_month }}');
+            let year = parseInt('{{ current_year }}');
+            
+            if (direction === 'prev') {
+                month = parseInt('{{ prev_month }}');
+                year = parseInt('{{ prev_year }}');
+            } else if (direction === 'next') {
+                month = parseInt('{{ next_month }}');
+                year = parseInt('{{ next_year }}');
+            }
+            
+            window.location.href = `/cycle-tracker/?month=${month}&year=${year}`;
+        }
+        
+        // Modal Functions
+        function openPeriodModal() {
+            document.getElementById('periodModal').classList.add('active');
+        }
+        
+        function closePeriodModal() {
+            document.getElementById('periodModal').classList.remove('active');
+        }
+        
+        function openCycleLengthModal() {
+            document.getElementById('cycleLengthModal').classList.add('active');
+        }
+        
+        function closeCycleLengthModal() {
+            document.getElementById('cycleLengthModal').classList.remove('active');
+        }
+        
+        // Close modals on outside click
+        window.onclick = function(event) {
+            const periodModal = document.getElementById('periodModal');
+            const cycleLengthModal = document.getElementById('cycleLengthModal');
+            if (event.target === periodModal) {
+                closePeriodModal();
+            }
+            if (event.target === cycleLengthModal) {
+                closeCycleLengthModal();
+            }
+        }
+        
+        // Period Date Form Submission
+        document.getElementById('periodForm').addEventListener('submit', async function(e) {
+            e.preventDefault();
+            
+            const dateValue = document.getElementById('lastPeriodDate').value;
+            
+            if (!dateValue) {
+                showAlert('error', 'Please select a date');
+                return;
+            }
+            
+            try {
+                const response = await fetch('/api/update-period-date/', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'X-CSRFToken': getCookie('csrftoken'),
+                    },
+                    body: JSON.stringify({
+                        last_period_date: dateValue
+                    })
+                });
+                
+                const result = await response.json();
+                
+                if (result.status === 'success') {
+                    showAlert('success', result.message);
+                    closePeriodModal();
+                    setTimeout(() => {
+                        window.location.reload();
+                    }, 1500);
+                } else {
+                    showAlert('error', result.message);
+                }
+            } catch (error) {
+                showAlert('error', 'An error occurred. Please try again.');
+                console.error('Error:', error);
+            }
+        });
+        
+        // Cycle Length Form Submission
+        document.getElementById('cycleLengthForm').addEventListener('submit', async function(e) {
+            e.preventDefault();
+            
+            const lengthValue = document.getElementById('cycleLength').value;
+            
+            if (!lengthValue || lengthValue < 21 || lengthValue > 45) {
+                showAlert('error', 'Please enter a valid cycle length (21-45 days)');
+                return;
+            }
+            
+            try {
+                const response = await fetch('/api/update-cycle-length/', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'X-CSRFToken': getCookie('csrftoken'),
+                    },
+                    body: JSON.stringify({
+                        cycle_length: lengthValue
+                    })
+                });
+                
+                const result = await response.json();
+                
+                if (result.status === 'success') {
+                    showAlert('success', result.message);
+                    closeCycleLengthModal();
+                    setTimeout(() => {
+                        window.location.reload();
+                    }, 1500);
+                } else {
+                    showAlert('error', result.message);
+                }
+            } catch (error) {
+                showAlert('error', 'An error occurred. Please try again.');
+                console.error('Error:', error);
+            }
+        });
+        
+        // Alert Function
+        function showAlert(type, message) {
+            const alertContainer = document.getElementById('alertContainer');
+            const alertClass = type === 'success' ? 'alert-success' : 'alert-info';
+            const icon = type === 'success' ? '<i class="fas fa-check-circle text-2xl"></i>' : '<i class="fas fa-exclamation-circle text-2xl"></i>';
+            
+            alertContainer.innerHTML = `
+                <div class="alert ${alertClass}">
+                    ${icon}
+                    <span>${message}</span>
+                </div>
+            `;
+            
+            window.scrollTo({ top: 0, behavior: 'smooth' });
+            
+            setTimeout(() => {
+                alertContainer.innerHTML = '';
+            }, 5000);
+        }
+        
+        // Get CSRF Token
+        function getCookie(name) {
+            let cookieValue = null;
+            if (document.cookie && document.cookie !== '') {
+                const cookies = document.cookie.split(';');
+                for (let i = 0; i < cookies.length; i++) {
+                    const cookie = cookies[i].trim();
+                    if (cookie.substring(0, name.length + 1) === (name + '=')) {
+                        cookieValue = decodeURIComponent(cookie.substring(name.length + 1));
+                        break;
+                    }
+                }
+            }
+            return cookieValue;
+        }
+    </script>
+</body>
+</html>

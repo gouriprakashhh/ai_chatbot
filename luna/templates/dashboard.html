@@ -44,6 +44,7 @@
             height: 100vh;
             z-index: 100;
             transition: transform 0.3s ease;
+            overflow-y: auto;
         }
         
         .main-content {
@@ -57,6 +58,12 @@
             display: flex;
             align-items: center;
             margin-bottom: 2.5rem;
+            cursor: pointer;
+            transition: transform 0.3s ease;
+        }
+        
+        .logo:hover {
+            transform: scale(1.05);
         }
         
         .logo-icon {
@@ -81,6 +88,8 @@
             transition: all 0.3s ease;
             position: relative;
             overflow: hidden;
+            text-decoration: none;
+            color: white;
         }
         
         .nav-item::before {
@@ -103,10 +112,24 @@
             transform: translateX(5px);
         }
         
+        .nav-item.active {
+            background: rgba(255, 255, 255, 0.25);
+            font-weight: 500;
+        }
+        
         .nav-item i {
             margin-right: 12px;
             width: 20px;
             text-align: center;
+        }
+        
+        .nav-section-title {
+            color: rgba(255, 255, 255, 0.6);
+            font-size: 0.75rem;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            margin: 1.5rem 0 0.75rem 1rem;
+            font-weight: 600;
         }
         
         .welcome-card {
@@ -262,9 +285,9 @@
             height: 100%;
             background: white;
             border-radius: 4px;
-            width: 65%;
             position: relative;
             overflow: hidden;
+            transition: width 1s ease;
         }
         
         .progress-fill::after {
@@ -291,22 +314,63 @@
             box-shadow: 0 8px 20px rgba(0, 0, 0, 0.08);
         }
         
+        .community-post {
+            display: flex;
+            align-items: start;
+            padding: 1rem;
+            border-radius: 10px;
+            margin-bottom: 1rem;
+            transition: all 0.3s ease;
+            cursor: pointer;
+        }
+        
+        .community-post:hover {
+            background: var(--lightgray);
+        }
+        
         .user-avatar {
-            width: 40px;
-            height: 40px;
+            width: 45px;
+            height: 45px;
             border-radius: 50%;
-            background: var(--light-lavender);
+            background: linear-gradient(135deg, var(--lavender), var(--teal));
             display: flex;
             align-items: center;
             justify-content: center;
             font-weight: bold;
-            color: var(--lavender);
+            color: white;
             transition: all 0.3s ease;
+            flex-shrink: 0;
+            margin-right: 1rem;
         }
         
         .user-avatar:hover {
-            transform: scale(1.1);
+            transform: scale(1.1) rotate(5deg);
             box-shadow: 0 4px 10px rgba(155, 141, 229, 0.3);
+        }
+        
+        .insight-item {
+            display: flex;
+            align-items: start;
+            margin-bottom: 1.5rem;
+            padding: 1rem;
+            border-radius: 10px;
+            transition: all 0.3s ease;
+        }
+        
+        .insight-item:hover {
+            background: var(--lightgray);
+        }
+        
+        .insight-icon {
+            width: 45px;
+            height: 45px;
+            border-radius: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin-right: 1rem;
+            flex-shrink: 0;
+            animation: breathing-animation 4s infinite ease-in-out;
         }
         
         .mobile-menu-btn {
@@ -324,6 +388,7 @@
             justify-content: center;
             align-items: center;
             box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+            cursor: pointer;
         }
         
         @media (max-width: 1024px) {
@@ -417,23 +482,6 @@
             background-clip: text;
         }
         
-        .typing-demo {
-            width: 22ch;
-            animation: typing 2s steps(22), blink .5s step-end infinite alternate;
-            white-space: nowrap;
-            overflow: hidden;
-            border-right: 3px solid;
-            font-family: monospace;
-        }
-        
-        @keyframes typing {
-            from { width: 0 }
-        }
-        
-        @keyframes blink {
-            50% { border-color: transparent }
-        }
-        
         .breathing-animation {
             animation: breathe 4s infinite ease-in-out;
         }
@@ -441,6 +489,23 @@
         @keyframes breathe {
             0%, 100% { transform: scale(1); }
             50% { transform: scale(1.05); }
+        }
+        
+        /* Logout button styling */
+        .logout-btn {
+            margin-top: auto;
+            padding-top: 1rem;
+            border-top: 1px solid rgba(255, 255, 255, 0.2);
+        }
+        
+        .logout-btn .nav-item {
+            background: rgba(255, 68, 68, 0.1);
+            color: #ffcccb;
+        }
+        
+        .logout-btn .nav-item:hover {
+            background: rgba(255, 68, 68, 0.2);
+            transform: translateX(0);
         }
     </style>
 </head>
@@ -452,47 +517,70 @@
     <div class="dashboard-container">
         <!-- Sidebar -->
         <div class="sidebar" id="sidebar">
-            <div class="logo">
+            <div class="logo" onclick="window.location.href='/dashboard/'">
                 <div class="logo-icon">
                     <i class="fas fa-moon"></i>
                 </div>
                 <h1 class="text-xl font-bold">Luna</h1>
             </div>
             
-            <div class="nav-item active">
+            <div class="nav-section-title">Main</div>
+            <a href="/dashboard/" class="nav-item active">
                 <i class="fas fa-home"></i>
                 <span>Dashboard</span>
-            </div>
-            <div class="nav-item">
+            </a>
+            <a href="/cycle-tracker/" class="nav-item">
                 <i class="fas fa-calendar-alt"></i>
                 <span>Cycle Tracker</span>
-            </div>
-            <div class="nav-item">
+            </a>
+            <a href="/symptoms/" class="nav-item">
                 <i class="fas fa-chart-line"></i>
                 <span>Symptoms</span>
-            </div>
-            <div class="nav-item">
+            </a>
+            
+            <div class="nav-section-title">Wellness</div>
+            <a href="/nutrition/" class="nav-item">
                 <i class="fas fa-utensils"></i>
                 <span>Nutrition</span>
-            </div>
-            <div class="nav-item">
+            </a>
+            <a href="/wellness/" class="nav-item">
                 <i class="fas fa-heart"></i>
-                <span>Wellness</span>
-            </div>
-            <div class="nav-item">
+                <span>Wellness Hub</span>
+            </a>
+            <a href="/exercise/" class="nav-item">
+                <i class="fas fa-dumbbell"></i>
+                <span>Exercise</span>
+            </a>
+            
+            <div class="nav-section-title">Community</div>
+            <a href="/community/" class="nav-item">
                 <i class="fas fa-users"></i>
                 <span>Community</span>
-            </div>
+            </a>
+            <a href="/resources/" class="nav-item">
+                <i class="fas fa-book-medical"></i>
+                <span>Resources</span>
+            </a>
+
+            <div class="nav-section-title">Account</div>
+            <a href="/edit-profile/" class="nav-item">
+                <i class="fas fa-user-edit"></i>
+                <span>Edit Profile</span>
+            </a>
+            <a href="/settings/" class="nav-item">
+                <i class="fas fa-cog"></i>
+                <span>Settings</span>
+            </a>
+            <a href="/help/" class="nav-item">
+                <i class="fas fa-question-circle"></i>
+                <span>Help & Support</span>
+            </a>
             
-            <div class="mt-8 pt-8 border-t border-white border-opacity-20">
-                <div class="nav-item">
-                    <i class="fas fa-cog"></i>
-                    <span>Settings</span>
-                </div>
-                <div class="nav-item">
-                    <i class="fas fa-question-circle"></i>
-                    <span>Help & Support</span>
-                </div>
+            <div class="logout-btn">
+                <a href="/logout/" class="nav-item">
+                    <i class="fas fa-sign-out-alt"></i>
+                    <span>Logout</span>
+                </a>
             </div>
         </div>
         
@@ -501,11 +589,11 @@
             <!-- Welcome Card -->
             <div class="welcome-card animate-fade-in">
                 <div class="flex justify-between items-start">
-                    <div>
-                        <h1 class="text-2xl font-bold text-charcoal mb-2">Welcome back, <span class="gradient-text">Sarah</span>!</h1>
-                        <p class="text-charcoal/80">Here's your PCOS overview for today, <span class="typing-demo">October 16, 2023</span></p>
+                    <div style="position: relative; z-index: 1;">
+                        <h1 class="text-2xl font-bold text-charcoal mb-2">Welcome back, <span class="gradient-text">{{ user_name }}</span>!</h1>
+                        <p class="text-charcoal/80">Here's your PCOS overview for today, {{ current_date }}</p>
                     </div>
-                    <div class="flex items-center breathing-animation">
+                    <div class="flex items-center breathing-animation" style="position: relative; z-index: 1;">
                         <div class="w-12 h-12 rounded-full bg-white flex items-center justify-center shadow-md">
                             <i class="fas fa-user text-lavender"></i>
                         </div>
@@ -520,17 +608,21 @@
                         <i class="fas fa-calendar"></i>
                     </div>
                     <h3 class="font-semibold text-charcoal">Cycle Day</h3>
-                    <p class="text-3xl font-bold text-charcoal mt-2">Day 12</p>
-                    <p class="text-sm text-charcoal/60 mt-1">Ovulation likely in 2 days</p>
+                    <p class="text-3xl font-bold text-charcoal mt-2">Day {{ cycle_day }}</p>
+                    {% if days_until_ovulation %}
+                    <p class="text-sm text-charcoal/60 mt-1">Ovulation likely in {{ days_until_ovulation }} days</p>
+                    {% else %}
+                    <p class="text-sm text-charcoal/60 mt-1">Track your cycle</p>
+                    {% endif %}
                 </div>
                 
                 <div class="stat-card animate-fade-in" style="animation-delay: 0.2s">
                     <div class="stat-icon" style="background: var(--light-teal); color: var(--teal);">
-                        <i class="fas fa-weight"></i>
+                        <i class="fas fa-heartbeat"></i>
                     </div>
-                    <h3 class="font-semibold text-charcoal">Weight</h3>
-                    <p class="text-3xl font-bold text-charcoal mt-2">68.5 kg</p>
-                    <p class="text-sm text-green-600 mt-1">-1.2 kg this month</p>
+                    <h3 class="font-semibold text-charcoal">PCOS Status</h3>
+                    <p class="text-lg font-bold text-charcoal mt-2">{{ pcos_status|title }}</p>
+                    <p class="text-sm text-charcoal/60 mt-1">Current status</p>
                 </div>
                 
                 <div class="stat-card animate-fade-in" style="animation-delay: 0.3s">
@@ -538,17 +630,17 @@
                         <i class="fas fa-heart"></i>
                     </div>
                     <h3 class="font-semibold text-charcoal">Symptoms</h3>
-                    <p class="text-3xl font-bold text-charcoal mt-2">Mild</p>
-                    <p class="text-sm text-charcoal/60 mt-1">2 symptoms logged today</p>
+                    <p class="text-3xl font-bold text-charcoal mt-2">{{ symptom_level }}</p>
+                    <p class="text-sm text-charcoal/60 mt-1">Based on your data</p>
                 </div>
                 
                 <div class="stat-card animate-fade-in" style="animation-delay: 0.4s">
                     <div class="stat-icon" style="background: #E6F5F3; color: var(--teal);">
                         <i class="fas fa-apple-alt"></i>
                     </div>
-                    <h3 class="font-semibold text-charcoal">Nutrition</h3>
-                    <p class="text-3xl font-bold text-charcoal mt-2">82%</p>
-                    <p class="text-sm text-charcoal/60 mt-1">On track with your plan</p>
+                    <h3 class="font-semibold text-charcoal">Wellness Score</h3>
+                    <p class="text-3xl font-bold text-charcoal mt-2">{{ nutrition_score }}%</p>
+                    <p class="text-sm text-charcoal/60 mt-1">Overall wellness</p>
                 </div>
             </div>
             
@@ -560,27 +652,31 @@
                     <canvas id="cycleChart" height="250"></canvas>
                 </div>
                 
-                <!-- Symptom Chart -->
+                <!-- Activity Chart -->
                 <div class="chart-container animate-fade-in" style="animation-delay: 0.6s">
-                    <h3 class="font-semibold text-charcoal mb-4">Symptom Trends</h3>
-                    <canvas id="symptomChart" height="250"></canvas>
+                    <h3 class="font-semibold text-charcoal mb-4">Activity & Wellness</h3>
+                    <canvas id="activityChart" height="250"></canvas>
                 </div>
             </div>
             
             <!-- Cycle Tracker -->
-            <div class="cycle-tracker animate-fade-in" style="animation-delay: 0.65s">
+            <div class="cycle-tracker animate-fade-in" style="animation-delay: 0.65s; position: relative; z-index: 1;">
                 <h3 class="font-semibold text-white mb-2">Your Cycle Progress</h3>
-                <p class="text-white/90 text-sm mb-3">You're on day 12 of your 28-day cycle</p>
+                <p class="text-white/90 text-sm mb-3">You're on day {{ cycle_day }} of your cycle</p>
                 
                 <div class="progress-bar">
-                    <div class="progress-fill"></div>
+                    <div class="progress-fill" data-width="{{ cycle_progress|default:'0' }}"></div>
                 </div>
                 
                 <div class="flex justify-between text-xs text-white/80">
                     <span>Period</span>
                     <span>Ovulation</span>
                     <span>Fertile Window</span>
+                    {% if days_until_period %}
+                    <span>{{ days_until_period }} days to period</span>
+                    {% else %}
                     <span>Next Period</span>
+                    {% endif %}
                 </div>
             </div>
             
@@ -588,71 +684,189 @@
             <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
                 <!-- Personalized Insights -->
                 <div class="insight-card animate-fade-in" style="animation-delay: 0.7s">
-                    <h3 class="font-semibold text-charcoal mb-4">Personalized Insights</h3>
+                    <h3 class="font-semibold text-charcoal mb-4 flex items-center">
+                        <i class="fas fa-lightbulb text-teal mr-2"></i>
+                        Your Personalized Insights
+                    </h3>
                     
-                    <div class="flex items-start mb-4">
-                        <div class="w-10 h-10 rounded-full bg-light-lavender flex items-center justify-center mr-3 breathing-animation">
-                            <i class="fas fa-seedling text-teal"></i>
+                    <div class="insight-item">
+                        <div class="insight-icon" style="background: var(--light-lavender);">
+                            <i class="fas fa-utensils text-lavender"></i>
                         </div>
                         <div>
-                            <h4 class="font-medium text-charcoal">Nutrition Tip</h4>
-                            <p class="text-sm text-charcoal/70">Based on your symptoms, try adding more omega-3 foods like flax seeds to your diet.</p>
+                            <h4 class="font-medium text-charcoal mb-1">Nutrition Guidance</h4>
+                            <p class="text-sm text-charcoal/70">
+                                {% if "balanced" in diet_description|lower or "healthy" in diet_description|lower %}
+                                Excellent diet management! Consider adding more anti-inflammatory foods like turmeric and berries to further support your PCOS symptoms.
+                                {% elif "struggling" in diet_description|lower %}
+                                Small changes make a big impact. Start by replacing one processed meal with whole foods each day - perhaps adding leafy greens to your lunch.
+                                {% else %}
+                                Focus on low glycemic foods and healthy fats. Try incorporating more omega-3 rich foods like walnuts, chia seeds, and salmon to balance hormones naturally.
+                                {% endif %}
+                            </p>
                         </div>
                     </div>
                     
-                    <div class="flex items-start mb-4">
-                        <div class="w-10 h-10 rounded-full bg-light-teal flex items-center justify-center mr-3 breathing-animation" style="animation-delay: 1s">
-                            <i class="fas fa-walking text-lavender"></i>
+                    <div class="insight-item">
+                        <div class="insight-icon" style="background: var(--light-teal);">
+                            <i class="fas fa-running text-teal"></i>
                         </div>
                         <div>
-                            <h4 class="font-medium text-charcoal">Activity Suggestion</h4>
-                            <p class="text-sm text-charcoal/70">Yoga may help reduce your stress levels this week based on your current cycle phase.</p>
+                            <h4 class="font-medium text-charcoal mb-1">Activity Recommendation</h4>
+                            <p class="text-sm text-charcoal/70">
+                                {% if activity_score >= 4 %}
+                                Fantastic activity level! Your consistency with {{ activity_frequency|lower }} is excellent. Consider adding 10 minutes of yoga for stress relief and hormone balance.
+                                {% elif activity_score >= 2 %}
+                                You're making progress! Try increasing to 3-4 sessions weekly. Even 20-minute walks can significantly improve insulin sensitivity and mood.
+                                {% else %}
+                                Let's start small - just 15 minutes of gentle movement daily. Walking, stretching, or light yoga can make a huge difference in managing PCOS symptoms.
+                                {% endif %}
+                            </p>
                         </div>
                     </div>
                     
-                    <div class="flex items-start">
-                        <div class="w-10 h-10 rounded-full bg-light-lavender flex items-center justify-center mr-3 breathing-animation" style="animation-delay: 2s">
-                            <i class="fas fa-clock text-teal"></i>
+                    <div class="insight-item">
+                        <div class="insight-icon" style="background: #FFE6F0;">
+                            <i class="fas fa-spa text-pink-500"></i>
                         </div>
                         <div>
-                            <h4 class="font-medium text-charcoal">Reminder</h4>
-                            <p class="text-sm text-charcoal/70">Your next period is predicted to start in about 16 days.</p>
+                            <h4 class="font-medium text-charcoal mb-1">Stress & Wellness</h4>
+                            <p class="text-sm text-charcoal/70">
+                                {% if "high" in stress_level|lower or "overwhelming" in stress_level|lower %}
+                                Your stress levels need attention. High cortisol can worsen PCOS symptoms. Try 5 minutes of deep breathing exercises twice daily - it's scientifically proven to lower stress hormones.
+                                {% elif "moderate" in stress_level|lower %}
+                                You're managing well, but there's room for improvement. Consider evening meditation or journaling to process daily stress before it accumulates.
+                                {% else %}
+                                Great stress management! Keep maintaining your routine. Remember to prioritize 7-8 hours of quality sleep for optimal hormone regulation.
+                                {% endif %}
+                            </p>
+                        </div>
+                    </div>
+                    
+                    <div class="insight-item">
+                        <div class="insight-icon" style="background: #E6F3FF;">
+                            <i class="fas fa-calendar-check text-blue-500"></i>
+                        </div>
+                        <div>
+                            <h4 class="font-medium text-charcoal mb-1">Cycle Awareness</h4>
+                            <p class="text-sm text-charcoal/70">
+                                {% if cycle_day <= 5 %}
+                                You're in your menstrual phase. Focus on iron-rich foods, stay hydrated, and allow yourself rest. Gentle movement like stretching can ease cramps.
+                                {% elif cycle_day <= 14 %}
+                                Follicular phase - your energy is rising! This is an ideal time for more intense workouts and tackling challenging tasks.
+                                {% elif cycle_day <= 16 %}
+                                Ovulation phase - you're at peak energy! Great time for social activities and high-intensity exercise.
+                                {% else %}
+                                Luteal phase - you may notice mood changes. Focus on B-vitamins, magnesium, and prioritize self-care to manage PMS symptoms.
+                                {% endif %}
+                            </p>
                         </div>
                     </div>
                 </div>
                 
                 <!-- Community Support -->
                 <div class="community-card animate-fade-in" style="animation-delay: 0.8s">
-                    <h3 class="font-semibold text-charcoal mb-4">Community Support</h3>
+                    <h3 class="font-semibold text-charcoal mb-4 flex items-center">
+                        <i class="fas fa-users text-lavender mr-2"></i>
+                        Community Highlights
+                    </h3>
                     
-                    <div class="flex items-center mb-4">
-                        <div class="user-avatar mr-3">S</div>
+                    <div class="community-post">
+                        <div class="user-avatar">EM</div>
                         <div>
-                            <h4 class="font-medium text-charcoal">Sophia shared a new post</h4>
-                            <p class="text-sm text-charcoal/70">"My PCOS management journey after 2 years"</p>
+                            <h4 class="font-medium text-charcoal mb-1">Emma Martinez shared her story</h4>
+                            <p class="text-sm text-charcoal/70 mb-1">"My 6-month journey managing PCOS naturally - what worked for me"</p>
+                            <div class="flex items-center gap-3 text-xs text-charcoal/50">
+                                <span><i class="fas fa-heart"></i> 124 likes</span>
+                                <span><i class="fas fa-comment"></i> 45 comments</span>
+                                <span class="text-teal">2 hours ago</span>
+                            </div>
                         </div>
                     </div>
                     
-                    <div class="flex items-center mb-4">
-                        <div class="user-avatar mr-3">M</div>
+                    <div class="community-post">
+                        <div class="user-avatar">SR</div>
                         <div>
-                            <h4 class="font-medium text-charcoal">Maria asked a question</h4>
-                            <p class="text-sm text-charcoal/70">"Best supplements for insulin resistance?"</p>
+                            <h4 class="font-medium text-charcoal mb-1">Dr. Sarah Rodriguez answered</h4>
+                            <p class="text-sm text-charcoal/70 mb-1">"Q: Best supplements for insulin resistance? Here's what research says..."</p>
+                            <div class="flex items-center gap-3 text-xs text-charcoal/50">
+                                <span><i class="fas fa-heart"></i> 89 likes</span>
+                                <span><i class="fas fa-comment"></i> 34 comments</span>
+                                <span class="text-teal">5 hours ago</span>
+                            </div>
                         </div>
                     </div>
                     
-                    <div class="flex items-center">
-                        <div class="user-avatar mr-3">J</div>
+                    <div class="community-post">
+                        <div class="user-avatar">JP</div>
                         <div>
-                            <h4 class="font-medium text-charcoal">Jenny posted a recipe</h4>
-                            <p class="text-sm text-charcoal/70">"PCOS-friendly breakfast ideas"</p>
+                            <h4 class="font-medium text-charcoal mb-1">Jessica Parker posted a recipe</h4>
+                            <p class="text-sm text-charcoal/70 mb-1">"Quick PCOS-friendly breakfast bowls (under 15 minutes!)"</p>
+                            <div class="flex items-center gap-3 text-xs text-charcoal/50">
+                                <span><i class="fas fa-heart"></i> 156 likes</span>
+                                <span><i class="fas fa-comment"></i> 67 comments</span>
+                                <span class="text-teal">1 day ago</span>
+                            </div>
                         </div>
                     </div>
                     
-                    <button class="w-full mt-4 py-2 rounded-lg bg-light-teal text-teal font-medium hover:bg-teal hover:text-white transition-all transform hover:-translate-y-1">
+                    <div class="community-post">
+                        <div class="user-avatar">LT</div>
+                        <div>
+                            <h4 class="font-medium text-charcoal mb-1">Lisa Thompson started discussion</h4>
+                            <p class="text-sm text-charcoal/70 mb-1">"Anyone else struggling with hair loss? Let's share what's working"</p>
+                            <div class="flex items-center gap-3 text-xs text-charcoal/50">
+                                <span><i class="fas fa-heart"></i> 78 likes</span>
+                                <span><i class="fas fa-comment"></i> 92 comments</span>
+                                <span class="text-teal">1 day ago</span>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <a href="/community/" class="block w-full mt-4 py-3 rounded-lg bg-gradient-to-r from-lavender to-teal text-white font-medium text-center hover:shadow-lg transition-all transform hover:-translate-y-1">
+                        <i class="fas fa-comments mr-2"></i>
                         Join the Conversation
-                    </button>
+                    </a>
                 </div>
+            </div>
+            
+            <!-- Quick Actions -->
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-4 mt-6">
+                <a href="/symptoms/log/" class="stat-card animate-fade-in" style="animation-delay: 0.9s; text-decoration: none; cursor: pointer;">
+                    <div class="flex items-center justify-between">
+                        <div>
+                            <h4 class="font-medium text-charcoal mb-1">Log Symptoms</h4>
+                            <p class="text-sm text-charcoal/60">Track how you're feeling</p>
+                        </div>
+                        <div class="stat-icon" style="background: var(--light-lavender); color: var(--lavender); margin: 0;">
+                            <i class="fas fa-plus"></i>
+                        </div>
+                    </div>
+                </a>
+                
+                <a href="/meals/plan/" class="stat-card animate-fade-in" style="animation-delay: 1s; text-decoration: none; cursor: pointer;">
+                    <div class="flex items-center justify-between">
+                        <div>
+                            <h4 class="font-medium text-charcoal mb-1">Meal Planning</h4>
+                            <p class="text-sm text-charcoal/60">Get personalized recipes</p>
+                        </div>
+                        <div class="stat-icon" style="background: var(--light-teal); color: var(--teal); margin: 0;">
+                            <i class="fas fa-utensils"></i>
+                        </div>
+                    </div>
+                </a>
+                
+                <a href="/resources/articles/" class="stat-card animate-fade-in" style="animation-delay: 1.1s; text-decoration: none; cursor: pointer;">
+                    <div class="flex items-center justify-between">
+                        <div>
+                            <h4 class="font-medium text-charcoal mb-1">Learn More</h4>
+                            <p class="text-sm text-charcoal/60">PCOS resources & articles</p>
+                        </div>
+                        <div class="stat-icon" style="background: #FFE6F0; color: #EC4899; margin: 0;">
+                            <i class="fas fa-book-open"></i>
+                        </div>
+                    </div>
+                </a>
             </div>
         </div>
     </div>
@@ -662,181 +876,247 @@
             // Mobile menu toggle
             const menuToggle = document.getElementById('menuToggle');
             const sidebar = document.getElementById('sidebar');
-            const mainContent = document.getElementById('mainContent');
             
-            menuToggle.addEventListener('click', function() {
-                sidebar.classList.toggle('active');
-                menuToggle.innerHTML = sidebar.classList.contains('active') ? 
-                    '<i class="fas fa-times"></i>' : '<i class="fas fa-bars"></i>';
-            });
-            
-            // Close sidebar when clicking outside on mobile
-            document.addEventListener('click', function(event) {
-                if (window.innerWidth < 1024 && 
-                    !sidebar.contains(event.target) && 
-                    !menuToggle.contains(event.target) &&
-                    sidebar.classList.contains('active')) {
-                    sidebar.classList.remove('active');
-                    menuToggle.innerHTML = '<i class="fas fa-bars"></i>';
-                }
-            });
-            
-            // Cycle Chart
-            const cycleCtx = document.getElementById('cycleChart').getContext('2d');
-            const cycleChart = new Chart(cycleCtx, {
-                type: 'line',
-                data: {
-                    labels: ['Day 1', 'Day 5', 'Day 10', 'Day 15', 'Day 20', 'Day 25', 'Day 30'],
-                    datasets: [{
-                        label: 'Energy Level',
-                        data: [45, 65, 80, 85, 70, 50, 40],
-                        borderColor: '#9B8DE5',
-                        backgroundColor: 'rgba(155, 141, 229, 0.1)',
-                        tension: 0.4,
-                        fill: true,
-                        pointBackgroundColor: '#9B8DE5',
-                        pointBorderColor: '#fff',
-                        pointHoverBackgroundColor: '#fff',
-                        pointHoverBorderColor: '#9B8DE5',
-                        pointRadius: 4,
-                        pointHoverRadius: 6
-                    }, {
-                        label: 'Symptoms',
-                        data: [70, 40, 30, 20, 50, 65, 75],
-                        borderColor: '#4DB6AC',
-                        backgroundColor: 'rgba(77, 182, 172, 0.1)',
-                        tension: 0.4,
-                        fill: true,
-                        pointBackgroundColor: '#4DB6AC',
-                        pointBorderColor: '#fff',
-                        pointHoverBackgroundColor: '#fff',
-                        pointHoverBorderColor: '#4DB6AC',
-                        pointRadius: 4,
-                        pointHoverRadius: 6
-                    }]
-                },
-                options: {
-                    responsive: true,
-                    plugins: {
-                        legend: {
-                            position: 'top',
-                        }
-                    },
-                    scales: {
-                        y: {
-                            beginAtZero: true,
-                            max: 100,
-                            ticks: {
-                                callback: function(value) {
-                                    return value + '%';
-                                }
-                            }
-                        }
-                    },
-                    animation: {
-                        duration: 2000,
-                        easing: 'easeOutQuart'
+            if (menuToggle && sidebar) {
+                menuToggle.addEventListener('click', function() {
+                    sidebar.classList.toggle('active');
+                    menuToggle.innerHTML = sidebar.classList.contains('active') ? 
+                        '<i class="fas fa-times"></i>' : '<i class="fas fa-bars"></i>';
+                });
+                
+                // Close sidebar when clicking outside on mobile
+                document.addEventListener('click', function(event) {
+                    if (window.innerWidth < 1024 && 
+                        !sidebar.contains(event.target) && 
+                        !menuToggle.contains(event.target) &&
+                        sidebar.classList.contains('active')) {
+                        sidebar.classList.remove('active');
+                        menuToggle.innerHTML = '<i class="fas fa-bars"></i>';
                     }
-                }
-            });
-            
-            // Symptom Chart
-            const symptomCtx = document.getElementById('symptomChart').getContext('2d');
-            const symptomChart = new Chart(symptomCtx, {
-                type: 'bar',
-                data: {
-                    labels: ['Cramps', 'Headache', 'Fatigue', 'Bloating', 'Mood Swings'],
-                    datasets: [{
-                        label: 'This Month',
-                        data: [65, 50, 70, 80, 60],
-                        backgroundColor: 'rgba(155, 141, 229, 0.7)',
-                        hoverBackgroundColor: 'rgba(155, 141, 229, 0.9)',
-                        borderRadius: 6,
-                    }, {
-                        label: 'Last Month',
-                        data: [75, 60, 80, 85, 70],
-                        backgroundColor: 'rgba(77, 182, 172, 0.7)',
-                        hoverBackgroundColor: 'rgba(77, 182, 172, 0.9)',
-                        borderRadius: 6,
-                    }]
-                },
-                options: {
-                    responsive: true,
-                    plugins: {
-                        legend: {
-                            position: 'top',
-                        }
-                    },
-                    scales: {
-                        y: {
-                            beginAtZero: true,
-                            max: 100,
-                            ticks: {
-                                callback: function(value) {
-                                    return value + '%';
-                                }
-                            }
-                        }
-                    },
-                    animation: {
-                        duration: 2000,
-                        easing: 'easeOutQuart'
-                    }
-                }
-            });
-            
-            // Infinite animations for elements
-            function addInfiniteAnimations() {
-                const elements = document.querySelectorAll('.stat-icon, .user-avatar');
-                elements.forEach((el, index) => {
-                    el.style.animationDelay = `${index * 0.2}s`;
                 });
             }
             
-            addInfiniteAnimations();
+            // Get cycle day from Django template - use safe defaults
+            const cycleDay = parseInt('{{ cycle_day|default:"1" }}') || 1;
+            const activityScore = parseInt('{{ activity_score|default:"3" }}') || 3;
+            const nutritionScore = parseInt('{{ nutrition_score|default:"75" }}') || 75;
             
-            // Simulate loading user data (in a real app, this would come from your backend)
-            setTimeout(() => {
-                // This would be replaced with actual data from your backend
-                const userData = {
-                    name: "Sarah",
-                    cycleDay: 12,
-                    weight: 68.5,
-                    weightChange: -1.2,
-                    symptomLevel: "Mild",
-                    nutritionScore: 82
-                };
-                
-                // Update dashboard with user data
-                document.querySelector('.gradient-text').textContent = userData.name;
-                document.querySelectorAll('.stat-card')[0].querySelector('p.text-3xl').textContent = `Day ${userData.cycleDay}`;
-                document.querySelectorAll('.stat-card')[1].querySelector('p.text-3xl').textContent = `${userData.weight} kg`;
-                document.querySelectorAll('.stat-card')[1].querySelector('p.text-sm').textContent = `${userData.weightChange > 0 ? '+' : ''}${userData.weightChange} kg this month`;
-                document.querySelectorAll('.stat-card')[1].querySelector('p.text-sm').classList.add(userData.weightChange < 0 ? 'text-green-600' : 'text-red-600');
-                document.querySelectorAll('.stat-card')[2].querySelector('p.text-3xl').textContent = userData.symptomLevel;
-                document.querySelectorAll('.stat-card')[3].querySelector('p.text-3xl').textContent = `${userData.nutritionScore}%`;
-            }, 1000);
+            // Safely get string values
+            const stressLevel = '{{ stress_level|default:"moderate"|lower }}';
+            const mood = '{{ mood|default:"okay"|lower }}';
+            
+            // Generate realistic cycle data based on current day
+            function generateCycleData() {
+                const data = [];
+                for (let i = 1; i <= 30; i++) {
+                    let energy, symptoms;
+                    
+                    if (i <= 5) {
+                        // Period phase
+                        energy = 40 + Math.random() * 15;
+                        symptoms = 65 + Math.random() * 15;
+                    } else if (i <= 14) {
+                        // Follicular phase
+                        energy = 60 + (i - 5) * 3 + Math.random() * 10;
+                        symptoms = 50 - (i - 5) * 2 + Math.random() * 10;
+                    } else if (i <= 18) {
+                        // Ovulation
+                        energy = 85 + Math.random() * 10;
+                        symptoms = 20 + Math.random() * 10;
+                    } else if (i <= 28) {
+                        // Luteal phase
+                        energy = 85 - (i - 18) * 4 + Math.random() * 10;
+                        symptoms = 30 + (i - 18) * 3 + Math.random() * 10;
+                    } else {
+                        energy = 45 + Math.random() * 10;
+                        symptoms = 70 + Math.random() * 10;
+                    }
+                    
+                    data.push({
+                        day: i,
+                        energy: Math.min(100, Math.max(20, energy)),
+                        symptoms: Math.min(100, Math.max(10, symptoms))
+                    });
+                }
+                return data;
+            }
+            
+            const cycleData = generateCycleData();
+            
+            // Calculate stress score
+            let stressScore = 85;
+            if (stressLevel.includes('high') || stressLevel.includes('severe') || stressLevel.includes('overwhelming')) {
+                stressScore = 50;
+            } else if (stressLevel.includes('moderate')) {
+                stressScore = 70;
+            }
+            
+            // Calculate mood score
+            let moodScore = 70;
+            if (mood.includes('positive') || mood.includes('happy') || mood.includes('great') || mood.includes('good')) {
+                moodScore = 90;
+            } else if (mood.includes('balanced') || mood.includes('okay') || mood.includes('neutral')) {
+                moodScore = 75;
+            } else if (mood.includes('low') || mood.includes('struggling')) {
+                moodScore = 55;
+            }
+            
+            // Cycle Chart
+            const cycleCtx = document.getElementById('cycleChart');
+            if (cycleCtx) {
+                const cycleChart = new Chart(cycleCtx.getContext('2d'), {
+                    type: 'line',
+                    data: {
+                        labels: cycleData.map(d => 'Day ' + d.day),
+                        datasets: [{
+                            label: 'Energy Level',
+                            data: cycleData.map(d => d.energy),
+                            borderColor: '#9B8DE5',
+                            backgroundColor: 'rgba(155, 141, 229, 0.1)',
+                            tension: 0.4,
+                            fill: true,
+                            pointBackgroundColor: '#9B8DE5',
+                            pointBorderColor: '#fff',
+                            pointHoverBackgroundColor: '#fff',
+                            pointHoverBorderColor: '#9B8DE5',
+                            pointRadius: 3,
+                            pointHoverRadius: 6
+                        }, {
+                            label: 'Symptoms',
+                            data: cycleData.map(d => d.symptoms),
+                            borderColor: '#4DB6AC',
+                            backgroundColor: 'rgba(77, 182, 172, 0.1)',
+                            tension: 0.4,
+                            fill: true,
+                            pointBackgroundColor: '#4DB6AC',
+                            pointBorderColor: '#fff',
+                            pointHoverBackgroundColor: '#fff',
+                            pointHoverBorderColor: '#4DB6AC',
+                            pointRadius: 3,
+                            pointHoverRadius: 6
+                        }]
+                    },
+                    options: {
+                        responsive: true,
+                        maintainAspectRatio: true,
+                        plugins: {
+                            legend: {
+                                position: 'top',
+                            },
+                            tooltip: {
+                                callbacks: {
+                                    label: function(context) {
+                                        return context.dataset.label + ': ' + Math.round(context.parsed.y) + '%';
+                                    }
+                                }
+                            }
+                        },
+                        scales: {
+                            y: {
+                                beginAtZero: true,
+                                max: 100,
+                                ticks: {
+                                    callback: function(value) {
+                                        return value + '%';
+                                    }
+                                }
+                            }
+                        },
+                        animation: {
+                            duration: 2000,
+                            easing: 'easeOutQuart'
+                        }
+                    }
+                });
+            }
+            
+            // Activity Chart
+            const activityCtx = document.getElementById('activityChart');
+            if (activityCtx) {
+                const activityChart = new Chart(activityCtx.getContext('2d'), {
+                    type: 'radar',
+                    data: {
+                        labels: ['Physical Activity', 'Sleep Quality', 'Nutrition', 'Stress Management', 'Mood'],
+                        datasets: [{
+                            label: 'Your Wellness Score',
+                            data: [
+                                activityScore * 20,
+                                75, // Sleep - could be tracked later
+                                nutritionScore,
+                                stressScore,
+                                moodScore
+                            ],
+                            backgroundColor: 'rgba(155, 141, 229, 0.2)',
+                            borderColor: '#9B8DE5',
+                            borderWidth: 2,
+                            pointBackgroundColor: '#9B8DE5',
+                            pointBorderColor: '#fff',
+                            pointHoverBackgroundColor: '#fff',
+                            pointHoverBorderColor: '#9B8DE5'
+                        }]
+                    },
+                    options: {
+                        responsive: true,
+                        maintainAspectRatio: true,
+                        plugins: {
+                            legend: {
+                                display: false
+                            }
+                        },
+                        scales: {
+                            r: {
+                                beginAtZero: true,
+                                max: 100,
+                                ticks: {
+                                    stepSize: 20,
+                                    callback: function(value) {
+                                        return value + '%';
+                                    }
+                                }
+                            }
+                        },
+                        animation: {
+                            duration: 2000,
+                            easing: 'easeOutQuart'
+                        }
+                    }
+                });
+            }
             
             // Add scroll animations
             function initScrollAnimations() {
                 const animatedElements = document.querySelectorAll('.animate-fade-in');
                 
-                const observer = new IntersectionObserver((entries) => {
-                    entries.forEach(entry => {
-                        if (entry.isIntersecting) {
-                            entry.target.style.animationPlayState = 'running';
-                            observer.unobserve(entry.target);
-                        }
+                if ('IntersectionObserver' in window) {
+                    const observer = new IntersectionObserver((entries) => {
+                        entries.forEach(entry => {
+                            if (entry.isIntersecting) {
+                                entry.target.style.animationPlayState = 'running';
+                                observer.unobserve(entry.target);
+                            }
+                        });
+                    }, { threshold: 0.1 });
+                    
+                    animatedElements.forEach(el => {
+                        el.style.animationPlayState = 'paused';
+                        observer.observe(el);
                     });
-                }, { threshold: 0.1 });
-                
-                animatedElements.forEach(el => {
-                    el.style.animationPlayState = 'paused';
-                    observer.observe(el);
-                });
+                } else {
+                    // Fallback for browsers without IntersectionObserver
+                    animatedElements.forEach(el => {
+                        el.style.animationPlayState = 'running';
+                    });
+                }
             }
             
             initScrollAnimations();
+
+            // Apply width from data attributes
+            document.querySelectorAll('.progress-fill').forEach(el => {
+                const w = el.getAttribute('data-width') || '0';
+                const num = parseFloat(w) || 0;
+                el.style.width = num + '%';
+            });
         });
     </script>
 </body>

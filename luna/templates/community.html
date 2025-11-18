@@ -1,0 +1,278 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Community - Luna</title>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        :root {
+            --lavender: #9B8DE5;
+            --teal: #4DB6AC;
+            --charcoal: #333333;
+        }
+        
+        body {
+            font-family: 'Poppins', sans-serif;
+            background: linear-gradient(135deg, #F7F7F7 0%, #FFFFFF 100%);
+            min-height: 100vh;
+        }
+        
+        .post-card {
+            background: white;
+            border-radius: 16px;
+            padding: 1.5rem;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.05);
+            transition: all 0.3s ease;
+            cursor: pointer;
+        }
+        
+        .post-card:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 20px rgba(0,0,0,0.08);
+        }
+        
+        .user-avatar {
+            width: 48px;
+            height: 48px;
+            border-radius: 50%;
+            background: linear-gradient(135deg, var(--lavender), var(--teal));
+            color: white;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: bold;
+            font-size: 1.2rem;
+        }
+        
+        .category-badge {
+            padding: 0.25rem 0.75rem;
+            border-radius: 50px;
+            font-size: 0.75rem;
+            font-weight: 500;
+        }
+        
+        .category-success { background: #D1FAE5; color: #065F46; }
+        .category-nutrition { background: #FEF3C7; color: #92400E; }
+        .category-exercise { background: #DBEAFE; color: #1E3A8A; }
+        .category-mental { background: #FCE7F3; color: #831843; }
+        .category-general { background: #E5E7EB; color: #374151; }
+    </style>
+</head>
+<body>
+    <div class="max-w-7xl mx-auto p-6">
+        <!-- Header -->
+        <div class="mb-6">
+            <a href="/dashboard/" class="inline-flex items-center text-charcoal hover:text-lavender transition-colors mb-4">
+                <i class="fas fa-arrow-left mr-2"></i>
+                Back to Dashboard
+            </a>
+            <div class="flex justify-between items-center">
+                <div>
+                    <h1 class="text-3xl font-bold text-charcoal mb-2">Community Forum</h1>
+                    <p class="text-charcoal/70">Connect, share, and support each other</p>
+                </div>
+                <button class="px-6 py-3 bg-gradient-to-r from-lavender to-teal text-white font-semibold rounded-lg hover:shadow-lg transition-all">
+                    <i class="fas fa-plus mr-2"></i>
+                    New Post
+                </button>
+            </div>
+        </div>
+
+        <div class="grid lg:grid-cols-4 gap-6">
+            <!-- Sidebar -->
+            <div class="lg:col-span-1 space-y-4">
+                <div class="post-card">
+                    <h3 class="font-semibold text-charcoal mb-3">Categories</h3>
+                    <div class="space-y-2">
+                        <button class="w-full text-left px-3 py-2 rounded-lg hover:bg-purple-50 transition-colors flex justify-between items-center">
+                            <span>All Posts</span>
+                            <span class="text-sm text-charcoal/50">248</span>
+                        </button>
+                        <button class="w-full text-left px-3 py-2 rounded-lg hover:bg-purple-50 transition-colors flex justify-between items-center">
+                            <span>Success Stories</span>
+                            <span class="text-sm text-charcoal/50">52</span>
+                        </button>
+                        <button class="w-full text-left px-3 py-2 rounded-lg hover:bg-purple-50 transition-colors flex justify-between items-center">
+                            <span>Nutrition & Diet</span>
+                            <span class="text-sm text-charcoal/50">89</span>
+                        </button>
+                        <button class="w-full text-left px-3 py-2 rounded-lg hover:bg-purple-50 transition-colors flex justify-between items-center">
+                            <span>Exercise & Fitness</span>
+                            <span class="text-sm text-charcoal/50">64</span>
+                        </button>
+                        <button class="w-full text-left px-3 py-2 rounded-lg hover:bg-purple-50 transition-colors flex justify-between items-center">
+                            <span>Mental Health</span>
+                            <span class="text-sm text-charcoal/50">43</span>
+                        </button>
+                    </div>
+                </div>
+
+                <div class="post-card">
+                    <h3 class="font-semibold text-charcoal mb-3">Top Contributors</h3>
+                    <div class="space-y-3">
+                        <div class="flex items-center gap-2">
+                            <div class="user-avatar" style="width: 32px; height: 32px; font-size: 0.9rem;">SR</div>
+                            <div class="flex-1">
+                                <p class="text-sm font-medium">Dr. Sarah R.</p>
+                                <p class="text-xs text-charcoal/50">124 posts</p>
+                            </div>
+                        </div>
+                        <div class="flex items-center gap-2">
+                            <div class="user-avatar" style="width: 32px; height: 32px; font-size: 0.9rem;">EM</div>
+                            <div class="flex-1">
+                                <p class="text-sm font-medium">Emma M.</p>
+                                <p class="text-xs text-charcoal/50">98 posts</p>
+                            </div>
+                        </div>
+                        <div class="flex items-center gap-2">
+                            <div class="user-avatar" style="width: 32px; height: 32px; font-size: 0.9rem;">LT</div>
+                            <div class="flex-1">
+                                <p class="text-sm font-medium">Lisa T.</p>
+                                <p class="text-xs text-charcoal/50">76 posts</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Main Content -->
+            <div class="lg:col-span-3 space-y-4">
+                <!-- Featured Post -->
+                <div class="post-card border-2 border-lavender">
+                    <div class="flex items-center gap-2 mb-3">
+                        <span class="px-3 py-1 bg-gradient-to-r from-lavender to-teal text-white text-xs font-semibold rounded-full">
+                            <i class="fas fa-star mr-1"></i>Featured
+                        </span>
+                        <span class="category-badge category-success">Success Story</span>
+                    </div>
+                    <div class="flex gap-4">
+                        <div class="user-avatar">EM</div>
+                        <div class="flex-1">
+                            <div class="flex items-center gap-2 mb-2">
+                                <h3 class="font-semibold text-charcoal">Emma Martinez</h3>
+                                <span class="text-sm text-charcoal/50">• 2 hours ago</span>
+                            </div>
+                            <h2 class="text-xl font-bold text-charcoal mb-2">My 6-Month Natural PCOS Management Journey - What Actually Worked</h2>
+                            <p class="text-charcoal/70 mb-3">After years of struggling, I finally found a routine that works. Here's everything that helped me regulate my cycle naturally...</p>
+                            <div class="flex items-center gap-4 text-sm text-charcoal/60">
+                                <span><i class="fas fa-heart text-red-400"></i> 124 likes</span>
+                                <span><i class="fas fa-comment text-blue-400"></i> 45 comments</span>
+                                <span><i class="fas fa-eye text-gray-400"></i> 1.2k views</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Regular Posts -->
+                <div class="post-card">
+                    <div class="flex gap-4">
+                        <div class="user-avatar">SR</div>
+                        <div class="flex-1">
+                            <div class="flex items-center gap-2 mb-2">
+                                <h3 class="font-semibold text-charcoal">Dr. Sarah Rodriguez</h3>
+                                <span class="text-sm text-charcoal/50">• 5 hours ago</span>
+                                <span class="category-badge category-nutrition">Nutrition</span>
+                            </div>
+                            <h2 class="text-lg font-semibold text-charcoal mb-2">Best Supplements for Insulin Resistance: Evidence-Based Guide</h2>
+                            <p class="text-charcoal/70 mb-3">Based on recent research, here are the top 5 supplements that have shown promising results for managing insulin resistance in PCOS...</p>
+                            <div class="flex items-center gap-4 text-sm text-charcoal/60">
+                                <span><i class="fas fa-heart text-red-400"></i> 89 likes</span>
+                                <span><i class="fas fa-comment text-blue-400"></i> 34 comments</span>
+                                <span><i class="fas fa-eye text-gray-400"></i> 856 views</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="post-card">
+                    <div class="flex gap-4">
+                        <div class="user-avatar">JP</div>
+                        <div class="flex-1">
+                            <div class="flex items-center gap-2 mb-2">
+                                <h3 class="font-semibold text-charcoal">Jessica Parker</h3>
+                                <span class="text-sm text-charcoal/50">• 1 day ago</span>
+                                <span class="category-badge category-nutrition">Nutrition</span>
+                            </div>
+                            <h2 class="text-lg font-semibold text-charcoal mb-2">15-Minute PCOS-Friendly Breakfast Ideas</h2>
+                            <p class="text-charcoal/70 mb-3">Quick and easy breakfast recipes that keep blood sugar stable and taste amazing! Perfect for busy mornings...</p>
+                            <div class="flex items-center gap-4 text-sm text-charcoal/60">
+                                <span><i class="fas fa-heart text-red-400"></i> 156 likes</span>
+                                <span><i class="fas fa-comment text-blue-400"></i> 67 comments</span>
+                                <span><i class="fas fa-eye text-gray-400"></i> 2.3k views</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="post-card">
+                    <div class="flex gap-4">
+                        <div class="user-avatar">LT</div>
+                        <div class="flex-1">
+                            <div class="flex items-center gap-2 mb-2">
+                                <h3 class="font-semibold text-charcoal">Lisa Thompson</h3>
+                                <span class="text-sm text-charcoal/50">• 1 day ago</span>
+                                <span class="category-badge category-mental">Mental Health</span>
+                            </div>
+                            <h2 class="text-lg font-semibold text-charcoal mb-2">Dealing with Hair Loss - Let's Share What's Working</h2>
+                            <p class="text-charcoal/70 mb-3">I'm struggling with hair loss and feeling really down about it. What treatments or products have helped you?...</p>
+                            <div class="flex items-center gap-4 text-sm text-charcoal/60">
+                                <span><i class="fas fa-heart text-red-400"></i> 78 likes</span>
+                                <span><i class="fas fa-comment text-blue-400"></i> 92 comments</span>
+                                <span><i class="fas fa-eye text-gray-400"></i> 1.8k views</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="post-card">
+                    <div class="flex gap-4">
+                        <div class="user-avatar">MK</div>
+                        <div class="flex-1">
+                            <div class="flex items-center gap-2 mb-2">
+                                <h3 class="font-semibold text-charcoal">Maria Kim</h3>
+                                <span class="text-sm text-charcoal/50">• 2 days ago</span>
+                                <span class="category-badge category-exercise">Exercise</span>
+                            </div>
+                            <h2 class="text-lg font-semibold text-charcoal mb-2">Low-Impact Exercises That Actually Help with PCOS</h2>
+                            <p class="text-charcoal/70 mb-3">Not everyone can do HIIT! Here are gentle exercises that have helped me lose weight and regulate my cycle...</p>
+                            <div class="flex items-center gap-4 text-sm text-charcoal/60">
+                                <span><i class="fas fa-heart text-red-400"></i> 134 likes</span>
+                                <span><i class="fas fa-comment text-blue-400"></i> 58 comments</span>
+                                <span><i class="fas fa-eye text-gray-400"></i> 1.5k views</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="post-card">
+                    <div class="flex gap-4">
+                        <div class="user-avatar">AN</div>
+                        <div class="flex-1">
+                            <div class="flex items-center gap-2 mb-2">
+                                <h3 class="font-semibold text-charcoal">Amanda Nguyen</h3>
+                                <span class="text-sm text-charcoal/50">• 2 days ago</span>
+                                <span class="category-badge category-general">General</span>
+                            </div>
+                            <h2 class="text-lg font-semibold text-charcoal mb-2">Just Got Diagnosed - Where Do I Start?</h2>
+                            <p class="text-charcoal/70 mb-3">Feeling overwhelmed after my PCOS diagnosis. What are the first steps I should take? Any advice welcome...</p>
+                            <div class="flex items-center gap-4 text-sm text-charcoal/60">
+                                <span><i class="fas fa-heart text-red-400"></i> 45 likes</span>
+                                <span><i class="fas fa-comment text-blue-400"></i> 73 comments</span>
+                                <span><i class="fas fa-eye text-gray-400"></i> 890 views</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Load More -->
+                <button class="w-full py-3 bg-white border-2 border-lavender text-lavender font-semibold rounded-lg hover:bg-purple-50 transition-all">
+                    Load More Posts
+                </button>
+            </div>
+        </div>
+    </div>
+</body>
+</html>

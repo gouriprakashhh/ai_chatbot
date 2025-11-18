@@ -1,0 +1,1358 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Symptoms Tracker - Luna</title>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+    <style>
+        :root {
+            --lavender: #9B8DE5;
+            --teal: #4DB6AC;
+            --charcoal: #333333;
+            --lightgray: #F7F7F7;
+            --light-lavender: #F0EEFF;
+            --light-teal: #E6F5F3;
+        }
+        
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: 'Poppins', sans-serif;
+            background: linear-gradient(135deg, #F7F7F7 0%, #FFFFFF 100%);
+            min-height: 100vh;
+        }
+        
+        .container {
+            max-width: 1200px;
+            margin: 2rem auto;
+            padding: 0 1rem;
+        }
+        
+        .header {
+            background: linear-gradient(120deg, var(--lavender) 0%, var(--teal) 100%);
+            color: white;
+            padding: 2rem;
+            border-radius: 20px;
+            position: relative;
+            overflow: hidden;
+            margin-bottom: 2rem;
+        }
+        
+        .header::before {
+            content: '';
+            position: absolute;
+            top: -50%;
+            right: -10%;
+            width: 300px;
+            height: 300px;
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 50%;
+            animation: float 6s ease-in-out infinite;
+        }
+        
+        @keyframes float {
+            0%, 100% { transform: translateY(0px); }
+            50% { transform: translateY(-20px); }
+        }
+        
+        .back-button {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+            color: white;
+            text-decoration: none;
+            font-size: 0.9rem;
+            margin-bottom: 1rem;
+            padding: 0.5rem 1rem;
+            border-radius: 8px;
+            background: rgba(255, 255, 255, 0.15);
+            backdrop-filter: blur(10px);
+            transition: all 0.3s ease;
+            position: relative;
+            z-index: 1;
+        }
+        
+        .back-button:hover {
+            background: rgba(255, 255, 255, 0.25);
+            transform: translateX(-5px);
+        }
+        
+        .symptom-card {
+            background: white;
+            border-radius: 16px;
+            padding: 1.5rem;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.05);
+            transition: all 0.3s ease;
+            opacity: 0;
+            animation: fadeInUp 0.5s ease forwards;
+        }
+        
+        .symptom-card:nth-child(1) { animation-delay: 0.1s; }
+        .symptom-card:nth-child(2) { animation-delay: 0.2s; }
+        .symptom-card:nth-child(3) { animation-delay: 0.3s; }
+        .symptom-card:nth-child(4) { animation-delay: 0.4s; }
+        
+        @keyframes fadeInUp {
+            from {
+                opacity: 0;
+                transform: translateY(20px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+        
+        .symptom-card:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 8px 20px rgba(0,0,0,0.08);
+        }
+        
+        .section-title {
+            color: var(--lavender);
+            font-weight: 600;
+            font-size: 1.2rem;
+            margin-bottom: 1.5rem;
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+        }
+        
+        .section-title i {
+            width: 36px;
+            height: 36px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background: linear-gradient(135deg, var(--light-lavender) 0%, var(--light-teal) 100%);
+            border-radius: 10px;
+            font-size: 1.1rem;
+            color: var(--lavender);
+        }
+        
+        .slider {
+            -webkit-appearance: none;
+            width: 100%;
+            height: 10px;
+            border-radius: 5px;
+            background: #E5E7EB;
+            outline: none;
+            transition: all 0.3s ease;
+        }
+        
+        .slider::-webkit-slider-thumb {
+            -webkit-appearance: none;
+            appearance: none;
+            width: 28px;
+            height: 28px;
+            border-radius: 50%;
+            background: linear-gradient(135deg, var(--lavender), var(--teal));
+            cursor: pointer;
+            box-shadow: 0 2px 8px rgba(155, 141, 229, 0.4);
+            transition: all 0.3s ease;
+        }
+        
+        .slider::-webkit-slider-thumb:hover {
+            transform: scale(1.2);
+            box-shadow: 0 4px 12px rgba(155, 141, 229, 0.6);
+        }
+        
+        .slider::-moz-range-thumb {
+            width: 28px;
+            height: 28px;
+            border-radius: 50%;
+            background: linear-gradient(135deg, var(--lavender), var(--teal));
+            cursor: pointer;
+            border: none;
+            box-shadow: 0 2px 8px rgba(155, 141, 229, 0.4);
+        }
+        
+        .symptom-badge {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+            padding: 0.75rem 1.25rem;
+            border-radius: 50px;
+            font-size: 0.875rem;
+            font-weight: 500;
+            cursor: pointer;
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            border: 2px solid #E5E7EB;
+            background: white;
+            user-select: none;
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .symptom-badge::before {
+            content: '';
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            width: 0;
+            height: 0;
+            border-radius: 50%;
+            background: rgba(155, 141, 229, 0.1);
+            transform: translate(-50%, -50%);
+            transition: width 0.3s, height 0.3s;
+        }
+        
+        .symptom-badge:hover::before {
+            width: 100%;
+            height: 100%;
+        }
+        
+        .symptom-badge:hover {
+            border-color: var(--lavender);
+            background: var(--light-lavender);
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(155, 141, 229, 0.2);
+        }
+        
+        .symptom-badge.active {
+            background: linear-gradient(120deg, var(--lavender), var(--teal));
+            color: white;
+            border-color: var(--lavender);
+            transform: scale(1.05);
+            box-shadow: 0 4px 15px rgba(155, 141, 229, 0.4);
+        }
+        
+        .symptom-badge.active::after {
+            content: '\f00c';
+            font-family: 'Font Awesome 6 Free';
+            font-weight: 900;
+            margin-left: 0.5rem;
+        }
+        
+        .mood-badge {
+            display: inline-flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 0.5rem;
+            padding: 1rem;
+            border-radius: 16px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            border: 2px solid #E5E7EB;
+            background: white;
+            min-width: 90px;
+        }
+        
+        .mood-badge:hover {
+            transform: scale(1.05);
+            box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+            border-color: var(--lavender);
+        }
+        
+        .mood-badge.active {
+            background: linear-gradient(120deg, var(--lavender), var(--teal));
+            color: white;
+            border-color: var(--lavender);
+            transform: scale(1.1);
+            box-shadow: 0 4px 15px rgba(155, 141, 229, 0.4);
+        }
+        
+        .form-group {
+            margin-bottom: 1.5rem;
+        }
+        
+        .form-label {
+            display: block;
+            color: var(--charcoal);
+            font-weight: 500;
+            margin-bottom: 0.75rem;
+            font-size: 0.95rem;
+        }
+        
+        .form-textarea {
+            width: 100%;
+            padding: 0.875rem 1rem;
+            border: 2px solid #E5E7EB;
+            border-radius: 12px;
+            font-size: 1rem;
+            font-family: 'Poppins', sans-serif;
+            transition: all 0.3s ease;
+            min-height: 100px;
+            resize: vertical;
+        }
+        
+        .form-textarea:focus {
+            outline: none;
+            border-color: var(--lavender);
+            box-shadow: 0 0 0 4px rgba(155, 141, 229, 0.1);
+        }
+        
+        .help-text {
+            font-size: 0.8rem;
+            color: #6B7280;
+            margin-top: 0.5rem;
+            display: flex;
+            align-items: center;
+            gap: 0.4rem;
+        }
+        
+        .help-text i {
+            color: var(--teal);
+        }
+        
+        .btn {
+            flex: 1;
+            padding: 1rem 2rem;
+            border: none;
+            border-radius: 12px;
+            font-size: 1rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 0.5rem;
+            font-family: 'Poppins', sans-serif;
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .btn::before {
+            content: '';
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            width: 0;
+            height: 0;
+            border-radius: 50%;
+            background: rgba(255, 255, 255, 0.3);
+            transform: translate(-50%, -50%);
+            transition: width 0.6s, height 0.6s;
+        }
+        
+        .btn:hover::before {
+            width: 300px;
+            height: 300px;
+        }
+        
+        .btn-primary {
+            background: linear-gradient(120deg, var(--lavender) 0%, var(--teal) 100%);
+            color: white;
+            box-shadow: 0 4px 15px rgba(155, 141, 229, 0.3);
+        }
+        
+        .btn-primary:hover:not(:disabled) {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 25px rgba(155, 141, 229, 0.4);
+        }
+
+        .btn-primary:disabled {
+            opacity: 0.6;
+            cursor: not-allowed;
+        }
+        
+        .log-entry {
+            padding: 1rem 1.25rem;
+            border-left: 4px solid var(--lavender);
+            background: #F9FAFB;
+            border-radius: 8px;
+            margin-bottom: 0.75rem;
+            transition: all 0.3s ease;
+        }
+        
+        .log-entry:hover {
+            background: #F3F4F6;
+            transform: translateX(5px);
+        }
+        
+        .stat-value {
+            font-size: 2.5rem;
+            font-weight: 700;
+            color: var(--lavender);
+            line-height: 1;
+        }
+        
+        .stat-label {
+            font-size: 0.9rem;
+            color: var(--charcoal);
+            opacity: 0.7;
+            margin-top: 0.5rem;
+        }
+        
+        .alert {
+            padding: 1rem 1.5rem;
+            border-radius: 12px;
+            margin-bottom: 1.5rem;
+            animation: slideInDown 0.4s ease;
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+        }
+        
+        @keyframes slideInDown {
+            from {
+                opacity: 0;
+                transform: translateY(-20px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+        
+        .alert-success {
+            background: linear-gradient(135deg, #D1FAE5 0%, #A7F3D0 100%);
+            color: #065F46;
+            border: 2px solid #10B981;
+        }
+        
+        .alert-error {
+            background: linear-gradient(135deg, #FEE2E2 0%, #FECACA 100%);
+            color: #991B1B;
+            border: 2px solid #EF4444;
+        }
+        
+        @media (max-width: 768px) {
+            .container {
+                margin: 1rem auto;
+            }
+            
+            .header {
+                padding: 1.5rem;
+                border-radius: 15px;
+            }
+            
+            .symptom-badge {
+                padding: 0.625rem 1rem;
+                font-size: 0.8rem;
+            }
+            
+            .mood-badge {
+                min-width: 75px;
+                padding: 0.75rem;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <a href="/dashboard/" class="back-button">
+                <i class="fas fa-arrow-left"></i>
+                <span>Back to Dashboard</span>
+            </a>
+            <div style="position: relative; z-index: 1;">
+                <h1 class="text-2xl font-bold mb-1">Symptoms Tracker</h1>
+                <p class="text-white/90 text-sm">Log and monitor your daily PCOS symptoms</p>
+            </div>
+        </div>
+        
+        <div id="alertContainer"></div>
+        
+        <div class="grid lg:grid-cols-3 gap-6">
+            <!-- Left Column - Log Symptoms -->
+            <div class="lg:col-span-2 space-y-6">
+                <!-- Today's Log -->
+                <div class="symptom-card">
+                    <div class="flex items-center justify-between mb-6">
+                        <h3 class="section-title mb-0">
+                            <i class="fas fa-clipboard-list"></i>
+                            Log Today's Symptoms
+                        </h3>
+                        <span class="text-sm px-3 py-1 bg-purple-50 text-lavender rounded-full font-medium">
+                            Day <span id="cycleDay">1</span> - <span id="currentPhase">Tracking</span>
+                        </span>
+                    </div>
+
+                    <form id="symptomForm" class="space-y-6">
+                        <!-- Physical Symptoms Section -->
+                        <div class="p-4 rounded-xl" style="background: var(--light-lavender);">
+                            <h4 class="font-semibold text-charcoal mb-4 flex items-center">
+                                <i class="fas fa-heartbeat text-pink-500 mr-2"></i>
+                                Physical Symptoms
+                            </h4>
+                            <div class="space-y-5">
+                                <div class="form-group">
+                                    <div class="flex justify-between items-center mb-2">
+                                        <label class="form-label mb-0">Cramps / Abdominal Pain</label>
+                                        <span class="text-lg font-bold" style="color: var(--lavender);" id="crampsValue">0</span>
+                                    </div>
+                                    <input type="range" min="0" max="10" value="0" class="slider" id="cramps" name="cramps">
+                                    <div class="flex justify-between text-xs text-charcoal/50 mt-1">
+                                        <span>None</span>
+                                        <span>Mild</span>
+                                        <span>Moderate</span>
+                                        <span>Severe</span>
+                                        <span>Extreme</span>
+                                    </div>
+                                </div>
+
+                                <div class="form-group">
+                                    <div class="flex justify-between items-center mb-2">
+                                        <label class="form-label mb-0">Bloating</label>
+                                        <span class="text-lg font-bold" style="color: var(--lavender);" id="bloatingValue">0</span>
+                                    </div>
+                                    <input type="range" min="0" max="10" value="0" class="slider" id="bloating" name="bloating">
+                                    <div class="flex justify-between text-xs text-charcoal/50 mt-1">
+                                        <span>None</span>
+                                        <span>Mild</span>
+                                        <span>Moderate</span>
+                                        <span>Severe</span>
+                                        <span>Extreme</span>
+                                    </div>
+                                </div>
+
+                                <div class="form-group">
+                                    <div class="flex justify-between items-center mb-2">
+                                        <label class="form-label mb-0">Energy Level</label>
+                                        <span class="text-lg font-bold" style="color: var(--teal);" id="energyValue">5</span>
+                                    </div>
+                                    <input type="range" min="0" max="10" value="5" class="slider" id="energy" name="energy_level">
+                                    <div class="flex justify-between text-xs text-charcoal/50 mt-1">
+                                        <span>Exhausted</span>
+                                        <span>Low</span>
+                                        <span>Normal</span>
+                                        <span>High</span>
+                                        <span>Energized</span>
+                                    </div>
+                                </div>
+
+                                <div class="form-group">
+                                    <div class="flex justify-between items-center mb-2">
+                                        <label class="form-label mb-0">Mood Score</label>
+                                        <span class="text-lg font-bold" style="color: var(--lavender);" id="moodScoreValue">5</span>
+                                    </div>
+                                    <input type="range" min="0" max="10" value="5" class="slider" id="moodScore" name="mood_score">
+                                    <div class="flex justify-between text-xs text-charcoal/50 mt-1">
+                                        <span>Very Low</span>
+                                        <span>Low</span>
+                                        <span>Normal</span>
+                                        <span>Good</span>
+                                        <span>Excellent</span>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Common Symptoms -->
+                        <div class="p-4 rounded-xl" style="background: var(--light-teal);">
+                            <h4 class="font-semibold text-charcoal mb-3 flex items-center">
+                                <i class="fas fa-check-circle text-teal mr-2"></i>
+                                Common Symptoms (Select all that apply)
+                            </h4>
+                            <div class="flex flex-wrap gap-2">
+                                <span class="symptom-badge" data-symptom="acne">
+                                    <i class="fas fa-circle text-red-400"></i>Acne
+                                </span>
+                                <span class="symptom-badge" data-symptom="hair-loss">
+                                    <i class="fas fa-user-slash text-orange-400"></i>Hair Loss
+                                </span>
+                                <span class="symptom-badge" data-symptom="weight-gain">
+                                    <i class="fas fa-weight text-yellow-500"></i>Weight Changes
+                                </span>
+                                <span class="symptom-badge" data-symptom="mood-swings">
+                                    <i class="fas fa-smile text-blue-400"></i>Mood Swings
+                                </span>
+                                <span class="symptom-badge" data-symptom="fatigue">
+                                    <i class="fas fa-battery-quarter text-gray-400"></i>Fatigue
+                                </span>
+                                <span class="symptom-badge" data-symptom="anxiety">
+                                    <i class="fas fa-brain text-purple-400"></i>Anxiety
+                                </span>
+                                <span class="symptom-badge" data-symptom="insomnia">
+                                    <i class="fas fa-moon text-indigo-400"></i>Sleep Issues
+                                </span>
+                                <span class="symptom-badge" data-symptom="nausea">
+                                    <i class="fas fa-dizzy text-green-400"></i>Nausea
+                                </span>
+                                <span class="symptom-badge" data-symptom="breast-tenderness">
+                                    <i class="fas fa-hand-holding-heart text-pink-400"></i>Breast Tenderness
+                                </span>
+                                <span class="symptom-badge" data-symptom="cravings">
+                                    <i class="fas fa-cookie-bite text-brown-400"></i>Food Cravings
+                                </span>
+                            </div>
+                        </div>
+
+                        <!-- Mood Selection -->
+                        <div class="p-4 rounded-xl" style="background: #FEF3F2;">
+                            <h4 class="font-semibold text-charcoal mb-3 flex items-center">
+                                <i class="fas fa-heart text-pink-500 mr-2"></i>
+                                How are you feeling today?
+                            </h4>
+                            <div class="flex flex-wrap gap-3 justify-center">
+                                <span class="mood-badge" data-mood="happy">
+                                    <span class="text-3xl">😊</span>
+                                    <span class="text-sm">Happy</span>
+                                </span>
+                                <span class="mood-badge" data-mood="calm">
+                                    <span class="text-3xl">😌</span>
+                                    <span class="text-sm">Calm</span>
+                                </span>
+                                <span class="mood-badge" data-mood="anxious">
+                                    <span class="text-3xl">😰</span>
+                                    <span class="text-sm">Anxious</span>
+                                </span>
+                                <span class="mood-badge" data-mood="irritable">
+                                    <span class="text-3xl">😤</span>
+                                    <span class="text-sm">Irritable</span>
+                                </span>
+                                <span class="mood-badge" data-mood="sad">
+                                    <span class="text-3xl">😢</span>
+                                    <span class="text-sm">Sad</span>
+                                </span>
+                                <span class="mood-badge" data-mood="stressed">
+                                    <span class="text-3xl">😫</span>
+                                    <span class="text-sm">Stressed</span>
+                                </span>
+                            </div>
+                        </div>
+
+                        <!-- Notes -->
+                        <div class="form-group">
+                            <label class="form-label flex items-center">
+                                <i class="fas fa-sticky-note text-yellow-500 mr-2"></i>
+                                Additional Notes (Optional)
+                            </label>
+                            <textarea 
+                                id="notes"
+                                class="form-textarea" 
+                                placeholder="Any other symptoms, triggers, or observations you'd like to note..."></textarea>
+                            <p class="help-text">
+                                <i class="fas fa-lightbulb"></i>
+                                <span>Tip: Note what you ate, stress levels, or activities that might have triggered symptoms</span>
+                            </p>
+                        </div>
+
+                        <!-- Submit Button -->
+                        <button type="submit" class="btn btn-primary w-full">
+                            <i class="fas fa-save"></i>
+                            <span>Save Today's Symptom Log</span>
+                        </button>
+                    </form>
+                </div>
+
+                <!-- Symptom Trends Chart -->
+                <div class="symptom-card">
+                    <h3 class="section-title">
+                        <i class="fas fa-chart-line"></i>
+                        Symptom Trends (Last 14 Days)
+                    </h3>
+                    <div style="height: 300px;">
+                        <canvas id="symptomChart"></canvas>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Right Column - Insights & History -->
+            <div class="space-y-6">
+                <!-- Today's Summary -->
+                <div class="symptom-card">
+                    <h3 class="section-title">
+                        <i class="fas fa-calendar-day"></i>
+                        Today's Summary
+                    </h3>
+                    <div class="text-center mb-4">
+                        <div class="stat-value" id="avgEnergy">5.0</div>
+                        <p class="stat-label">Average Energy</p>
+                    </div>
+                    <div class="text-center p-4 rounded-xl" style="background: var(--light-lavender);">
+                        <p class="text-sm text-charcoal/70">You're having a <span class="font-semibold text-lavender" id="overallFeeling">good</span> day!</p>
+                    </div>
+                </div>
+
+                <!-- Quick Stats -->
+                <div class="symptom-card">
+                    <h3 class="section-title">
+                        <i class="fas fa-chart-pie"></i>
+                        This Month
+                    </h3>
+                    <div class="space-y-3">
+                        <div class="flex justify-between items-center p-3 rounded-lg" style="background: var(--light-lavender);">
+                            <span class="text-sm font-medium text-charcoal">Total Logs</span>
+                            <span class="text-xl font-bold text-lavender" id="totalLogs">0</span>
+                        </div>
+                        <div class="flex justify-between items-center p-3 rounded-lg" style="background: var(--light-teal);">
+                            <span class="text-sm font-medium text-charcoal">Avg Pain Level</span>
+                            <span class="text-xl font-bold text-teal" id="avgPain">0.0</span>/10
+                        </div>
+                        <div class="flex justify-between items-center p-3 rounded-lg bg-pink-50">
+                            <span class="text-sm font-medium text-charcoal">Tracking Since</span>
+                            <span class="text-sm font-semibold text-pink-600" id="trackingSince">Today</span>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Recent Logs -->
+                <div class="symptom-card">
+                    <h3 class="section-title">
+                        <i class="fas fa-history"></i>
+                        Recent Logs
+                    </h3>
+                    <div class="space-y-3 max-h-96 overflow-y-auto" id="recentLogsContainer">
+                        <div class="text-center py-8">
+                            <i class="fas fa-clipboard text-4xl text-gray-300 mb-3"></i>
+                            <p class="text-sm text-charcoal/60">No symptom logs yet</p>
+                            <p class="text-xs text-charcoal/50 mt-1">Start tracking to see your history</p>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Export Options -->
+                <div class="symptom-card">
+                    <h3 class="section-title">
+                        <i class="fas fa-download"></i>
+                        Export Data
+                    </h3>
+                    <p class="text-sm text-charcoal/70 mb-4">Download your symptom history to share with your healthcare provider</p>
+                    <div class="space-y-2">
+                        <button onclick="exportToPDF()" class="w-full py-3 bg-white border-2 border-lavender text-lavender font-medium rounded-lg hover:bg-purple-50 transition-all transform hover:-translate-y-1 flex items-center justify-center gap-2">
+                            <i class="fas fa-file-pdf"></i>
+                            <span>Export as PDF</span>
+                        </button>
+                        <button onclick="exportToCSV()" class="w-full py-3 bg-white border-2 border-teal text-teal font-medium rounded-lg hover:bg-teal-50 transition-all transform hover:-translate-y-1 flex items-center justify-center gap-2">
+                            <i class="fas fa-file-csv"></i>
+                            <span>Export as CSV</span>
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // ============================================
+        // STATE MANAGEMENT
+        // ============================================
+        const appState = {
+            symptomLogs: [],
+            cycleDay: 1,
+            currentPhase: 'Tracking',
+            chart: null
+        };
+
+        // ============================================
+        // INITIALIZE APP
+        // ============================================
+        document.addEventListener('DOMContentLoaded', function() {
+            initializeSliders();
+            initializeSymptomBadges();
+            initializeMoodBadges();
+            initializeForm();
+            loadSymptomData();
+            initializeChart();
+        });
+
+        // ============================================
+        // SLIDER HANDLERS
+        // ============================================
+        function initializeSliders() {
+            const sliders = [
+                { id: 'cramps', valueId: 'crampsValue' },
+                { id: 'bloating', valueId: 'bloatingValue' },
+                { id: 'energy', valueId: 'energyValue' },
+                { id: 'moodScore', valueId: 'moodScoreValue' }
+            ];
+
+            sliders.forEach(({ id, valueId }) => {
+                const slider = document.getElementById(id);
+                const valueSpan = document.getElementById(valueId);
+                
+                if (slider && valueSpan) {
+                    slider.addEventListener('input', (e) => {
+                        const value = parseInt(e.target.value);
+                        valueSpan.textContent = value;
+                        
+                        // Change color based on value
+                        if (id === 'energy') {
+                            if (value > 7) valueSpan.style.color = '#10B981';
+                            else if (value > 4) valueSpan.style.color = '#4DB6AC';
+                            else valueSpan.style.color = '#EF4444';
+                        } else if (id === 'moodScore') {
+                            if (value > 7) valueSpan.style.color = '#10B981';
+                            else if (value > 4) valueSpan.style.color = '#9B8DE5';
+                            else valueSpan.style.color = '#EF4444';
+                        } else {
+                            if (value > 7) valueSpan.style.color = '#EF4444';
+                            else if (value > 4) valueSpan.style.color = '#F59E0B';
+                            else valueSpan.style.color = '#10B981';
+                        }
+                    });
+                }
+            });
+        }
+
+        // ============================================
+        // SYMPTOM BADGE HANDLERS
+        // ============================================
+        function initializeSymptomBadges() {
+            document.querySelectorAll('.symptom-badge').forEach(badge => {
+                badge.addEventListener('click', function() {
+                    this.classList.toggle('active');
+                });
+            });
+        }
+
+        // ============================================
+        // MOOD BADGE HANDLERS
+        // ============================================
+        function initializeMoodBadges() {
+            document.querySelectorAll('.mood-badge').forEach(badge => {
+                badge.addEventListener('click', function() {
+                    document.querySelectorAll('.mood-badge').forEach(b => b.classList.remove('active'));
+                    this.classList.add('active');
+                });
+            });
+        }
+
+        // ============================================
+        // FORM SUBMISSION
+        // ============================================
+        function initializeForm() {
+            const form = document.getElementById('symptomForm');
+            if (form) {
+                form.addEventListener('submit', handleFormSubmit);
+            }
+        }
+
+        async function handleFormSubmit(e) {
+            e.preventDefault();
+            
+            // Collect form data
+            const formData = {
+                date: new Date().toISOString().split('T')[0],
+                cramps: parseInt(document.getElementById('cramps').value),
+                bloating: parseInt(document.getElementById('bloating').value),
+                energy_level: parseInt(document.getElementById('energy').value),
+                mood_score: parseInt(document.getElementById('moodScore').value),
+                symptoms: Array.from(document.querySelectorAll('.symptom-badge.active')).map(b => b.dataset.symptom),
+                mood: document.querySelector('.mood-badge.active')?.dataset.mood || null,
+                notes: document.getElementById('notes').value.trim()
+            };
+            
+            // Validate
+            if (!formData.mood) {
+                showAlert('error', 'Please select your mood for today');
+                return;
+            }
+            
+            // Disable submit button
+            const submitBtn = e.target.querySelector('button[type="submit"]');
+            const originalHTML = submitBtn.innerHTML;
+            submitBtn.disabled = true;
+            submitBtn.innerHTML = '<i class="fas fa-spinner fa-spin"></i><span>Saving...</span>';
+            
+            try {
+                // Save to backend
+                const response = await fetch('/api/log-symptom/', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify(formData)
+                });
+                
+                const result = await response.json();
+                
+                if (result.status === 'success') {
+                    // Also save to memory for immediate display
+                    saveSymptomLog(formData);
+                    
+                    // Show success message
+                    showAlert('success', result.message);
+                    
+                    // Reload data from backend
+                    await loadSymptomData();
+                    updateChart();
+                    
+                    // Scroll to top
+                    window.scrollTo({ top: 0, behavior: 'smooth' });
+                } else {
+                    showAlert('error', result.message || 'Failed to save symptom log');
+                }
+            } catch (error) {
+                console.error('Error saving symptom log:', error);
+                showAlert('error', 'Failed to save symptom log. Please try again.');
+            } finally {
+                // Re-enable submit button
+                submitBtn.disabled = false;
+                submitBtn.innerHTML = originalHTML;
+            }
+        }
+
+        // ============================================
+        // DATA MANAGEMENT
+        // ============================================
+        function saveSymptomLog(data) {
+            // Check if log exists for today
+            const existingIndex = appState.symptomLogs.findIndex(log => log.date === data.date);
+            
+            if (existingIndex !== -1) {
+                appState.symptomLogs[existingIndex] = data;
+            } else {
+                appState.symptomLogs.unshift(data);
+            }
+            
+            // Keep only last 90 days
+            if (appState.symptomLogs.length > 90) {
+                appState.symptomLogs = appState.symptomLogs.slice(0, 90);
+            }
+        }
+
+        function loadSymptomData() {
+            // Fetch data from backend
+            fetch('/api/symptom-history/?days=90')
+                .then(response => response.json())
+                .then(result => {
+                    if (result.status === 'success') {
+                        appState.symptomLogs = result.data;
+                        updateStats();
+                        updateRecentLogs();
+                        updateChart();
+                    } else if (appState.symptomLogs.length === 0) {
+                        // No data available, show empty state
+                        updateStats();
+                        updateRecentLogs();
+                    }
+                })
+                .catch(error => {
+                    console.error('Error loading symptom data:', error);
+                    // Keep existing data if fetch fails
+                    updateStats();
+                    updateRecentLogs();
+                });
+        }
+
+        // ============================================
+        // UPDATE STATS
+        // ============================================
+        function updateStats() {
+            const logs = appState.symptomLogs;
+            
+            if (logs.length === 0) {
+                document.getElementById('totalLogs').textContent = '0';
+                document.getElementById('avgPain').textContent = '0.0';
+                document.getElementById('avgEnergy').textContent = '5.0';
+                document.getElementById('overallFeeling').textContent = 'good';
+                document.getElementById('trackingSince').textContent = 'Today';
+                return;
+            }
+            
+            // Calculate stats
+            const totalLogs = logs.length;
+            const avgPain = (logs.reduce((sum, log) => sum + log.cramps, 0) / totalLogs).toFixed(1);
+            const avgEnergy = (logs.reduce((sum, log) => sum + log.energy_level, 0) / totalLogs).toFixed(1);
+            
+            // Determine overall feeling
+            let overallFeeling = 'good';
+            if (avgPain < 3 && avgEnergy > 7) overallFeeling = 'great';
+            else if (avgPain < 5 && avgEnergy > 5) overallFeeling = 'good';
+            else if (avgPain < 7) overallFeeling = 'moderate';
+            else overallFeeling = 'challenging';
+            
+            // Get tracking since date
+            const oldestDate = new Date(logs[logs.length - 1].date);
+            const trackingSince = formatDate(oldestDate);
+            
+            // Update UI
+            document.getElementById('totalLogs').textContent = totalLogs;
+            document.getElementById('avgPain').textContent = avgPain;
+            document.getElementById('avgEnergy').textContent = avgEnergy;
+            document.getElementById('overallFeeling').textContent = overallFeeling;
+            document.getElementById('trackingSince').textContent = trackingSince;
+        }
+
+        // ============================================
+        // UPDATE RECENT LOGS
+        // ============================================
+        function updateRecentLogs() {
+            const container = document.getElementById('recentLogsContainer');
+            const logs = appState.symptomLogs.slice(0, 7);
+            
+            if (logs.length === 0) {
+                container.innerHTML = `
+                    <div class="text-center py-8">
+                        <i class="fas fa-clipboard text-4xl text-gray-300 mb-3"></i>
+                        <p class="text-sm text-charcoal/60">No symptom logs yet</p>
+                        <p class="text-xs text-charcoal/50 mt-1">Start tracking to see your history</p>
+                    </div>
+                `;
+                return;
+            }
+            
+            container.innerHTML = logs.map(log => {
+                const date = new Date(log.date);
+                const isToday = date.toDateString() === new Date().toDateString();
+                const dateStr = isToday ? 'Today' : formatDate(date);
+                
+                let severityClass, severityText;
+                if (log.cramps <= 3) {
+                    severityClass = 'bg-green-100 text-green-700';
+                    severityText = 'Mild';
+                } else if (log.cramps <= 6) {
+                    severityClass = 'bg-yellow-100 text-yellow-700';
+                    severityText = 'Moderate';
+                } else {
+                    severityClass = 'bg-red-100 text-red-700';
+                    severityText = 'Severe';
+                }
+                
+                const symptomsHtml = log.symptoms && log.symptoms.length > 0 
+                    ? log.symptoms.slice(0, 3).map(s => 
+                        `<span class="text-xs px-2 py-1 bg-white rounded shadow-sm">${formatSymptom(s)}</span>`
+                    ).join('')
+                    : '<span class="text-xs px-2 py-1 bg-gray-100 text-gray-500 rounded">No symptoms logged</span>';
+                
+                return `
+                    <div class="log-entry">
+                        <div class="flex justify-between items-start mb-2">
+                            <p class="text-sm font-medium text-charcoal">${dateStr}</p>
+                            <span class="text-xs px-2 py-1 rounded ${severityClass}">${severityText}</span>
+                        </div>
+                        <p class="text-xs text-charcoal/60 mb-2">
+                            Pain: ${log.cramps}/10 • Energy: ${log.energy_level}/10
+                        </p>
+                        <div class="flex flex-wrap gap-1">
+                            ${symptomsHtml}
+                        </div>
+                    </div>
+                `;
+            }).join('');
+        }
+
+        // ============================================
+        // CHART INITIALIZATION
+        // ============================================
+        function initializeChart() {
+            const ctx = document.getElementById('symptomChart');
+            if (!ctx) return;
+            
+            const labels = [];
+            const painData = [];
+            const energyData = [];
+            const bloatingData = [];
+            
+            // Get last 14 days of data
+            const last14Days = appState.symptomLogs.slice(0, 14).reverse();
+            
+            last14Days.forEach(log => {
+                const date = new Date(log.date);
+                labels.push(date.toLocaleDateString('en-US', { month: 'short', day: 'numeric' }));
+                painData.push(log.cramps);
+                energyData.push(log.energy_level);
+                bloatingData.push(log.bloating);
+            });
+            
+            appState.chart = new Chart(ctx, {
+                type: 'line',
+                data: {
+                    labels: labels,
+                    datasets: [
+                        {
+                            label: 'Pain Level',
+                            data: painData,
+                            borderColor: '#9B8DE5',
+                            backgroundColor: 'rgba(155, 141, 229, 0.1)',
+                            tension: 0.4,
+                            fill: true,
+                            pointRadius: 4,
+                            pointHoverRadius: 6,
+                            pointBackgroundColor: '#9B8DE5',
+                            pointBorderColor: '#fff',
+                            pointBorderWidth: 2
+                        },
+                        {
+                            label: 'Energy Level',
+                            data: energyData,
+                            borderColor: '#4DB6AC',
+                            backgroundColor: 'rgba(77, 182, 172, 0.1)',
+                            tension: 0.4,
+                            fill: true,
+                            pointRadius: 4,
+                            pointHoverRadius: 6,
+                            pointBackgroundColor: '#4DB6AC',
+                            pointBorderColor: '#fff',
+                            pointBorderWidth: 2
+                        },
+                        {
+                            label: 'Bloating',
+                            data: bloatingData,
+                            borderColor: '#F59E0B',
+                            backgroundColor: 'rgba(245, 158, 11, 0.1)',
+                            tension: 0.4,
+                            fill: true,
+                            pointRadius: 4,
+                            pointHoverRadius: 6,
+                            pointBackgroundColor: '#F59E0B',
+                            pointBorderColor: '#fff',
+                            pointBorderWidth: 2
+                        }
+                    ]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    interaction: {
+                        mode: 'index',
+                        intersect: false,
+                    },
+                    plugins: {
+                        legend: {
+                            position: 'top',
+                            labels: {
+                                usePointStyle: true,
+                                padding: 15,
+                                font: {
+                                    size: 12,
+                                    family: 'Poppins'
+                                }
+                            }
+                        },
+                        tooltip: {
+                            backgroundColor: 'rgba(0, 0, 0, 0.8)',
+                            padding: 12,
+                            titleFont: {
+                                size: 14,
+                                family: 'Poppins'
+                            },
+                            bodyFont: {
+                                size: 13,
+                                family: 'Poppins'
+                            },
+                            callbacks: {
+                                label: function(context) {
+                                    return context.dataset.label + ': ' + context.parsed.y + '/10';
+                                }
+                            }
+                        }
+                    },
+                    scales: {
+                        y: {
+                            beginAtZero: true,
+                            max: 10,
+                            ticks: {
+                                stepSize: 2,
+                                callback: function(value) {
+                                    return value + '/10';
+                                },
+                                font: {
+                                    family: 'Poppins'
+                                }
+                            },
+                            grid: {
+                                color: 'rgba(0, 0, 0, 0.05)'
+                            }
+                        },
+                        x: {
+                            ticks: {
+                                maxRotation: 45,
+                                minRotation: 45,
+                                font: {
+                                    size: 10,
+                                    family: 'Poppins'
+                                }
+                            },
+                            grid: {
+                                display: false
+                            }
+                        }
+                    },
+                    animation: {
+                        duration: 2000,
+                        easing: 'easeInOutQuart'
+                    }
+                }
+            });
+        }
+
+        function updateChart() {
+            if (!appState.chart) return;
+            
+            const labels = [];
+            const painData = [];
+            const energyData = [];
+            const bloatingData = [];
+            
+            const last14Days = appState.symptomLogs.slice(0, 14).reverse();
+            
+            last14Days.forEach(log => {
+                const date = new Date(log.date);
+                labels.push(date.toLocaleDateString('en-US', { month: 'short', day: 'numeric' }));
+                painData.push(log.cramps);
+                energyData.push(log.energy_level);
+                bloatingData.push(log.bloating);
+            });
+            
+            appState.chart.data.labels = labels;
+            appState.chart.data.datasets[0].data = painData;
+            appState.chart.data.datasets[1].data = energyData;
+            appState.chart.data.datasets[2].data = bloatingData;
+            appState.chart.update();
+        }
+
+        // ============================================
+        // EXPORT FUNCTIONS
+        // ============================================
+        function exportToPDF() {
+            if (appState.symptomLogs.length === 0) {
+                showAlert('error', 'No data to export');
+                return;
+            }
+            
+            const { jsPDF } = window.jspdf;
+            const doc = new jsPDF();
+            
+            // Title
+            doc.setFontSize(20);
+            doc.setTextColor(155, 141, 229);
+            doc.text('PCOS Symptom Tracker Report', 20, 20);
+            
+            // Subtitle
+            doc.setFontSize(12);
+            doc.setTextColor(100, 100, 100);
+            doc.text('Generated on: ' + new Date().toLocaleDateString(), 20, 30);
+            
+            // Summary Stats
+            doc.setFontSize(14);
+            doc.setTextColor(0, 0, 0);
+            doc.text('Summary Statistics', 20, 45);
+            
+            doc.setFontSize(11);
+            const totalLogs = appState.symptomLogs.length;
+            const avgPain = totalLogs > 0 ? (appState.symptomLogs.reduce((sum, log) => sum + log.cramps, 0) / totalLogs).toFixed(1) : '0.0';
+            const avgEnergy = totalLogs > 0 ? (appState.symptomLogs.reduce((sum, log) => sum + log.energy_level, 0) / totalLogs).toFixed(1) : '0.0';
+            const avgBloating = totalLogs > 0 ? (appState.symptomLogs.reduce((sum, log) => sum + log.bloating, 0) / totalLogs).toFixed(1) : '0.0';
+            
+            doc.text(`Total Logs: ${totalLogs}`, 20, 55);
+            doc.text(`Average Pain Level: ${avgPain}/10`, 20, 62);
+            doc.text(`Average Energy Level: ${avgEnergy}/10`, 20, 69);
+            doc.text(`Average Bloating: ${avgBloating}/10`, 20, 76);
+            
+            // Recent Logs
+            doc.setFontSize(14);
+            doc.text('Recent Symptom Logs', 20, 90);
+            
+            let yPos = 100;
+            doc.setFontSize(10);
+            
+            appState.symptomLogs.slice(0, 25).forEach((log, index) => {
+                if (yPos > 270) {
+                    doc.addPage();
+                    yPos = 20;
+                }
+                
+                const date = new Date(log.date).toLocaleDateString();
+                doc.setFont(undefined, 'bold');
+                doc.text(`${date}:`, 20, yPos);
+                doc.setFont(undefined, 'normal');
+                
+                const symptoms = log.symptoms && log.symptoms.length > 0 
+                    ? log.symptoms.map(s => formatSymptom(s)).join(', ')
+                    : 'None';
+                
+                doc.text(`Pain: ${log.cramps}/10, Bloating: ${log.bloating}/10, Energy: ${log.energy_level}/10`, 55, yPos);
+                yPos += 6;
+                doc.setFontSize(9);
+                doc.setTextColor(100, 100, 100);
+                doc.text(`Symptoms: ${symptoms}`, 25, yPos);
+                doc.setTextColor(0, 0, 0);
+                
+                if (log.notes) {
+                    yPos += 6;
+                    doc.text(`Notes: ${log.notes.substring(0, 80)}${log.notes.length > 80 ? '...' : ''}`, 25, yPos);
+                }
+                
+                doc.setFontSize(10);
+                yPos += 10;
+            });
+            
+            // Save PDF
+            doc.save('symptom-tracker-report.pdf');
+            showAlert('success', 'PDF exported successfully!');
+        }
+
+        function exportToCSV() {
+            if (appState.symptomLogs.length === 0) {
+                showAlert('error', 'No data to export');
+                return;
+            }
+            
+            // CSV Header
+            let csv = 'Date,Pain Level,Bloating,Energy Level,Mood Score,Symptoms,Notes\n';
+            
+            // CSV Data
+            appState.symptomLogs.forEach(log => {
+                const symptoms = log.symptoms && log.symptoms.length > 0 
+                    ? log.symptoms.map(s => formatSymptom(s)).join('; ')
+                    : 'None';
+                
+                const row = [
+                    log.date,
+                    log.cramps,
+                    log.bloating,
+                    log.energy_level,
+                    log.mood_score,
+                    `"${symptoms}"`,
+                    `"${(log.notes || '').replace(/"/g, '""')}"`
+                ].join(',');
+                
+                csv += row + '\n';
+            });
+            
+            // Download CSV
+            const blob = new Blob([csv], { type: 'text/csv;charset=utf-8;' });
+            const link = document.createElement('a');
+            const url = URL.createObjectURL(blob);
+            
+            link.setAttribute('href', url);
+            link.setAttribute('download', 'symptom-tracker-data.csv');
+            link.style.visibility = 'hidden';
+            
+            document.body.appendChild(link);
+            link.click();
+            document.body.removeChild(link);
+            
+            showAlert('success', 'CSV exported successfully!');
+        }
+
+        // ============================================
+        // UTILITY FUNCTIONS
+        // ============================================
+        function showAlert(type, message) {
+            const alertContainer = document.getElementById('alertContainer');
+            const alertClass = type === 'success' ? 'alert-success' : 'alert-error';
+            const icon = type === 'success' ? 
+                '<i class="fas fa-check-circle text-2xl"></i>' : 
+                '<i class="fas fa-exclamation-circle text-2xl"></i>';
+            
+            alertContainer.innerHTML = `
+                <div class="alert ${alertClass}">
+                    ${icon}
+                    <span>${message}</span>
+                </div>
+            `;
+            
+            window.scrollTo({ top: 0, behavior: 'smooth' });
+            
+            setTimeout(() => {
+                alertContainer.innerHTML = '';
+            }, 5000);
+        }
+
+        function formatDate(date) {
+            return date.toLocaleDateString('en-US', { month: 'short', day: 'numeric' });
+        }
+
+        function formatSymptom(symptom) {
+            return symptom.split('-').map(word => 
+                word.charAt(0).toUpperCase() + word.slice(1)
+            ).join(' ');
+        }
+    </script>
+</body>
+</html>

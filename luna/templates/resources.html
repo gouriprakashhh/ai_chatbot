@@ -1,0 +1,85 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Resources - Luna</title>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        body { font-family: 'Poppins', sans-serif; background: linear-gradient(135deg, #F7F7F7 0%, #FFFFFF 100%); }
+        .resource-card { background: white; border-radius: 16px; padding: 1.5rem; box-shadow: 0 4px 15px rgba(0,0,0,0.05); transition: all 0.3s ease; cursor: pointer; }
+        .resource-card:hover { transform: translateY(-3px); box-shadow: 0 8px 20px rgba(0,0,0,0.08); }
+    </style>
+</head>
+<body>
+    <div class="max-w-7xl mx-auto p-6">
+        <div class="mb-6">
+            <a href="/dashboard/" class="inline-flex items-center text-gray-700 hover:text-purple-600 mb-4">
+                <i class="fas fa-arrow-left mr-2"></i>Back to Dashboard
+            </a>
+            <h1 class="text-3xl font-bold mb-2">Educational Resources</h1>
+            <p class="text-gray-600">Learn more about PCOS and how to manage it</p>
+        </div>
+
+        <div class="grid md:grid-cols-2 gap-6">
+            <div class="resource-card">
+                <div class="flex items-start gap-4">
+                    <div class="text-4xl">📚</div>
+                    <div class="flex-1">
+                        <h3 class="text-xl font-semibold mb-2">Understanding PCOS: A Complete Guide</h3>
+                        <p class="text-gray-600 mb-3">Comprehensive guide covering symptoms, diagnosis, and treatment options</p>
+                        <div class="flex items-center gap-4 text-sm text-gray-500">
+                            <span><i class="fas fa-clock"></i> 15 min read</span>
+                            <span><i class="fas fa-eye"></i> 5.2k views</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="resource-card">
+                <div class="flex items-start gap-4">
+                    <div class="text-4xl">🍽️</div>
+                    <div class="flex-1">
+                        <h3 class="text-xl font-semibold mb-2">PCOS Nutrition Fundamentals</h3>
+                        <p class="text-gray-600 mb-3">Evidence-based dietary approaches for managing PCOS symptoms</p>
+                        <div class="flex items-center gap-4 text-sm text-gray-500">
+                            <span><i class="fas fa-clock"></i> 12 min read</span>
+                            <span><i class="fas fa-eye"></i> 4.8k views</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="resource-card">
+                <div class="flex items-start gap-4">
+                    <div class="text-4xl">💊</div>
+                    <div class="flex-1">
+                        <h3 class="text-xl font-semibold mb-2">Medications and Supplements Guide</h3>
+                        <p class="text-gray-600 mb-3">Overview of common PCOS medications and evidence-based supplements</p>
+                        <div class="flex items-center gap-4 text-sm text-gray-500">
+                            <span><i class="fas fa-clock"></i> 18 min read</span>
+                            <span><i class="fas fa-eye"></i> 6.1k views</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="resource-card">
+                <div class="flex items-start gap-4">
+                    <div class="text-4xl">🤰</div>
+                    <div class="flex-1">
+                        <h3 class="text-xl font-semibold mb-2">PCOS and Fertility</h3>
+                        <p class="text-gray-600 mb-3">Understanding fertility challenges and treatment options</p>
+                        <div class="flex items-center gap-4 text-sm text-gray-500">
+                            <span><i class="fas fa-clock"></i> 20 min read</span>
+                            <span><i class="fas fa-eye"></i> 7.3k views</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</body>
+</html>

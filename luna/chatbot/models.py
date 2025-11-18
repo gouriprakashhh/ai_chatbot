@@ -66,21 +66,3 @@ class UserData(models.Model):
                 return self.value.split(',')
         return self.value
     
-class FoodLog(models.Model):
-    user = models.ForeignKey(User, on_delete=models.CASCADE)
-    name = models.CharField(max_length=100)
-    time = models.TimeField()
-    description = models.TextField(blank=True)
-    calories = models.PositiveIntegerField(default=0)
-    gi = models.CharField(max_length=20, choices=[
-        ('Low GI', 'Low GI'),
-        ('Medium GI', 'Medium GI'),
-        ('High GI', 'High GI')
-    ])
-    created_at = models.DateField(auto_now_add=True)
-
-class DietGoal(models.Model):
-    user = models.ForeignKey(User, on_delete=models.CASCADE)
-    text = models.CharField(max_length=200)
-    completed = models.BooleanField(default=False)
-    created_at = models.DateField(auto_now_add=True)

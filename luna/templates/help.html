@@ -1,0 +1,140 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Help & Support - Luna</title>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        body { font-family: 'Poppins', sans-serif; background: linear-gradient(135deg, #F7F7F7 0%, #FFFFFF 100%); }
+        .help-card { background: white; border-radius: 16px; padding: 1.5rem; box-shadow: 0 4px 15px rgba(0,0,0,0.05); transition: all 0.3s ease; cursor: pointer; }
+        .help-card:hover { transform: translateY(-3px); box-shadow: 0 8px 20px rgba(0,0,0,0.08); }
+        .faq-item { background: white; border-radius: 12px; padding: 1rem; margin-bottom: 1rem; cursor: pointer; border: 2px solid #E5E7EB; }
+        .faq-item:hover { border-color: #9B8DE5; }
+        .faq-answer { display: none; padding-top: 1rem; color: #6B7280; }
+        .faq-item.active .faq-answer { display: block; }
+    </style>
+</head>
+<body>
+    <div class="max-w-7xl mx-auto p-6">
+        <div class="mb-6">
+            <a href="/dashboard/" class="inline-flex items-center text-gray-700 hover:text-purple-600 mb-4">
+                <i class="fas fa-arrow-left mr-2"></i>Back to Dashboard
+            </a>
+            <h1 class="text-3xl font-bold mb-2">Help & Support</h1>
+            <p class="text-gray-600">We're here to help you</p>
+        </div>
+
+        <!-- Quick Help -->
+        <div class="grid md:grid-cols-4 gap-4 mb-8">
+            <div class="help-card text-center">
+                <div class="text-4xl mb-3">📚</div>
+                <h3 class="font-semibold">User Guide</h3>
+                <p class="text-sm text-gray-600 mt-1">Learn how to use Luna</p>
+            </div>
+            <div class="help-card text-center">
+                <div class="text-4xl mb-3">💬</div>
+                <h3 class="font-semibold">Live Chat</h3>
+                <p class="text-sm text-gray-600 mt-1">Chat with support</p>
+            </div>
+            <div class="help-card text-center">
+                <div class="text-4xl mb-3">📧</div>
+                <h3 class="font-semibold">Email Us</h3>
+                <p class="text-sm text-gray-600 mt-1">support@luna.com</p>
+            </div>
+            <div class="help-card text-center">
+                <div class="text-4xl mb-3">🎥</div>
+                <h3 class="font-semibold">Video Tutorials</h3>
+                <p class="text-sm text-gray-600 mt-1">Watch guides</p>
+            </div>
+        </div>
+
+        <!-- FAQ Section -->
+        <div class="bg-white rounded-2xl p-6 shadow-lg">
+            <h2 class="text-2xl font-bold mb-6">Frequently Asked Questions</h2>
+            
+            <div class="faq-item" onclick="this.classList.toggle('active')">
+                <div class="flex items-center justify-between">
+                    <h3 class="font-semibold">How do I track my cycle?</h3>
+                    <i class="fas fa-chevron-down"></i>
+                </div>
+                <div class="faq-answer">
+                    Go to Cycle Tracker and input the first day of your last period. Luna will automatically calculate your cycle day and predict your next period.
+                </div>
+            </div>
+
+            <div class="faq-item" onclick="this.classList.toggle('active')">
+                <div class="flex items-center justify-between">
+                    <h3 class="font-semibold">How do I log symptoms?</h3>
+                    <i class="fas fa-chevron-down"></i>
+                </div>
+                <div class="faq-answer">
+                    Navigate to Symptoms page and use the sliders and buttons to log your daily symptoms. You can track pain, energy, mood, and more.
+                </div>
+            </div>
+
+            <div class="faq-item" onclick="this.classList.toggle('active')">
+                <div class="flex items-center justify-between">
+                    <h3 class="font-semibold">Can I export my data?</h3>
+                    <i class="fas fa-chevron-down"></i>
+                </div>
+                <div class="faq-answer">
+                    Yes! Go to Settings → Account → Export Data to download your health records as a PDF or CSV file.
+                </div>
+            </div>
+
+            <div class="faq-item" onclick="this.classList.toggle('active')">
+                <div class="flex items-center justify-between">
+                    <h3 class="font-semibold">Is my data private and secure?</h3>
+                    <i class="fas fa-chevron-down"></i>
+                </div>
+                <div class="faq-answer">
+                    Absolutely. We use bank-level encryption to protect your data. Your information is never shared without your explicit consent.
+                </div>
+            </div>
+
+            <div class="faq-item" onclick="this.classList.toggle('active')">
+                <div class="flex items-center justify-between">
+                    <h3 class="font-semibold">How do I update my profile?</h3>
+                    <i class="fas fa-chevron-down"></i>
+                </div>
+                <div class="faq-answer">
+                    Click on "Edit Profile" in the sidebar to update your health information, cycle data, and preferences at any time.
+                </div>
+            </div>
+
+            <div class="faq-item" onclick="this.classList.toggle('active')">
+                <div class="flex items-center justify-between">
+                    <h3 class="font-semibold">Can I connect with other users?</h3>
+                    <i class="fas fa-chevron-down"></i>
+                </div>
+                <div class="faq-answer">
+                    Yes! Visit the Community Forum to share experiences, ask questions, and support others on their PCOS journey.
+                </div>
+            </div>
+        </div>
+
+        <!-- Contact Form -->
+        <div class="bg-white rounded-2xl p-6 shadow-lg mt-6">
+            <h2 class="text-2xl font-bold mb-4">Still Need Help?</h2>
+            <p class="text-gray-600 mb-6">Send us a message and we'll get back to you within 24 hours</p>
+            
+            <form class="space-y-4">
+                <div>
+                    <label class="block font-medium mb-2">Subject</label>
+                    <input type="text" class="w-full p-3 border-2 border-gray-200 rounded-lg focus:border-purple-500 focus:outline-none" placeholder="How can we help?">
+                </div>
+                <div>
+                    <label class="block font-medium mb-2">Message</label>
+                    <textarea class="w-full p-3 border-2 border-gray-200 rounded-lg focus:border-purple-500 focus:outline-none" rows="5" placeholder="Describe your issue..."></textarea>
+                </div>
+                <button type="submit" class="w-full py-3 bg-gradient-to-r from-purple-500 to-teal-500 text-white font-semibold rounded-lg hover:shadow-lg transition-all">
+                    Send Message
+                </button>
+            </form>
+        </div>
+    </div>
+</body>
+</html>

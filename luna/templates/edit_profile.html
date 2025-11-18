@@ -1,0 +1,1049 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Edit Profile - Luna</title>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        :root {
+            --lavender: #9B8DE5;
+            --teal: #4DB6AC;
+            --charcoal: #333333;
+            --lightgray: #F7F7F7;
+            --light-lavender: #F0EEFF;
+            --light-teal: #E6F5F3;
+        }
+        
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: 'Poppins', sans-serif;
+            background: linear-gradient(135deg, #F7F7F7 0%, #FFFFFF 100%);
+            min-height: 100vh;
+        }
+        
+        .container {
+            max-width: 900px;
+            margin: 2rem auto;
+            padding: 0 1rem;
+        }
+        
+        .header {
+            background: linear-gradient(120deg, var(--lavender) 0%, var(--teal) 100%);
+            color: white;
+            padding: 2rem;
+            border-radius: 20px 20px 0 0;
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .header::before {
+            content: '';
+            position: absolute;
+            top: -50%;
+            right: -10%;
+            width: 300px;
+            height: 300px;
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 50%;
+            animation: float 6s ease-in-out infinite;
+        }
+        
+        @keyframes float {
+            0%, 100% { transform: translateY(0px); }
+            50% { transform: translateY(-20px); }
+        }
+        
+        .back-button {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+            color: white;
+            text-decoration: none;
+            font-size: 0.9rem;
+            margin-bottom: 1rem;
+            padding: 0.5rem 1rem;
+            border-radius: 8px;
+            background: rgba(255, 255, 255, 0.15);
+            backdrop-filter: blur(10px);
+            transition: all 0.3s ease;
+            position: relative;
+            z-index: 1;
+        }
+        
+        .back-button:hover {
+            background: rgba(255, 255, 255, 0.25);
+            transform: translateX(-5px);
+        }
+        
+        .form-container {
+            background: white;
+            padding: 2.5rem;
+            border-radius: 0 0 20px 20px;
+            box-shadow: 0 10px 40px rgba(0, 0, 0, 0.1);
+        }
+        
+        .form-section {
+            margin-bottom: 2.5rem;
+            padding-bottom: 2.5rem;
+            border-bottom: 2px solid var(--lightgray);
+            opacity: 0;
+            animation: fadeInUp 0.5s ease forwards;
+        }
+        
+        .form-section:nth-child(1) { animation-delay: 0.1s; }
+        .form-section:nth-child(2) { animation-delay: 0.2s; }
+        .form-section:nth-child(3) { animation-delay: 0.3s; }
+        .form-section:nth-child(4) { animation-delay: 0.4s; }
+        .form-section:nth-child(5) { animation-delay: 0.5s; }
+        .form-section:nth-child(6) { animation-delay: 0.6s; }
+        
+        @keyframes fadeInUp {
+            from {
+                opacity: 0;
+                transform: translateY(20px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+        
+        .form-section:last-of-type {
+            border-bottom: none;
+        }
+        
+        .section-title {
+            color: var(--lavender);
+            font-weight: 600;
+            font-size: 1.2rem;
+            margin-bottom: 1.5rem;
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+        }
+        
+        .section-title i {
+            width: 36px;
+            height: 36px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background: linear-gradient(135deg, var(--light-lavender) 0%, var(--light-teal) 100%);
+            border-radius: 10px;
+            font-size: 1.1rem;
+            color: var(--lavender);
+        }
+        
+        .form-group {
+            margin-bottom: 1.5rem;
+        }
+        
+        .form-label {
+            display: block;
+            color: var(--charcoal);
+            font-weight: 500;
+            margin-bottom: 0.75rem;
+            font-size: 0.95rem;
+        }
+        
+        .input-container {
+            position: relative;
+        }
+        
+        .form-input,
+        .form-select,
+        .form-textarea {
+            width: 100%;
+            padding: 0.875rem 1rem;
+            border: 2px solid #E5E7EB;
+            border-radius: 12px;
+            font-size: 1rem;
+            font-family: 'Poppins', sans-serif;
+            transition: all 0.3s ease;
+            background: white;
+        }
+        
+        .form-input:focus,
+        .form-select:focus,
+        .form-textarea:focus {
+            outline: none;
+            border-color: var(--lavender);
+            box-shadow: 0 0 0 4px rgba(155, 141, 229, 0.1);
+            transform: translateY(-1px);
+        }
+        
+        .form-textarea {
+            min-height: 100px;
+            resize: vertical;
+        }
+        
+        /* Enhanced Option Pills */
+        .option-pills {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 0.75rem;
+            margin-bottom: 0.75rem;
+        }
+        
+        .option-pill {
+            padding: 0.75rem 1.5rem;
+            border: 2px solid #E5E7EB;
+            border-radius: 50px;
+            background: white;
+            cursor: pointer;
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            font-size: 0.9rem;
+            color: var(--charcoal);
+            user-select: none;
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .option-pill::before {
+            content: '';
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            width: 0;
+            height: 0;
+            border-radius: 50%;
+            background: rgba(155, 141, 229, 0.1);
+            transform: translate(-50%, -50%);
+            transition: width 0.3s, height 0.3s;
+        }
+        
+        .option-pill:hover::before {
+            width: 100%;
+            height: 100%;
+        }
+        
+        .option-pill:hover {
+            border-color: var(--lavender);
+            background: var(--light-lavender);
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(155, 141, 229, 0.2);
+        }
+        
+        .option-pill.selected {
+            background: linear-gradient(120deg, var(--lavender) 0%, var(--teal) 100%);
+            color: white;
+            border-color: var(--lavender);
+            font-weight: 500;
+            transform: scale(1.05);
+            box-shadow: 0 4px 15px rgba(155, 141, 229, 0.4);
+        }
+        
+        .option-pill.selected::after {
+            content: '\f00c';
+            font-family: 'Font Awesome 6 Free';
+            font-weight: 900;
+            margin-left: 0.5rem;
+            animation: checkmark 0.3s ease;
+        }
+        
+        @keyframes checkmark {
+            0% {
+                opacity: 0;
+                transform: scale(0);
+            }
+            50% {
+                transform: scale(1.2);
+            }
+            100% {
+                opacity: 1;
+                transform: scale(1);
+            }
+        }
+        
+        .option-pill.custom {
+            border-color: var(--teal);
+            background: var(--light-teal);
+            color: var(--teal);
+            border-style: dashed;
+        }
+        
+        .option-pill.custom:hover {
+            background: var(--teal);
+            color: white;
+            border-style: solid;
+        }
+        
+        .option-pill.custom.selected {
+            background: linear-gradient(120deg, var(--teal) 0%, var(--lavender) 100%);
+            border-style: solid;
+        }
+        
+        .custom-input-area {
+            display: none;
+            margin-top: 0.75rem;
+        }
+        
+        .custom-input-area.active {
+            display: block;
+            animation: slideDown 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+        
+        @keyframes slideDown {
+            from {
+                opacity: 0;
+                transform: translateY(-10px);
+                max-height: 0;
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+                max-height: 300px;
+            }
+        }
+        
+        .custom-input-area .form-input,
+        .custom-input-area .form-textarea {
+            border-color: var(--teal);
+            background: var(--light-teal);
+        }
+        
+        .custom-input-area .form-input:focus,
+        .custom-input-area .form-textarea:focus {
+            border-color: var(--teal);
+            box-shadow: 0 0 0 4px rgba(77, 182, 172, 0.1);
+        }
+        
+        .help-text {
+            font-size: 0.8rem;
+            color: #6B7280;
+            margin-top: 0.5rem;
+            display: flex;
+            align-items: center;
+            gap: 0.4rem;
+            padding-left: 0.25rem;
+        }
+        
+        .help-text i {
+            color: var(--teal);
+        }
+        
+        .alert {
+            padding: 1rem 1.5rem;
+            border-radius: 12px;
+            margin-bottom: 1.5rem;
+            display: none;
+            animation: slideInDown 0.4s ease;
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+        }
+        
+        @keyframes slideInDown {
+            from {
+                opacity: 0;
+                transform: translateY(-20px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+        
+        .alert-success {
+            background: linear-gradient(135deg, #D1FAE5 0%, #A7F3D0 100%);
+            color: #065F46;
+            border: 2px solid #10B981;
+        }
+        
+        .alert-error {
+            background: linear-gradient(135deg, #FEE2E2 0%, #FECACA 100%);
+            color: #991B1B;
+            border: 2px solid #EF4444;
+        }
+        
+        .alert i {
+            font-size: 1.25rem;
+        }
+        
+        .button-group {
+            display: flex;
+            gap: 1rem;
+            margin-top: 2.5rem;
+            padding-top: 1rem;
+        }
+        
+        .btn {
+            flex: 1;
+            padding: 1rem 2rem;
+            border: none;
+            border-radius: 12px;
+            font-size: 1rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 0.5rem;
+            font-family: 'Poppins', sans-serif;
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .btn::before {
+            content: '';
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            width: 0;
+            height: 0;
+            border-radius: 50%;
+            background: rgba(255, 255, 255, 0.3);
+            transform: translate(-50%, -50%);
+            transition: width 0.6s, height 0.6s;
+        }
+        
+        .btn:hover::before {
+            width: 300px;
+            height: 300px;
+        }
+        
+        .btn-primary {
+            background: linear-gradient(120deg, var(--lavender) 0%, var(--teal) 100%);
+            color: white;
+            box-shadow: 0 4px 15px rgba(155, 141, 229, 0.3);
+        }
+        
+        .btn-primary:hover:not(:disabled) {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 25px rgba(155, 141, 229, 0.4);
+        }
+        
+        .btn-primary:active:not(:disabled) {
+            transform: translateY(0);
+        }
+        
+        .btn-secondary {
+            background: white;
+            color: var(--charcoal);
+            border: 2px solid #E5E7EB;
+        }
+        
+        .btn-secondary:hover {
+            background: var(--lightgray);
+            border-color: var(--lavender);
+            color: var(--lavender);
+            transform: translateY(-2px);
+        }
+        
+        .btn:disabled {
+            opacity: 0.6;
+            cursor: not-allowed;
+            transform: none !important;
+        }
+        
+        .loading {
+            display: none;
+            text-align: center;
+            padding: 3rem 2rem;
+        }
+        
+        .spinner {
+            border: 4px solid #f3f3f3;
+            border-top: 4px solid var(--lavender);
+            border-right: 4px solid var(--teal);
+            border-radius: 50%;
+            width: 60px;
+            height: 60px;
+            animation: spin 1s linear infinite;
+            margin: 0 auto 1.5rem;
+        }
+        
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+        
+        .progress-indicator {
+            display: flex;
+            justify-content: center;
+            gap: 0.5rem;
+            margin-top: 1rem;
+        }
+        
+        .progress-dot {
+            width: 8px;
+            height: 8px;
+            border-radius: 50%;
+            background: #E5E7EB;
+            animation: pulse 1.5s ease-in-out infinite;
+        }
+        
+        .progress-dot:nth-child(2) { animation-delay: 0.2s; }
+        .progress-dot:nth-child(3) { animation-delay: 0.4s; }
+        
+        @keyframes pulse {
+            0%, 100% {
+                background: #E5E7EB;
+                transform: scale(1);
+            }
+            50% {
+                background: var(--lavender);
+                transform: scale(1.3);
+            }
+        }
+        
+        /* Smooth scroll behavior */
+        html {
+            scroll-behavior: smooth;
+        }
+        
+        /* Custom scrollbar */
+        ::-webkit-scrollbar {
+            width: 10px;
+        }
+        
+        ::-webkit-scrollbar-track {
+            background: var(--lightgray);
+        }
+        
+        ::-webkit-scrollbar-thumb {
+            background: linear-gradient(180deg, var(--lavender) 0%, var(--teal) 100%);
+            border-radius: 5px;
+        }
+        
+        ::-webkit-scrollbar-thumb:hover {
+            background: linear-gradient(180deg, var(--teal) 0%, var(--lavender) 100%);
+        }
+        
+        @media (max-width: 768px) {
+            .container {
+                margin: 1rem auto;
+            }
+            
+            .header {
+                padding: 1.5rem;
+                border-radius: 15px 15px 0 0;
+            }
+            
+            .form-container {
+                padding: 1.5rem;
+                border-radius: 0 0 15px 15px;
+            }
+            
+            .option-pills {
+                gap: 0.5rem;
+            }
+            
+            .option-pill {
+                padding: 0.625rem 1.125rem;
+                font-size: 0.85rem;
+            }
+            
+            .button-group {
+                flex-direction: column-reverse;
+            }
+            
+            .btn {
+                width: 100%;
+            }
+            
+            .section-title {
+                font-size: 1.1rem;
+            }
+            
+            .section-title i {
+                width: 32px;
+                height: 32px;
+                font-size: 1rem;
+            }
+        }
+        
+        /* Accessibility improvements */
+        .option-pill:focus-visible {
+            outline: 3px solid var(--lavender);
+            outline-offset: 2px;
+        }
+        
+        .form-input:focus-visible,
+        .form-select:focus-visible,
+        .form-textarea:focus-visible {
+            outline: 3px solid var(--lavender);
+            outline-offset: 2px;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <a href="/dashboard/" class="back-button">
+                <i class="fas fa-arrow-left"></i>
+                <span>Back to Dashboard</span>
+            </a>
+            <h1 class="text-2xl font-bold mb-1" style="position: relative; z-index: 1;">Edit Your Profile</h1>
+            <p class="text-white/90 text-sm" style="position: relative; z-index: 1;">Update any field - all changes are optional</p>
+        </div>
+        
+        <div class="form-container">
+            <div id="alertContainer"></div>
+            
+            <div id="loadingSpinner" class="loading">
+                <div class="spinner"></div>
+                <p class="text-charcoal/70 font-medium">Saving your changes...</p>
+                <div class="progress-indicator">
+                    <div class="progress-dot"></div>
+                    <div class="progress-dot"></div>
+                    <div class="progress-dot"></div>
+                </div>
+            </div>
+            
+            <form id="editProfileForm">
+                <!-- Diagnosis Length -->
+                <div class="form-section">
+                    <h3 class="section-title">
+                        <i class="fas fa-calendar-check"></i>
+                        Diagnosis Information
+                    </h3>
+                    
+                    <div class="form-group">
+                        <label class="form-label">How long have you been diagnosed with PCOS?</label>
+                        <div class="option-pills" id="diagnosis_length_pills">
+                            <div class="option-pill" data-value="Recently diagnosed (less than 6 months)">Less than 6 months</div>
+                            <div class="option-pill" data-value="1-2 years">1-2 years</div>
+                            <div class="option-pill" data-value="3-5 years">3-5 years</div>
+                            <div class="option-pill" data-value="More than 5 years">5+ years</div>
+                            <div class="option-pill" data-value="I suspect I have PCOS but not diagnosed">Not diagnosed yet</div>
+                            <div class="option-pill custom" data-custom="true"><i class="fas fa-edit"></i> Custom Answer</div>
+                        </div>
+                        <div class="custom-input-area" id="diagnosis_length_custom">
+                            <input type="text" class="form-input" placeholder="Enter your answer" data-field="diagnosis_length">
+                            <div class="help-text">
+                                <i class="fas fa-lightbulb"></i>
+                                <span>Your answer will be saved when you submit the form</span>
+                            </div>
+                        </div>
+                        <input type="hidden" id="diagnosis_length" name="diagnosis_length">
+                    </div>
+                </div>
+
+                <!-- Cycle Information -->
+                <div class="form-section">
+                    <h3 class="section-title">
+                        <i class="fas fa-calendar-alt"></i>
+                        Cycle Information
+                    </h3>
+                    
+                    <div class="form-group">
+                        <label class="form-label">Typical cycle length (in days)</label>
+                        <input type="number" class="form-input" id="cycle_length" name="cycle_length" placeholder="e.g., 28" min="1" max="90" value="{{ cycle_length }}">
+                        <div class="help-text">
+                            <i class="fas fa-info-circle"></i>
+                            <span>Average number of days between periods</span>
+                        </div>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label class="form-label">First day of your last period</label>
+                        <input type="date" class="form-input" id="last_period_date" name="last_period_date" max="{{ today }}" value="{{ last_period_date }}">
+                        <div class="help-text">
+                            <i class="fas fa-info-circle"></i>
+                            <span>This helps us provide personalized cycle tracking</span>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- PCOS Status -->
+                <div class="form-section">
+                    <h3 class="section-title">
+                        <i class="fas fa-heartbeat"></i>
+                        PCOS Status
+                    </h3>
+                    
+                    <div class="form-group">
+                        <label class="form-label">How would you describe your PCOS status?</label>
+                        <div class="option-pills" id="pcos_status_pills">
+                            <div class="option-pill" data-value="Just learning about it">Just learning</div>
+                            <div class="option-pill" data-value="Managing well">Managing well</div>
+                            <div class="option-pill" data-value="Struggling with symptoms">Struggling</div>
+                            <div class="option-pill" data-value="In remission">In remission</div>
+                            <div class="option-pill" data-value="Not sure">Not sure</div>
+                            <div class="option-pill custom" data-custom="true"><i class="fas fa-edit"></i> Custom Answer</div>
+                        </div>
+                        <div class="custom-input-area" id="pcos_status_custom">
+                            <input type="text" class="form-input" placeholder="Describe your current status" data-field="pcos_status">
+                        </div>
+                        <input type="hidden" id="pcos_status" name="pcos_status">
+                    </div>
+                </div>
+                
+                <!-- Wellness & Mood -->
+                <div class="form-section">
+                    <h3 class="section-title">
+                        <i class="fas fa-heart"></i>
+                        Wellness & Mood
+                    </h3>
+                    
+                    <div class="form-group">
+                        <label class="form-label">Current stress level</label>
+                        <div class="option-pills" id="stress_level_pills">
+                            <div class="option-pill" data-value="Very low">😌 Very low</div>
+                            <div class="option-pill" data-value="Manageable">😊 Manageable</div>
+                            <div class="option-pill" data-value="Moderate">😐 Moderate</div>
+                            <div class="option-pill" data-value="High">😰 High</div>
+                            <div class="option-pill" data-value="Overwhelming">😫 Overwhelming</div>
+                            <div class="option-pill custom" data-custom="true"><i class="fas fa-edit"></i> Custom</div>
+                        </div>
+                        <div class="custom-input-area" id="stress_level_custom">
+                            <input type="text" class="form-input" placeholder="Describe your stress level" data-field="stress_level">
+                        </div>
+                        <input type="hidden" id="stress_level" name="stress_level">
+                    </div>
+                    
+                    <div class="form-group">
+                        <label class="form-label">Current mood</label>
+                        <div class="option-pills" id="mood_pills">
+                            <div class="option-pill" data-value="Mostly positive">😊 Mostly positive</div>
+                            <div class="option-pill" data-value="Generally balanced">😌 Balanced</div>
+                            <div class="option-pill" data-value="Some ups and downs">🙂 Ups & downs</div>
+                            <div class="option-pill" data-value="Frequently low">😔 Frequently low</div>
+                            <div class="option-pill" data-value="Struggling">😞 Struggling</div>
+                            <div class="option-pill custom" data-custom="true"><i class="fas fa-edit"></i> Custom</div>
+                        </div>
+                        <div class="custom-input-area" id="mood_custom">
+                            <input type="text" class="form-input" placeholder="Describe your mood" data-field="mood">
+                        </div>
+                        <input type="hidden" id="mood" name="mood">
+                    </div>
+                    
+                    <div class="form-group">
+                        <label class="form-label">Primary concerns related to PCOS</label>
+                        <div class="option-pills" id="primary_concerns_pills">
+                            <div class="option-pill" data-value="Irregular periods">Irregular periods</div>
+                            <div class="option-pill" data-value="Weight management">Weight management</div>
+                            <div class="option-pill" data-value="Fertility issues">Fertility</div>
+                            <div class="option-pill" data-value="Skin and hair concerns">Skin & hair</div>
+                            <div class="option-pill" data-value="Emotional wellbeing">Emotional wellbeing</div>
+                            <div class="option-pill custom" data-custom="true"><i class="fas fa-edit"></i> Custom</div>
+                        </div>
+                        <div class="custom-input-area" id="primary_concerns_custom">
+                            <textarea class="form-textarea" placeholder="Describe your concerns" data-field="primary_concerns"></textarea>
+                        </div>
+                        <input type="hidden" id="primary_concerns" name="primary_concerns">
+                    </div>
+                </div>
+                
+                <!-- Nutrition & Lifestyle -->
+                <div class="form-section">
+                    <h3 class="section-title">
+                        <i class="fas fa-utensils"></i>
+                        Nutrition & Lifestyle
+                    </h3>
+                    
+                    <div class="form-group">
+                        <label class="form-label">Current diet description</label>
+                        <div class="option-pills" id="diet_description_pills">
+                            <div class="option-pill" data-value="Balanced and healthy">Balanced & healthy</div>
+                            <div class="option-pill" data-value="Mostly healthy with some indulgences">Mostly healthy</div>
+                            <div class="option-pill" data-value="Struggling with food choices">Struggling</div>
+                            <div class="option-pill" data-value="Following a specific diet (keto, gluten-free, etc.)">Specific diet</div>
+                            <div class="option-pill" data-value="Not paying much attention to diet">Not focused</div>
+                            <div class="option-pill custom" data-custom="true"><i class="fas fa-edit"></i> Custom</div>
+                        </div>
+                        <div class="custom-input-area" id="diet_description_custom">
+                            <textarea class="form-textarea" placeholder="Describe your diet" data-field="diet_description"></textarea>
+                        </div>
+                        <input type="hidden" id="diet_description" name="diet_description">
+                    </div>
+                    
+                    <div class="form-group">
+                        <label class="form-label">Physical activity frequency</label>
+                        <div class="option-pills" id="activity_frequency_pills">
+                            <div class="option-pill" data-value="Daily or almost daily">🏃 Daily</div>
+                            <div class="option-pill" data-value="3-4 times a week">💪 3-4x/week</div>
+                            <div class="option-pill" data-value="1-2 times a week">🚶 1-2x/week</div>
+                            <div class="option-pill" data-value="Rarely">Rarely</div>
+                            <div class="option-pill" data-value="I want to start but find it challenging">Want to start</div>
+                            <div class="option-pill custom" data-custom="true"><i class="fas fa-edit"></i> Custom</div>
+                        </div>
+                        <div class="custom-input-area" id="activity_frequency_custom">
+                            <input type="text" class="form-input" placeholder="Describe your activity level" data-field="activity_frequency">
+                        </div>
+                        <input type="hidden" id="activity_frequency" name="activity_frequency">
+                    </div>
+                </div>
+                
+                <!-- Support -->
+                <div class="form-section">
+                    <h3 class="section-title">
+                        <i class="fas fa-hands-helping"></i>
+                        Support Preferences
+                    </h3>
+                    
+                    <div class="form-group">
+                        <label class="form-label">What kind of support are you looking for?</label>
+                        <div class="option-pills" id="support_needed_pills">
+                            <div class="option-pill" data-value="Medical information and guidance">Medical guidance</div>
+                            <div class="option-pill" data-value="Community and emotional support">Community support</div>
+                            <div class="option-pill" data-value="Diet and exercise plans">Diet & exercise</div>
+                            <div class="option-pill" data-value="Tracking symptoms and progress">Symptom tracking</div>
+                            <div class="option-pill" data-value="All of the above">All of the above</div>
+                            <div class="option-pill custom" data-custom="true"><i class="fas fa-edit"></i> Custom</div>
+                        </div>
+                        <div class="custom-input-area" id="support_needed_custom">
+                            <textarea class="form-textarea" placeholder="Describe what support you need" data-field="support_needed"></textarea>
+                        </div>
+                        <input type="hidden" id="support_needed" name="support_needed">
+                    </div>
+                </div>
+                
+                <!-- Action Buttons -->
+                <div class="button-group">
+                    <button type="button" class="btn btn-secondary" onclick="window.location.href='/dashboard/'">
+                        <i class="fas fa-times"></i> Cancel
+                    </button>
+                    <button type="submit" class="btn btn-primary" id="saveBtn">
+                        <i class="fas fa-save"></i> Save Changes
+                    </button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <script>
+        const fieldData = {};
+        
+        function initializePillSystem() {
+            const pillGroups = document.querySelectorAll('.option-pills');
+            
+            pillGroups.forEach(group => {
+                const fieldName = group.id.replace('_pills', '');
+                const hiddenInput = document.getElementById(fieldName);
+                const customArea = document.getElementById(fieldName + '_custom');
+                const pills = group.querySelectorAll('.option-pill');
+                
+                // Store original value
+                fieldData[fieldName] = {
+                    original: '',
+                    current: '',
+                    isCustom: false
+                };
+                
+                pills.forEach(pill => {
+                    pill.addEventListener('click', function() {
+                        const isCustomPill = this.dataset.custom === 'true';
+                        
+                        // Remove all selections
+                        pills.forEach(p => p.classList.remove('selected'));
+                        
+                        if (isCustomPill) {
+                            // Show custom input
+                            this.classList.add('selected');
+                            customArea.classList.add('active');
+                            
+                            // Preserve existing value in custom input if switching from a pill
+                            const customInput = customArea.querySelector('[data-field]');
+                            if (!fieldData[fieldName].isCustom && hiddenInput.value) {
+                                customInput.value = hiddenInput.value;
+                            }
+                            
+                            fieldData[fieldName].isCustom = true;
+                            
+                            // Focus on custom input
+                            setTimeout(() => customInput.focus(), 100);
+                        } else {
+                            // Use predefined value
+                            this.classList.add('selected');
+                            customArea.classList.remove('active');
+                            const value = this.dataset.value;
+                            hiddenInput.value = value;
+                            fieldData[fieldName].current = value;
+                            fieldData[fieldName].isCustom = false;
+                        }
+                    });
+                });
+                
+                // Handle custom input
+                if (customArea) {
+                    const customInput = customArea.querySelector('[data-field]');
+                    if (customInput) {
+                        customInput.addEventListener('input', function() {
+                            hiddenInput.value = this.value;
+                            fieldData[fieldName].current = this.value;
+                        });
+                    }
+                }
+            });
+        }
+        
+        function loadUserData() {
+            const fields = {
+                'diagnosis_length': '{{ diagnosis_length }}',
+                'cycle_length': '{{ cycle_length }}',
+                'last_period_date': '{{ last_period_date }}',
+                'pcos_status': '{{ pcos_status }}',
+                'stress_level': '{{ stress_level }}',
+                'mood': '{{ mood }}',
+                'primary_concerns': '{{ primary_concerns }}',
+                'diet_description': '{{ diet_description }}',
+                'activity_frequency': '{{ activity_frequency }}',
+                'support_needed': '{{ support_needed }}'
+            };
+            
+            Object.keys(fields).forEach(fieldName => {
+                const value = fields[fieldName];
+                if (!value) return;
+                
+                // Store original value
+                if (fieldData[fieldName]) {
+                    fieldData[fieldName].original = value;
+                }
+                
+                // For regular inputs (cycle_length, last_period_date)
+                const regularInput = document.getElementById(fieldName);
+                if (regularInput && (regularInput.type === 'number' || regularInput.type === 'date')) {
+                    regularInput.value = value;
+                    return;
+                }
+                
+                // For pill-based fields
+                const pillGroup = document.getElementById(fieldName + '_pills');
+                if (!pillGroup) return;
+                
+                const pills = pillGroup.querySelectorAll('.option-pill:not([data-custom])');
+                let foundMatch = false;
+                
+                // Check if value matches any predefined option
+                pills.forEach(pill => {
+                    if (pill.dataset.value === value) {
+                        pill.classList.add('selected');
+                        document.getElementById(fieldName).value = value;
+                        fieldData[fieldName].current = value;
+                        foundMatch = true;
+                    }
+                });
+                
+                // If no match, it's a custom value
+                if (!foundMatch && value) {
+                    const customPill = pillGroup.querySelector('[data-custom="true"]');
+                    const customArea = document.getElementById(fieldName + '_custom');
+                    const customInput = customArea.querySelector('[data-field]');
+                    
+                    customPill.classList.add('selected');
+                    customArea.classList.add('active');
+                    customInput.value = value;
+                    document.getElementById(fieldName).value = value;
+                    fieldData[fieldName].current = value;
+                    fieldData[fieldName].isCustom = true;
+                }
+            });
+        }
+        
+        document.addEventListener('DOMContentLoaded', function() {
+            const form = document.getElementById('editProfileForm');
+            const alertContainer = document.getElementById('alertContainer');
+            const loadingSpinner = document.getElementById('loadingSpinner');
+            const saveBtn = document.getElementById('saveBtn');
+            
+            initializePillSystem();
+            loadUserData();
+            
+            form.addEventListener('submit', async function(e) {
+                e.preventDefault();
+                
+                loadingSpinner.style.display = 'block';
+                form.style.display = 'none';
+                saveBtn.disabled = true;
+                
+                const formData = collectFormData();
+                
+                try {
+                    const response = await fetch('/update-profile/', {
+                        method: 'POST',
+                        headers: {
+                            'Content-Type': 'application/json',
+                            'X-CSRFToken': getCookie('csrftoken'),
+                        },
+                        body: JSON.stringify(formData)
+                    });
+                    
+                    const result = await response.json();
+                    
+                    loadingSpinner.style.display = 'none';
+                    form.style.display = 'block';
+                    saveBtn.disabled = false;
+                    
+                    if (result.status === 'success') {
+                        showAlert('success', result.message);
+                        setTimeout(() => {
+                            window.location.href = '/dashboard/';
+                        }, 1500);
+                    } else {
+                        showAlert('error', result.message);
+                    }
+                } catch (error) {
+                    loadingSpinner.style.display = 'none';
+                    form.style.display = 'block';
+                    saveBtn.disabled = false;
+                    showAlert('error', 'An error occurred. Please try again.');
+                    console.error('Error:', error);
+                }
+            });
+            
+            function collectFormData() {
+                const data = {};
+                
+                // Get all hidden inputs (pill-based fields)
+                const hiddenInputs = form.querySelectorAll('input[type="hidden"]');
+                hiddenInputs.forEach(input => {
+                    if (input.value) {
+                        data[input.name] = input.value;
+                    }
+                });
+                
+                // Get regular inputs
+                const cycleLength = document.getElementById('cycle_length').value;
+                const lastPeriodDate = document.getElementById('last_period_date').value;
+                
+                if (cycleLength) data.cycle_length = cycleLength;
+                if (lastPeriodDate) data.last_period_date = lastPeriodDate;
+                
+                return data;
+            }
+            
+            function showAlert(type, message) {
+                const alertClass = type === 'success' ? 'alert-success' : 'alert-error';
+                const icon = type === 'success' ? '<i class="fas fa-check-circle"></i>' : '<i class="fas fa-exclamation-circle"></i>';
+                alertContainer.innerHTML = `<div class="alert ${alertClass}">${icon} <span>${message}</span></div>`;
+                const alertElement = alertContainer.querySelector('.alert');
+                alertElement.style.display = 'flex';
+                
+                window.scrollTo({ top: 0, behavior: 'smooth' });
+                
+                if (type === 'error') {
+                    setTimeout(() => {
+                        alertContainer.innerHTML = '';
+                    }, 5000);
+                }
+            }
+            
+            function getCookie(name) {
+                let cookieValue = null;
+                if (document.cookie && document.cookie !== '') {
+                    const cookies = document.cookie.split(';');
+                    for (let i = 0; i < cookies.length; i++) {
+                        const cookie = cookies[i].trim();
+                        if (cookie.substring(0, name.length + 1) === (name + '=')) {
+                            cookieValue = decodeURIComponent(cookie.substring(name.length + 1));
+                            break;
+                        }
+                    }
+                }
+                return cookieValue;
+            }
+        });
+    </script>
+</body>
+</html>

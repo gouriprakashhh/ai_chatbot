@@ -1,0 +1,887 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Nutrition - Luna</title>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        :root {
+            --lavender: #9B8DE5;
+            --teal: #4DB6AC;
+            --charcoal: #333333;
+            --lightgray: #F7F7F7;
+            --light-lavender: #F0EEFF;
+            --light-teal: #E6F5F3;
+        }
+        
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: 'Poppins', sans-serif;
+            background: linear-gradient(135deg, #F7F7F7 0%, #FFFFFF 100%);
+            min-height: 100vh;
+        }
+        
+        .meal-card {
+            background: white;
+            border-radius: 16px;
+            padding: 1.5rem;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.05);
+            transition: all 0.3s ease;
+            cursor: pointer;
+            opacity: 0;
+            animation: fadeInUp 0.5s ease forwards;
+        }
+        
+        .meal-card:nth-child(1) { animation-delay: 0.1s; }
+        .meal-card:nth-child(2) { animation-delay: 0.2s; }
+        .meal-card:nth-child(3) { animation-delay: 0.3s; }
+        .meal-card:nth-child(4) { animation-delay: 0.4s; }
+        .meal-card:nth-child(5) { animation-delay: 0.5s; }
+        .meal-card:nth-child(6) { animation-delay: 0.6s; }
+        
+        @keyframes fadeInUp {
+            from {
+                opacity: 0;
+                transform: translateY(20px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+        
+        .meal-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 8px 25px rgba(0,0,0,0.1);
+        }
+        
+        .meal-image {
+            width: 100%;
+            height: 180px;
+            background: linear-gradient(135deg, #F0EEFF, #E6F5F3);
+            border-radius: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 4rem;
+            margin-bottom: 1rem;
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .meal-image::before {
+            content: '';
+            position: absolute;
+            width: 100px;
+            height: 100px;
+            background: rgba(155, 141, 229, 0.1);
+            border-radius: 50%;
+            animation: float 4s ease-in-out infinite;
+        }
+        
+        @keyframes float {
+            0%, 100% { transform: translate(0, 0); }
+            50% { transform: translate(20px, -20px); }
+        }
+        
+        .badge {
+            display: inline-block;
+            padding: 0.25rem 0.75rem;
+            border-radius: 50px;
+            font-size: 0.75rem;
+            font-weight: 500;
+        }
+        
+        .badge-pcos {
+            background: #E6F5F3;
+            color: var(--teal);
+        }
+        
+        .badge-quick {
+            background: #FFE6F0;
+            color: #EC4899;
+        }
+        
+        .badge-ai {
+            background: linear-gradient(120deg, var(--lavender), var(--teal));
+            color: white;
+            animation: shimmer 2s infinite;
+        }
+        
+        @keyframes shimmer {
+            0%, 100% { opacity: 1; }
+            50% { opacity: 0.8; }
+        }
+        
+        .nutrition-stat {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            font-size: 0.875rem;
+            color: #6B7280;
+        }
+        
+        .tab-button {
+            padding: 0.75rem 1.5rem;
+            border-radius: 10px;
+            font-weight: 500;
+            transition: all 0.3s ease;
+            cursor: pointer;
+            border: 2px solid transparent;
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .tab-button::before {
+            content: '';
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            width: 0;
+            height: 0;
+            background: rgba(155, 141, 229, 0.1);
+            border-radius: 50%;
+            transform: translate(-50%, -50%);
+            transition: width 0.4s, height 0.4s;
+        }
+        
+        .tab-button:hover::before {
+            width: 200px;
+            height: 200px;
+        }
+        
+        .tab-button.active {
+            background: linear-gradient(120deg, var(--lavender), var(--teal));
+            color: white;
+        }
+        
+        .tab-button:not(.active) {
+            background: white;
+            color: var(--charcoal);
+            border-color: #E5E7EB;
+        }
+        
+        .tab-button:not(.active):hover {
+            border-color: var(--lavender);
+        }
+        
+        .loading-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: rgba(0,0,0,0.7);
+            display: none;
+            align-items: center;
+            justify-content: center;
+            z-index: 1000;
+        }
+        
+        .loading-content {
+            background: white;
+            padding: 2rem;
+            border-radius: 20px;
+            text-align: center;
+            max-width: 400px;
+        }
+        
+        .spinner {
+            border: 4px solid #f3f3f3;
+            border-top: 4px solid var(--lavender);
+            border-right: 4px solid var(--teal);
+            border-radius: 50%;
+            width: 60px;
+            height: 60px;
+            animation: spin 1s linear infinite;
+            margin: 0 auto 1rem;
+        }
+        
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+        
+        .progress-bar {
+            width: 100%;
+            height: 8px;
+            background: #E5E7EB;
+            border-radius: 10px;
+            overflow: hidden;
+            position: relative;
+        }
+        
+        .progress-fill {
+            height: 100%;
+            background: linear-gradient(90deg, var(--lavender), var(--teal));
+            border-radius: 10px;
+            transition: width 0.5s ease;
+        }
+        
+        .tip-card {
+            background: linear-gradient(135deg, var(--light-lavender), var(--light-teal));
+            border-radius: 16px;
+            padding: 1.5rem;
+            margin-bottom: 1.5rem;
+            border: 2px solid rgba(155, 141, 229, 0.2);
+        }
+        
+        .btn {
+            padding: 0.75rem 1.5rem;
+            border: none;
+            border-radius: 12px;
+            font-size: 1rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 0.5rem;
+            font-family: 'Poppins', sans-serif;
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .btn::before {
+            content: '';
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            width: 0;
+            height: 0;
+            border-radius: 50%;
+            background: rgba(255, 255, 255, 0.3);
+            transform: translate(-50%, -50%);
+            transition: width 0.6s, height 0.6s;
+        }
+        
+        .btn:hover::before {
+            width: 300px;
+            height: 300px;
+        }
+        
+        .btn-primary {
+            background: linear-gradient(120deg, var(--lavender) 0%, var(--teal) 100%);
+            color: white;
+            box-shadow: 0 4px 15px rgba(155, 141, 229, 0.3);
+        }
+        
+        .btn-primary:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 25px rgba(155, 141, 229, 0.4);
+        }
+        
+        .water-tracker {
+            display: flex;
+            gap: 0.5rem;
+            flex-wrap: wrap;
+        }
+        
+        .water-glass {
+            width: 40px;
+            height: 50px;
+            border: 2px solid var(--teal);
+            border-radius: 0 0 8px 8px;
+            position: relative;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+        
+        .water-glass.filled {
+            background: linear-gradient(0deg, var(--teal), rgba(77, 182, 172, 0.3));
+        }
+        
+        .water-glass:hover {
+            transform: scale(1.1);
+        }
+        
+        .back-button {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+            color: var(--charcoal);
+            text-decoration: none;
+            padding: 0.5rem 1rem;
+            border-radius: 8px;
+            transition: all 0.3s ease;
+            margin-bottom: 1rem;
+        }
+        
+        .back-button:hover {
+            background: var(--light-lavender);
+            color: var(--lavender);
+            transform: translateX(-5px);
+        }
+    </style>
+</head>
+<body>
+    <div class="max-w-7xl mx-auto p-6">
+        <!-- Header -->
+        <div class="mb-6">
+            <a href="/dashboard/" class="back-button">
+                <i class="fas fa-arrow-left"></i>
+                Back to Dashboard
+            </a>
+            <h1 class="text-3xl font-bold text-charcoal mb-2">Nutrition Guide</h1>
+            <p class="text-charcoal/70">PCOS-friendly meal plans powered by AI</p>
+        </div>
+
+        <!-- Daily Tip -->
+        <div class="tip-card">
+            <div class="flex items-start gap-3">
+                <div class="w-12 h-12 bg-white rounded-full flex items-center justify-center flex-shrink-0">
+                    <i class="fas fa-lightbulb text-2xl" style="color: var(--teal);"></i>
+                </div>
+                <div class="flex-1">
+                    <h3 class="font-semibold text-charcoal mb-2 flex items-center gap-2">
+                        Today's Nutrition Tip
+                        <span class="badge badge-ai">AI Powered</span>
+                    </h3>
+                    <p class="text-charcoal/80" id="dailyTip">Loading personalized tip...</p>
+                    <button onclick="refreshTip()" class="text-sm text-teal hover:text-lavender transition-colors mt-2">
+                        <i class="fas fa-sync-alt mr-1"></i> Refresh Tip
+                    </button>
+                </div>
+            </div>
+        </div>
+
+        <!-- Daily Summary -->
+        <div class="grid md:grid-cols-4 gap-4 mb-6">
+            <div class="meal-card">
+                <div class="flex items-center justify-between mb-2">
+                    <span class="text-sm text-charcoal/60">Calories</span>
+                    <i class="fas fa-fire text-orange-500"></i>
+                </div>
+                <p class="text-2xl font-bold text-charcoal">{{ calories_current }}</p>
+                <p class="text-xs text-charcoal/50">of {{ calories_goal }} goal</p>
+                <div class="progress-bar mt-2">
+                    <div class="progress-fill" style="width: {{ calories_current|floatformat:0 }}%"></div>
+                </div>
+            </div>
+            <div class="meal-card">
+                <div class="flex items-center justify-between mb-2">
+                    <span class="text-sm text-charcoal/60">Protein</span>
+                    <i class="fas fa-drumstick-bite text-red-500"></i>
+                </div>
+                <p class="text-2xl font-bold text-charcoal">{{ protein_current }}g</p>
+                <p class="text-xs text-charcoal/50">of {{ protein_goal }}g goal</p>
+                <div class="progress-bar mt-2">
+                    <div class="progress-fill" style="width: {% widthratio protein_current protein_goal 100 %}%"></div>
+                </div>
+            </div>
+            <div class="meal-card">
+                <div class="flex items-center justify-between mb-2">
+                    <span class="text-sm text-charcoal/60">Carbs</span>
+                    <i class="fas fa-bread-slice text-yellow-600"></i>
+                </div>
+                <p class="text-2xl font-bold text-charcoal">{{ carbs_current }}g</p>
+                <p class="text-xs text-charcoal/50">Low GI focus</p>
+                <div class="progress-bar mt-2">
+                    <div class="progress-fill" style="width: {% widthratio carbs_current carbs_goal 100 %}%"></div>
+                </div>
+            </div>
+            <div class="meal-card">
+                <div class="flex items-center justify-between mb-2">
+                    <span class="text-sm text-charcoal/60">Water</span>
+                    <i class="fas fa-tint text-blue-500"></i>
+                </div>
+                <p class="text-2xl font-bold text-charcoal">{{ water_current }}/{{ water_goal }}</p>
+                <p class="text-xs text-charcoal/50 mb-2">glasses today</p>
+                <div class="water-tracker">
+                    {% for i in "12345678" %}
+                    <div class="water-glass {% if forloop.counter <= water_current %}filled{% endif %}" 
+                         onclick="logWater({{ forloop.counter }})"></div>
+                    {% endfor %}
+                </div>
+            </div>
+        </div>
+
+        <!-- Tabs -->
+        <div class="flex gap-3 mb-6 overflow-x-auto pb-2">
+            <button class="tab-button active" data-tab="ai-recipes">
+                <i class="fas fa-magic mr-2"></i>AI Recipes
+            </button>
+            <button class="tab-button" data-tab="recipes">
+                <i class="fas fa-utensils mr-2"></i>All Recipes
+            </button>
+            <button class="tab-button" data-tab="meal-plans">
+                <i class="fas fa-calendar-alt mr-2"></i>My Plans
+            </button>
+            <button class="tab-button" data-tab="food-guide">
+                <i class="fas fa-book mr-2"></i>Food Guide
+            </button>
+        </div>
+
+        <!-- AI Recipes Tab -->
+        <div id="ai-recipes-content" class="tab-content">
+            <div class="mb-4">
+                <h2 class="text-xl font-semibold text-charcoal mb-3">Generate Personalized Meal</h2>
+                <p class="text-charcoal/70 mb-4">Get AI-powered meal recommendations based on your profile</p>
+                <div class="flex gap-3 flex-wrap">
+                    <button onclick="generateMeal('breakfast')" class="btn btn-primary">
+                        <i class="fas fa-sunrise"></i> Breakfast
+                    </button>
+                    <button onclick="generateMeal('lunch')" class="btn btn-primary">
+                        <i class="fas fa-sun"></i> Lunch
+                    </button>
+                    <button onclick="generateMeal('dinner')" class="btn btn-primary">
+                        <i class="fas fa-moon"></i> Dinner
+                    </button>
+                    <button onclick="generateMeal('snack')" class="btn btn-primary">
+                        <i class="fas fa-cookie-bite"></i> Snack
+                    </button>
+                </div>
+            </div>
+            
+            <div id="aiMealResult" style="display: none;">
+                <!-- AI Generated Meal Will Appear Here -->
+            </div>
+        </div>
+
+        <!-- All Recipes Tab -->
+        <div id="recipes-content" class="tab-content hidden">
+            <div class="grid md:grid-cols-3 gap-6">
+                <div class="meal-card">
+                    <div class="meal-image">🥗</div>
+                    <div class="flex gap-2 mb-3">
+                        <span class="badge badge-pcos">PCOS-Friendly</span>
+                        <span class="badge badge-quick">Quick</span>
+                    </div>
+                    <h3 class="font-semibold text-charcoal mb-2">Quinoa Buddha Bowl</h3>
+                    <p class="text-sm text-charcoal/60 mb-3">Nutrient-dense bowl with quinoa, roasted vegetables, and tahini dressing</p>
+                    <div class="space-y-1 mb-4">
+                        <div class="nutrition-stat">
+                            <i class="fas fa-clock text-teal"></i>
+                            <span>25 mins</span>
+                        </div>
+                        <div class="nutrition-stat">
+                            <i class="fas fa-fire text-orange-500"></i>
+                            <span>420 cal</span>
+                        </div>
+                        <div class="nutrition-stat">
+                            <i class="fas fa-chart-line text-lavender"></i>
+                            <span>High Protein, Low GI</span>
+                        </div>
+                    </div>
+                    <button onclick="viewRecipe('Quinoa Buddha Bowl')" class="w-full btn btn-primary">
+                        View Recipe
+                    </button>
+                </div>
+
+                <div class="meal-card">
+                    <div class="meal-image">🍳</div>
+                    <div class="flex gap-2 mb-3">
+                        <span class="badge badge-pcos">PCOS-Friendly</span>
+                    </div>
+                    <h3 class="font-semibold text-charcoal mb-2">Veggie Omelet Power Bowl</h3>
+                    <p class="text-sm text-charcoal/60 mb-3">Protein-packed breakfast with spinach, mushrooms, and avocado</p>
+                    <div class="space-y-1 mb-4">
+                        <div class="nutrition-stat">
+                            <i class="fas fa-clock text-teal"></i>
+                            <span>15 mins</span>
+                        </div>
+                        <div class="nutrition-stat">
+                            <i class="fas fa-fire text-orange-500"></i>
+                            <span>350 cal</span>
+                        </div>
+                        <div class="nutrition-stat">
+                            <i class="fas fa-chart-line text-lavender"></i>
+                            <span>High Protein</span>
+                        </div>
+                    </div>
+                    <button onclick="viewRecipe('Veggie Omelet')" class="w-full btn btn-primary">
+                        View Recipe
+                    </button>
+                </div>
+
+                <div class="meal-card">
+                    <div class="meal-image">🐟</div>
+                    <div class="flex gap-2 mb-3">
+                        <span class="badge badge-pcos">PCOS-Friendly</span>
+                    </div>
+                    <h3 class="font-semibold text-charcoal mb-2">Baked Salmon with Veggies</h3>
+                    <p class="text-sm text-charcoal/60 mb-3">Omega-3 rich salmon with roasted Brussels sprouts and sweet potato</p>
+                    <div class="space-y-1 mb-4">
+                        <div class="nutrition-stat">
+                            <i class="fas fa-clock text-teal"></i>
+                            <span>30 mins</span>
+                        </div>
+                        <div class="nutrition-stat">
+                            <i class="fas fa-fire text-orange-500"></i>
+                            <span>450 cal</span>
+                        </div>
+                        <div class="nutrition-stat">
+                            <i class="fas fa-chart-line text-lavender"></i>
+                            <span>Omega-3 Rich</span>
+                        </div>
+                    </div>
+                    <button onclick="viewRecipe('Baked Salmon')" class="w-full btn btn-primary">
+                        View Recipe
+                    </button>
+                </div>
+            </div>
+        </div>
+
+        <!-- My Plans Tab -->
+        <div id="meal-plans-content" class="tab-content hidden">
+            <h2 class="text-xl font-semibold text-charcoal mb-4">My Saved Meal Plans</h2>
+            <div id="savedMealsContainer">
+                {% if saved_meals %}
+                <div class="grid md:grid-cols-3 gap-6">
+                    {% for meal in saved_meals %}
+                    <div class="meal-card">
+                        <div class="meal-image">
+                            {% if meal.meal_type == 'breakfast' %}🍳
+                            {% elif meal.meal_type == 'lunch' %}🥗
+                            {% elif meal.meal_type == 'dinner' %}🍽️
+                            {% else %}🍪{% endif %}
+                        </div>
+                        <span class="badge badge-pcos mb-3">Saved</span>
+                        <h3 class="font-semibold text-charcoal mb-2">{{ meal.name }}</h3>
+                        <p class="text-sm text-charcoal/60 mb-3">{{ meal.description }}</p>
+                        <div class="space-y-1 mb-4">
+                            <div class="nutrition-stat">
+                                <i class="fas fa-fire text-orange-500"></i>
+                                <span>{{ meal.calories }} cal</span>
+                            </div>
+                            <div class="nutrition-stat">
+                                <i class="fas fa-drumstick-bite text-red-500"></i>
+                                <span>{{ meal.protein }}g protein</span>
+                            </div>
+                        </div>
+                        <button onclick="viewSavedMeal({{ meal.id }})" class="w-full btn btn-primary">
+                            View Details
+                        </button>
+                    </div>
+                    {% endfor %}
+                </div>
+                {% else %}
+                <div class="text-center py-12">
+                    <i class="fas fa-heart text-6xl text-charcoal/20 mb-4"></i>
+                    <p class="text-charcoal/60 mb-4">No saved meals yet</p>
+                    <button onclick="switchTab('ai-recipes')" class="btn btn-primary">
+                        <i class="fas fa-magic"></i> Generate Your First Meal
+                    </button>
+                </div>
+                {% endif %}
+            </div>
+        </div>
+
+        <!-- Food Guide Tab -->
+        <div id="food-guide-content" class="tab-content hidden">
+            <div class="grid md:grid-cols-2 gap-6">
+                <div class="meal-card">
+                    <h3 class="text-xl font-semibold text-charcoal mb-4 flex items-center">
+                        <i class="fas fa-check-circle text-green-500 mr-3"></i>
+                        Foods to Include
+                    </h3>
+                    <div class="space-y-3">
+                        <div class="p-3 bg-green-50 rounded-lg">
+                            <p class="font-medium text-charcoal">🥦 Non-Starchy Vegetables</p>
+                            <p class="text-sm text-charcoal/60">Broccoli, spinach, kale, cauliflower</p>
+                        </div>
+                        <div class="p-3 bg-green-50 rounded-lg">
+                            <p class="font-medium text-charcoal">🐟 Omega-3 Rich Foods</p>
+                            <p class="text-sm text-charcoal/60">Salmon, sardines, flax seeds, walnuts</p>
+                        </div>
+                        <div class="p-3 bg-green-50 rounded-lg">
+                            <p class="font-medium text-charcoal">🌾 Whole Grains</p>
+                            <p class="text-sm text-charcoal/60">Quinoa, brown rice, oats, barley</p>
+                        </div>
+                        <div class="p-3 bg-green-50 rounded-lg">
+                            <p class="font-medium text-charcoal">🥜 Healthy Fats</p>
+                            <p class="text-sm text-charcoal/60">Avocado, olive oil, nuts, seeds</p>
+                        </div>
+                        <div class="p-3 bg-green-50 rounded-lg">
+                            <p class="font-medium text-charcoal">🫘 Legumes</p>
+                            <p class="text-sm text-charcoal/60">Lentils, chickpeas, black beans</p>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="meal-card">
+                    <h3 class="text-xl font-semibold text-charcoal mb-4 flex items-center">
+                        <i class="fas fa-times-circle text-red-500 mr-3"></i>
+                        Foods to Limit
+                    </h3>
+                    <div class="space-y-3">
+                        <div class="p-3 bg-red-50 rounded-lg">
+                            <p class="font-medium text-charcoal">🍰 Refined Sugars</p>
+                            <p class="text-sm text-charcoal/60">Candy, soda, pastries, cookies</p>
+                        </div>
+                        <div class="p-3 bg-red-50 rounded-lg">
+                            <p class="font-medium text-charcoal">🍞 Refined Carbs</p>
+                            <p class="text-sm text-charcoal/60">White bread, white pasta, white rice</p>
+                        </div>
+                        <div class="p-3 bg-red-50 rounded-lg">
+                            <p class="font-medium text-charcoal">🍟 Processed Foods</p>
+                            <p class="text-sm text-charcoal/60">Fast food, chips, packaged snacks</p>
+                        </div>
+                        <div class="p-3 bg-red-50 rounded-lg">
+                            <p class="font-medium text-charcoal">🥤 Sugary Drinks</p>
+                            <p class="text-sm text-charcoal/60">Soda, energy drinks, sweetened juice</p>
+                        </div>
+                        <div class="p-3 bg-red-50 rounded-lg">
+                            <p class="font-medium text-charcoal">🧈 Trans Fats</p>
+                            <p class="text-sm text-charcoal/60">Margarine, fried foods, baked goods</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Loading Overlay -->
+    <div id="loadingOverlay" class="loading-overlay">
+        <div class="loading-content">
+            <div class="spinner"></div>
+            <h3 class="font-semibold text-charcoal mb-2">Generating Your Meal...</h3>
+            <p class="text-sm text-charcoal/60">AI is creating a personalized recommendation</p>
+        </div>
+    </div>
+
+    <script>
+        const userContext = {{ user_context|safe }};
+        
+        // Tab switching
+        document.querySelectorAll('.tab-button').forEach(button => {
+            button.addEventListener('click', () => {
+                switchTab(button.dataset.tab);
+            });
+        });
+        
+        function switchTab(tabName) {
+            document.querySelectorAll('.tab-button').forEach(btn => btn.classList.remove('active'));
+            document.querySelector(`[data-tab="${tabName}"]`).classList.add('active');
+            
+            document.querySelectorAll('.tab-content').forEach(content => content.classList.add('hidden'));
+            document.getElementById(tabName + '-content').classList.remove('hidden');
+        }
+        
+        // Load daily tip on page load
+        window.addEventListener('load', loadDailyTip);
+        
+        async function loadDailyTip() {
+            try {
+                const response = await fetch('/nutrition/get-tip/');
+                const data = await response.json();
+                
+                if (data.status === 'success') {
+                    document.getElementById('dailyTip').textContent = data.tip;
+                }
+            } catch (error) {
+                console.error('Error loading tip:', error);
+                document.getElementById('dailyTip').textContent = 
+                    'Focus on low-GI foods and balanced meals to support stable blood sugar levels.';
+            }
+        }
+        
+        async function refreshTip() {
+            document.getElementById('dailyTip').textContent = 'Loading new tip...';
+            await loadDailyTip();
+        }
+        
+        async function generateMeal(mealType) {
+            const overlay = document.getElementById('loadingOverlay');
+            overlay.style.display = 'flex';
+            
+            try {
+                const response = await fetch('/nutrition/generate-meal/', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'X-CSRFToken': getCookie('csrftoken')
+                    },
+                    body: JSON.stringify({ meal_type: mealType })
+                });
+                
+                const data = await response.json();
+                overlay.style.display = 'none';
+                
+                if (data.status === 'success') {
+                    displayAIMeal(data.meal, mealType);
+                } else {
+                    alert('Failed to generate meal. Please try again.');
+                }
+            } catch (error) {
+                overlay.style.display = 'none';
+                console.error('Error:', error);
+                alert('An error occurred. Please try again.');
+            }
+        }
+        
+        function displayAIMeal(meal, mealType) {
+            const mealEmojis = {
+                'breakfast': '🍳',
+                'lunch': '🥗',
+                'dinner': '🍽️',
+                'snack': '🍪'
+            };
+            
+            const html = `
+                <div class="meal-card" style="max-width: 800px; margin: 0 auto;">
+                    <div class="meal-image">${mealEmojis[mealType]}</div>
+                    <div class="flex gap-2 mb-3">
+                        <span class="badge badge-pcos">PCOS-Friendly</span>
+                        <span class="badge badge-ai">AI Generated</span>
+                    </div>
+                    <h3 class="text-2xl font-semibold text-charcoal mb-2">${meal.name}</h3>
+                    <p class="text-charcoal/70 mb-4">${meal.description}</p>
+                    
+                    <div class="grid md:grid-cols-3 gap-4 mb-4">
+                        <div class="nutrition-stat">
+                            <i class="fas fa-clock text-teal"></i>
+                            <span>${meal.prep_time}</span>
+                        </div>
+                        <div class="nutrition-stat">
+                            <i class="fas fa-fire text-orange-500"></i>
+                            <span>${meal.calories} cal</span>
+                        </div>
+                        <div class="nutrition-stat">
+                            <i class="fas fa-heart text-red-500"></i>
+                            <span>PCOS-Friendly</span>
+                        </div>
+                    </div>
+                    
+                    <div class="bg-green-50 p-4 rounded-lg mb-4">
+                        <p class="text-sm font-medium text-charcoal mb-1">
+                            <i class="fas fa-check-circle text-green-500 mr-2"></i>PCOS Benefits
+                        </p>
+                        <p class="text-sm text-charcoal/70">${meal.benefits}</p>
+                    </div>
+                    
+                    ${meal.ingredients ? `
+                    <div class="mb-4">
+                        <h4 class="font-semibold text-charcoal mb-2">Ingredients:</h4>
+                        <ul class="list-disc list-inside text-sm text-charcoal/70">
+                            ${meal.ingredients.map(ing => `<li>${ing}</li>`).join('')}
+                        </ul>
+                    </div>
+                    ` : ''}
+                    
+                    ${meal.instructions ? `
+                    <div class="mb-4">
+                        <h4 class="font-semibold text-charcoal mb-2">Instructions:</h4>
+                        <p class="text-sm text-charcoal/70">${meal.instructions}</p>
+                    </div>
+                    ` : ''}
+                    
+                    <div class="flex gap-3">
+                        <button onclick="saveMeal('${mealType}')" class="btn btn-primary flex-1">
+                            <i class="fas fa-save"></i> Save to My Plans
+                        </button>
+                        <button onclick="generateMeal('${mealType}')" class="btn" style="background: white; color: var(--charcoal); border: 2px solid #E5E7EB;">
+                            <i class="fas fa-sync-alt"></i> Generate Another
+                        </button>
+                    </div>
+                </div>
+            `;
+            
+            const resultDiv = document.getElementById('aiMealResult');
+            resultDiv.innerHTML = html;
+            resultDiv.style.display = 'block';
+            
+            // Scroll to result
+            resultDiv.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+        }
+        
+        async function saveMeal(mealType) {
+            const resultDiv = document.getElementById('aiMealResult');
+            const mealCard = resultDiv.querySelector('.meal-card');
+            
+            // Extract meal data from displayed card
+            const name = mealCard.querySelector('h3').textContent;
+            const description = mealCard.querySelector('p').textContent;
+            
+            try {
+                const response = await fetch('/nutrition/save-meal/', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'X-CSRFToken': getCookie('csrftoken')
+                    },
+                    body: JSON.stringify({
+                        name: name,
+                        description: description,
+                        meal_type: mealType,
+                        ingredients: [],
+                        instructions: '',
+                        calories: 400
+                    })
+                });
+                
+                const data = await response.json();
+                
+                if (data.status === 'success') {
+                    alert('✅ Meal saved successfully!');
+                    // Switch to saved meals tab
+                    switchTab('meal-plans');
+                    location.reload();
+                } else {
+                    alert('Failed to save meal. Please try again.');
+                }
+            } catch (error) {
+                console.error('Error:', error);
+                alert('An error occurred while saving.');
+            }
+        }
+        
+        async function logWater(glassNumber) {
+            try {
+                const response = await fetch('/nutrition/log-water/', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'X-CSRFToken': getCookie('csrftoken')
+                    },
+                    body: JSON.stringify({ glasses: 1 })
+                });
+                
+                const data = await response.json();
+                
+                if (data.status === 'success') {
+                    // Update UI
+                    const glasses = document.querySelectorAll('.water-glass');
+                    for (let i = 0; i < data.total && i < glasses.length; i++) {
+                        glasses[i].classList.add('filled');
+                    }
+                }
+            } catch (error) {
+                console.error('Error logging water:', error);
+            }
+        }
+        
+        function viewRecipe(recipeName) {
+            alert(`Recipe details for "${recipeName}" coming soon!`);
+        }
+        
+        function viewSavedMeal(mealId) {
+            alert(`Viewing details for meal ID: ${mealId}`);
+        }
+        
+        function getCookie(name) {
+            let cookieValue = null;
+            if (document.cookie && document.cookie !== '') {
+                const cookies = document.cookie.split(';');
+                for (let i = 0; i < cookies.length; i++) {
+                    const cookie = cookies[i].trim();
+                    if (cookie.substring(0, name.length + 1) === (name + '=')) {
+                        cookieValue = decodeURIComponent(cookie.substring(name.length + 1));
+                        break;
+                    }
+                }
+            }
+            return cookieValue;
+        }
+    </script>
+</body>
+</html>

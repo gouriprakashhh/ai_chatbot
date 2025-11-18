@@ -1,0 +1,117 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Settings - Luna</title>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        body { font-family: 'Poppins', sans-serif; background: linear-gradient(135deg, #F7F7F7 0%, #FFFFFF 100%); }
+        .settings-card { background: white; border-radius: 16px; padding: 1.5rem; box-shadow: 0 4px 15px rgba(0,0,0,0.05); margin-bottom: 1.5rem; }
+        .toggle { position: relative; display: inline-block; width: 50px; height: 24px; }
+        .toggle input { opacity: 0; width: 0; height: 0; }
+        .slider { position: absolute; cursor: pointer; top: 0; left: 0; right: 0; bottom: 0; background-color: #ccc; transition: .4s; border-radius: 24px; }
+        .slider:before { position: absolute; content: ""; height: 18px; width: 18px; left: 3px; bottom: 3px; background-color: white; transition: .4s; border-radius: 50%; }
+        input:checked + .slider { background-color: #9B8DE5; }
+        input:checked + .slider:before { transform: translateX(26px); }
+    </style>
+</head>
+<body>
+    <div class="max-w-4xl mx-auto p-6">
+        <div class="mb-6">
+            <a href="/dashboard/" class="inline-flex items-center text-gray-700 hover:text-purple-600 mb-4">
+                <i class="fas fa-arrow-left mr-2"></i>Back to Dashboard
+            </a>
+            <h1 class="text-3xl font-bold mb-2">Settings</h1>
+            <p class="text-gray-600">Manage your account and preferences</p>
+        </div>
+
+        <div class="settings-card">
+            <h3 class="text-xl font-semibold mb-4">Notifications</h3>
+            <div class="space-y-4">
+                <div class="flex items-center justify-between">
+                    <div>
+                        <p class="font-medium">Email Notifications</p>
+                        <p class="text-sm text-gray-600">Receive updates via email</p>
+                    </div>
+                    <label class="toggle">
+                        <input type="checkbox" checked>
+                        <span class="slider"></span>
+                    </label>
+                </div>
+                <div class="flex items-center justify-between">
+                    <div>
+                        <p class="font-medium">Cycle Reminders</p>
+                        <p class="text-sm text-gray-600">Get notified about your cycle</p>
+                    </div>
+                    <label class="toggle">
+                        <input type="checkbox" checked>
+                        <span class="slider"></span>
+                    </label>
+                </div>
+                <div class="flex items-center justify-between">
+                    <div>
+                        <p class="font-medium">Daily Tips</p>
+                        <p class="text-sm text-gray-600">Receive daily PCOS management tips</p>
+                    </div>
+                    <label class="toggle">
+                        <input type="checkbox" checked>
+                        <span class="slider"></span>
+                    </label>
+                </div>
+            </div>
+        </div>
+
+        <div class="settings-card">
+            <h3 class="text-xl font-semibold mb-4">Privacy</h3>
+            <div class="space-y-4">
+                <div class="flex items-center justify-between">
+                    <div>
+                        <p class="font-medium">Profile Visibility</p>
+                        <p class="text-sm text-gray-600">Who can see your profile</p>
+                    </div>
+                    <select class="p-2 border-2 border-gray-200 rounded-lg">
+                        <option>Private</option>
+                        <option>Friends Only</option>
+                        <option>Public</option>
+                    </select>
+                </div>
+                <div class="flex items-center justify-between">
+                    <div>
+                        <p class="font-medium">Data Sharing</p>
+                        <p class="text-sm text-gray-600">Share anonymized data for research</p>
+                    </div>
+                    <label class="toggle">
+                        <input type="checkbox">
+                        <span class="slider"></span>
+                    </label>
+                </div>
+            </div>
+        </div>
+
+        <div class="settings-card">
+            <h3 class="text-xl font-semibold mb-4">Account</h3>
+            <div class="space-y-3">
+                <button class="w-full text-left p-3 hover:bg-gray-50 rounded-lg transition-colors">
+                    <i class="fas fa-key mr-3 text-purple-600"></i>Change Password
+                </button>
+                <button class="w-full text-left p-3 hover:bg-gray-50 rounded-lg transition-colors">
+                    <i class="fas fa-envelope mr-3 text-purple-600"></i>Change Email
+                </button>
+                <button class="w-full text-left p-3 hover:bg-gray-50 rounded-lg transition-colors">
+                    <i class="fas fa-download mr-3 text-purple-600"></i>Export Data
+                </button>
+                <button class="w-full text-left p-3 hover:bg-red-50 rounded-lg transition-colors text-red-600">
+                    <i class="fas fa-trash mr-3"></i>Delete Account
+                </button>
+            </div>
+        </div>
+
+        <button class="w-full py-3 bg-gradient-to-r from-purple-500 to-teal-500 text-white font-semibold rounded-lg hover:shadow-lg transition-all">
+            Save Changes
+        </button>
+    </div>
+</body>
+</html>
